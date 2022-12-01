@@ -31,5 +31,18 @@ namespace QueryDB.Core.Tests
             data = dbContext.RetrieveData(selectSql);
             Assert.IsTrue(data.Count > 0);
         }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS)]
+        public void Test_MySql_RetrieveData()
+        {
+            var selectSql = Queries.MySqlQuery.SelectSql;
+            var data = new DBContext(DB.MySql, MySqlDatabaseString).RetrieveData(selectSql);
+            Assert.IsTrue(data.Count > 0);
+
+            var dbContext = new DBContext(DB.MySql, MySqlDatabaseString);
+            data = dbContext.RetrieveData(selectSql);
+            Assert.IsTrue(data.Count > 0);
+        }
     }
 }

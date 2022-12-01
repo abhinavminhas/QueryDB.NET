@@ -27,6 +27,11 @@ namespace QueryDB
         internal static string SqlServerConnectionString;
 
         /// <summary>
+        /// Holds 'MySQL' connection string value for the DBContext created.
+        /// </summary>
+        internal static string MySqlConnectionString;
+
+        /// <summary>
         /// Defines database type and connection string to connect to.
         /// </summary>
         /// <param name="database">'DB' enum value for database type.</param>
@@ -38,6 +43,8 @@ namespace QueryDB
                 OracleConnectionString = connectionString;
             else if (Database.Equals(DB.SqlServer))
                 SqlServerConnectionString = connectionString;
+            else if (Database.Equals(DB.MySql))
+                MySqlConnectionString = connectionString;
         }
 
         /// <summary>
@@ -91,6 +98,26 @@ namespace QueryDB
                     }
                 }
             }
+            else if (Database.Equals(DB.MySql))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    var _systemAdapter = new MySqlAdapter();
+                    var reader = _systemAdapter.GetSqlReader(selectSql, mySqlDBConnection.MySqlConnection);
+                    while (reader.Read())
+                    {
+                        var addedRow = new DataDictionary();
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            if (upperCaseKeys)
+                                addedRow.Data.Add(reader.GetName(i).ToUpper(), reader.GetValue(i).ToString());
+                            else
+                                addedRow.Data.Add(reader.GetName(i), reader.GetValue(i).ToString());
+                        }
+                        dataList.Add(addedRow);
+                    }
+                }
+            }
             return dataList;
         }
 
@@ -107,11 +134,21 @@ namespace QueryDB
         /// <summary>
         /// Gets 'Sql Server' connection.
         /// </summary>
-        /// <returns>'Sql Server' Connection</returns>
+        /// <returns>'Sql Server' Connection.</returns>
         private SqlDBConnection GetSqlServerConnection()
         {
             var _connectionBuilder = new ConnectionBuilder();
             return _connectionBuilder.GetSqlServerConnection;
+        }
+
+        /// <summary>
+        /// Gets 'MySQL' connection.
+        /// </summary>
+        /// <returns>'MySQL' Connection.</returns>
+        private MySqlDBConnection GetMySqlConnection()
+        {
+            var _connectionBuilder = new ConnectionBuilder();
+            return _connectionBuilder.GetMySqlConnection;
         }
     }
 
@@ -121,6 +158,7 @@ namespace QueryDB
     public enum DB
     {
         Oracle,
-        SqlServer
+        SqlServer,
+        MySql
     }
 }
