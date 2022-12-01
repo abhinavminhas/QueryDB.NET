@@ -8,7 +8,7 @@ namespace QueryDB.Connection
     internal class ConnectionBuilder
     {
         /// <summary>
-        /// Creates 'Oracle' database connection.
+        /// Gets 'Oracle' database connection.
         /// </summary>
         internal OracleDBConnection GetOracleConnection
         {
@@ -20,13 +20,25 @@ namespace QueryDB.Connection
         }
 
         /// <summary>
-        /// Creates 'Sql Server' database connection.
+        /// Gets 'Sql Server' database connection.
         /// </summary>
         internal SqlDBConnection GetSqlServerConnection
         {
             get
             {
                 var connection = new SqlDBConnection(DBContext.SqlServerConnectionString);
+                return connection;
+            }
+        }
+
+        /// <summary>
+        /// Gets 'MySQL' database connection.
+        /// </summary>
+        internal MySqlDBConnection GetMySqlConnection
+        {
+            get
+            {
+                var connection = new MySqlDBConnection(DBContext.MySqlConnectionString);
                 return connection;
             }
         }

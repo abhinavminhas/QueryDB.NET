@@ -11,5 +11,10 @@
         {
             public static string SelectSql = @"SELECT NAME FROM SYS.DATABASES";
         }
+
+        internal static class MySqlQuery
+        {
+            public static string SelectSql = @"SELECT SYSDATE()";
+        }
     }
 }
