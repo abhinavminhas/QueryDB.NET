@@ -56,26 +56,20 @@ jobs:
                 $sqlServerHealth = (docker inspect --format="{{json .State.Health.Status}}" sql-server-db).Replace('"', '')
                 $oracleHealth = (docker inspect --format="{{json .State.Health.Status}}" oracle-db).Replace('"', '')
                 if (($msSQLHealth -ne $status) -or ($sqlServerHealth -ne $status) -or ($oracleHealth -ne $status)) {
-                    write-host "msSQLHealth ==> $msSQLHealth : $status"
-                    write-host "sqlServerHealth ==> $sqlServerHealth : $status"
-                    write-host "oracleHealth ==> $oracleHealth : $status"
                     Start-Sleep -Seconds 10
                     $retry ++
                 } else {
                     $allHealthy=$true
+                    write-host "==> $allHealthy"
                     break
                 }
                 write-host "==> $allHealthy"
         } while ($retry -le 6)
         if ($allHealthy -eq $true) {
-            Write-Host "1. mysql-db (Status) - $msSQLHealth"
-            Write-Host "2. sql-server-db (Status) - $sqlServerHealth"
-            Write-Host "3. oracle-db (Status) - $oracleHealth"
+            Write-Host "All DB Containers healthy [mysql-db (Status) -> '$msSQLHealth'] | [sql-server-db (Status) -> '$sqlServerHealth] | [oracle-db (Status) -> '$oracleHealth']"
         } else {
-            Write-Host "1. mysql-db (Status) - $msSQLHealth"
-            Write-Host "2. sql-server-db (Status) - $sqlServerHealth"
-            Write-Host "3. oracle-db (Status) - $oracleHealth"
-            # exit 1
+            Write-Host "DB Container/s not healthy [mysql-db (Status) -> '$msSQLHealth'] | [sql-server-db (Status) -> '$sqlServerHealth] | [oracle-db (Status) -> '$oracleHealth']"
+            exit 1
         }
     
     - name: Test
