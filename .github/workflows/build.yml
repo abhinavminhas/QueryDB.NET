@@ -44,5 +44,5 @@ jobs:
         docker inspect --format='{{json .State.Health.Status}}' oracle-db
     
     - name: Test
-      if: if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
+      if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
       run: dotnet test --no-build --verbosity normal --configuration Release --filter TestCategory=DB_TESTS
