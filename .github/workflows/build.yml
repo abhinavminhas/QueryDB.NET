@@ -36,17 +36,33 @@ jobs:
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
       run: docker compose -f docker-compose.yml pull --parallel
 
-    - name: Docker Compose (Start DB Containers)
+    - name: Docker Compose (Start - DB Containers)
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
       run: docker compose -f docker-compose.yml up -d
 
-    - name: Docker Compose (Wait till - Healthy)
+    - name: Docker Inspect (Wait for Status - Healthy)
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
       run: |
-        docker inspect --format='{{json .State.Health.Status}}' mysql-db
-        docker inspect --format='{{json .State.Health.Status}}' sql-server-db
-        docker inspect --format='{{json .State.Health.Status}}' oracle-db
+        $msSQLHealth=''
+        $sqlServerHealth=''
+        $oracleHealth=''
+        $status='healthy'
+        $retry=1
+        do {
+                $msSQLHealth = docker inspect --format="{{json .State.Health.Status}}" mysql-db | Out-String
+                $sqlServerHealth = docker inspect --format='{{json .State.Health.Status}}' sql-server-db | Out-String
+                $oracleHealth = docker inspect --format='{{json .State.Health.Status}}' oracle-db | Out-String
+                if ($msSQLHealth -ne $status -or $sqlServerHealth -ne $status -or $oracleHealth -ne $status) {
+                    Start-Sleep -Seconds 10
+                    retry ++
+                }
+        }
+        while ($retry -le 6)
     
     - name: Test
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
       run: dotnet test --no-build --verbosity normal --configuration Release --filter TestCategory=DB-TESTS
+    
+    - name: Docker Compose (Tear Down - DB Containers)
+      if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
+      run: docker compose -f docker-compose.yml down
