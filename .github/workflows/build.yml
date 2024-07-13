@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  Build_.NetCore_OS:
+  Build_DotNetCore-OS:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
