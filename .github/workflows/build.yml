@@ -1,0 +1,48 @@
+#CI/MANUAL TRIGGER
+name: Build
+
+on:
+  push:
+    branches: [ main, dev ]
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  Build_DotNetCore_OS-Version:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ windows-2019, ubuntu-20.04, macOS-12 ]
+        dotnet-version: [ '3.1.x', '6.0.x' ]
+        
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Dotnet Version (${{ matrix.dotnet-version }})
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+        
+    - name: Build
+      run: dotnet build GmailAPIHelper.CORE.Tests/GmailAPIHelper.CORE.Tests.csproj --configuration Release
+
+    - name: Docker Compose (Start DB Containers)
+      if: ${{ matrix.dotnet-version == '3.1.x' }}
+      run: docker compose -f ../docker-compose.yml up -d
+
+    - name: Docker Compose (Wait till - Healthy)
+      if: ${{ matrix.dotnet-version == '3.1.x' }}
+      run: |
+      docker inspect --format='{{json .State.Health.Status}}' mysql-db
+      docker inspect --format='{{json .State.Health.Status}}' sql-server-db
+      docker inspect --format='{{json .State.Health.Status}}' oracle-db
+    
+    - name: Test
+      if: ${{ matrix.dotnet-version == 'N/A' }}
+      run: dotnet test --no-build --verbosity normal --configuration Release --filter TestCategory=DB_TESTS
