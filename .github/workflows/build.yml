@@ -53,12 +53,23 @@ jobs:
                 $msSQLHealth = docker inspect --format="{{json .State.Health.Status}}" mysql-db | Out-String
                 $sqlServerHealth = docker inspect --format='{{json .State.Health.Status}}' sql-server-db | Out-String
                 $oracleHealth = docker inspect --format='{{json .State.Health.Status}}' oracle-db | Out-String
-                if ($msSQLHealth -ne $status -or $sqlServerHealth -ne $status -or $oracleHealth -ne $status) {
+                if ($msSQLHealth -eq $status -or $sqlServerHealth -eq $status -or $oracleHealth -eq $status) {
                     Start-Sleep -Seconds 10
-                    retry ++
+                    $retry ++
+                } else {
+                    Write-Host "1. mysql-db (Status) - $msSQLHealth"
+                    Write-Host "2. sql-server-db (Status) - $sqlServerHealth"
+                    Write-Host "3. oracle-db (Status) - $oracleHealth"
+                    break
                 }
         }
         while ($retry -le 6)
+        if ($msSQLHealth -ne $status -or $sqlServerHealth -ne $status -or $oracleHealth -ne $status) {
+            Write-Host "1. mysql-db (Status) - $msSQLHealth"
+            Write-Host "2. sql-server-db (Status) - $sqlServerHealth"
+            Write-Host "3. oracle-db (Status) - $oracleHealth"
+            exit 1
+        }
     
     - name: Test
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
