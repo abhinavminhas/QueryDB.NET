@@ -53,18 +53,19 @@ jobs:
                 $msSQLHealth = docker inspect --format="{{json .State.Health.Status}}" mysql-db | Out-String
                 $sqlServerHealth = docker inspect --format='{{json .State.Health.Status}}' sql-server-db | Out-String
                 $oracleHealth = docker inspect --format='{{json .State.Health.Status}}' oracle-db | Out-String
-                if ($msSQLHealth -eq $status -or $sqlServerHealth -eq $status -or $oracleHealth -eq $status) {
+                if (($msSQLHealth -ne $status) -and ($sqlServerHealth -ne $status) -and ($oracleHealth -ne $status)) {
                     Start-Sleep -Seconds 10
                     $retry ++
                 } else {
-                    Write-Host "1. mysql-db (Status) - $msSQLHealth"
-                    Write-Host "2. sql-server-db (Status) - $sqlServerHealth"
-                    Write-Host "3. oracle-db (Status) - $oracleHealth"
                     break
                 }
         }
         while ($retry -le 6)
-        if ($msSQLHealth -ne $status -or $sqlServerHealth -ne $status -or $oracleHealth -ne $status) {
+        if ($msSQLHealth -eq $status -and $sqlServerHealth -eq $status -and $oracleHealth -ne $status) {
+            Write-Host "1. mysql-db (Status) - $msSQLHealth"
+            Write-Host "2. sql-server-db (Status) - $sqlServerHealth"
+            Write-Host "3. oracle-db (Status) - $oracleHealth"
+        } else {
             Write-Host "1. mysql-db (Status) - $msSQLHealth"
             Write-Host "2. sql-server-db (Status) - $sqlServerHealth"
             Write-Host "3. oracle-db (Status) - $oracleHealth"
