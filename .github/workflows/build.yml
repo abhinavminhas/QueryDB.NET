@@ -63,7 +63,7 @@ jobs:
                     break
                 }
         } while ($retry -le 6)
-        if ($allHealthy) {
+        if ($allHealthy -eq $true) {
             Write-Host "1. mysql-db (Status) - $msSQLHealth"
             Write-Host "2. sql-server-db (Status) - $sqlServerHealth"
             Write-Host "3. oracle-db (Status) - $oracleHealth"
