@@ -45,16 +45,17 @@ jobs:
       shell: pwsh
       run: |
         # Script (Wait for Status - Healthy)
-        $msSQLHealth=""
+        # Script (Wait for Status - Healthy)
+        $msSQLHealth=''
         $sqlServerHealth=""
         $oracleHealth=""
         $status="healthy"
         $allHealthy=$false
         $retry=1
         do {
-                $msSQLHealth = docker inspect --format={{json .State.Health.Status}} mysql-db | Out-String
-                $sqlServerHealth = docker inspect --format={{json .State.Health.Status}} sql-server-db | Out-String
-                $oracleHealth = docker inspect --format={{json .State.Health.Status}} oracle-db | Out-String
+                $msSQLHealth = docker inspect --format="{{json .State.Health.Status}}" mysql-db | Out-String
+                $sqlServerHealth = docker inspect --format="{{json .State.Health.Status}}" sql-server-db | Out-String
+                $oracleHealth = docker inspect --format="{{json .State.Health.Status}}" oracle-db | Out-String
                 if (($msSQLHealth -ne $status) -or ($sqlServerHealth -ne $status) -or ($oracleHealth -ne $status)) {
                     write-host "msSQLHealth ==> $msSQLHealth : $status"
                     write-host "sqlServerHealth ==> $sqlServerHealth : $status"
