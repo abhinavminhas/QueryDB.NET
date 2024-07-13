@@ -30,7 +30,7 @@ jobs:
         dotnet-version: ${{ matrix.dotnet-version }}
         
     - name: Build
-      run: dotnet build GmailAPIHelper.CORE.Tests/GmailAPIHelper.CORE.Tests.csproj --configuration Release
+      run: dotnet build QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
 
     - name: Docker Compose (Start DB Containers)
       if: ${{ matrix.dotnet-version == '3.1.x' }}
