@@ -37,7 +37,7 @@ jobs:
       run: docker compose -f docker-compose.yml up -d
 
     - name: Docker Compose (Wait till - Healthy)
-      if: if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
+      if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
       run: |
         docker inspect --format='{{json .State.Health.Status}}' mysql-db
         docker inspect --format='{{json .State.Health.Status}}' sql-server-db
