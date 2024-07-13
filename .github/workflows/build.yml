@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  DotNetCore-OS:
+  OS-NetCore:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -60,15 +60,13 @@ jobs:
                     $retry ++
                 } else {
                     $allHealthy=$true
-                    write-host "==> $allHealthy"
                     break
                 }
-                write-host "==> $allHealthy"
         } while ($retry -le 6)
         if ($allHealthy -eq $true) {
-            Write-Host "All DB Containers healthy [mysql-db (Status) -> '$msSQLHealth'] | [sql-server-db (Status) -> '$sqlServerHealth] | [oracle-db (Status) -> '$oracleHealth']"
+            Write-Host "All DB Containers Healthy ==> [ mysql-db (Status) -> '$msSQLHealth' ] | [ sql-server-db (Status) -> '$sqlServerHealth' ] | [ oracle-db (Status) -> '$oracleHealth' ]"
         } else {
-            Write-Host "DB Container/s not healthy [mysql-db (Status) -> '$msSQLHealth'] | [sql-server-db (Status) -> '$sqlServerHealth] | [oracle-db (Status) -> '$oracleHealth']"
+            Write-Host "DB Container/s Not Healthy ==> [ mysql-db (Status) -> '$msSQLHealth' ] | [ sql-server-db (Status) -> '$sqlServerHealth' ] | [ oracle-db (Status) -> '$oracleHealth' ]"
             exit 1
         }
     
@@ -78,5 +76,4 @@ jobs:
     
     - name: Docker Compose (Tear Down - DB Containers)
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
-      continue-on-error: true
       run: docker compose -f docker-compose.yml down
