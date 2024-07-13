@@ -33,16 +33,16 @@ jobs:
       run: dotnet build QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
 
     - name: Docker Compose (Start DB Containers)
-      if: ${{ matrix.dotnet-version == '3.1.x' }}
+      if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
       run: docker compose -f docker-compose.yml up -d
 
     - name: Docker Compose (Wait till - Healthy)
-      if: ${{ matrix.dotnet-version == '3.1.x' }}
+      if: if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
       run: |
         docker inspect --format='{{json .State.Health.Status}}' mysql-db
         docker inspect --format='{{json .State.Health.Status}}' sql-server-db
         docker inspect --format='{{json .State.Health.Status}}' oracle-db
     
     - name: Test
-      if: ${{ matrix.dotnet-version == 'N/A' }}
+      if: if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
       run: dotnet test --no-build --verbosity normal --configuration Release --filter TestCategory=DB_TESTS
