@@ -42,6 +42,7 @@ jobs:
 
     - name: Docker Inspect (Wait for Status - Healthy)
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
+      shell: pwsh
       run: |
         $msSQLHealth=''
         $sqlServerHealth=''
