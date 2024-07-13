@@ -44,10 +44,12 @@ jobs:
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
       shell: pwsh
       run: |
+        # Script (Wait for Status - Healthy)
         $msSQLHealth=''
         $sqlServerHealth=''
         $oracleHealth=''
         $status='healthy'
+        $allHealthy=$false
         $retry=1
         do {
                 $msSQLHealth = docker inspect --format="{{json .State.Health.Status}}" mysql-db | Out-String
@@ -57,11 +59,11 @@ jobs:
                     Start-Sleep -Seconds 10
                     $retry ++
                 } else {
+                    $allHealthy=$true
                     break
                 }
-        }
-        while ($retry -le 6)
-        if ($msSQLHealth -eq $status -and $sqlServerHealth -eq $status -and $oracleHealth -ne $status) {
+        } while ($retry -le 6)
+        if ($allHealthy) {
             Write-Host "1. mysql-db (Status) - $msSQLHealth"
             Write-Host "2. sql-server-db (Status) - $sqlServerHealth"
             Write-Host "3. oracle-db (Status) - $oracleHealth"
@@ -78,4 +80,5 @@ jobs:
     
     - name: Docker Compose (Tear Down - DB Containers)
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
+      continue-on-error: true
       run: docker compose -f docker-compose.yml down
