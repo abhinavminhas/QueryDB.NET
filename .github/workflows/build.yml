@@ -33,15 +33,15 @@ jobs:
       run: dotnet build QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
 
     - name: Docker Compose (Pull)
-      if: ${{ (matrix.os != 'macOS-12') && (matrix.dotnet-version == '3.1.x') }}
+      if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
       run: docker compose -f docker-compose.yml pull --parallel
 
     - name: Docker Compose (Start - DB Containers)
-      if: ${{ (matrix.os != 'macOS-12') && (matrix.dotnet-version == '3.1.x') }}
+      if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
       run: docker compose -f docker-compose.yml up -d
 
     - name: Docker Inspect (Wait Status -> Healthy)
-      if: ${{ (matrix.os != 'macOS-12') && (matrix.dotnet-version == '3.1.x') }}
+      if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
       shell: pwsh
       run: |
         # Script (Wait Status -> Healthy)
@@ -73,10 +73,10 @@ jobs:
         }
     
     - name: Test
-      if: ${{ (matrix.os != 'macOS-12') && (matrix.dotnet-version == '3.1.x') }}
+      if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
       run: dotnet test --no-build --verbosity normal --configuration Release --filter TestCategory=DB-TESTS
     
     - name: Docker Compose (Tear Down - DB Containers)
-      if: ${{ (matrix.os != 'macOS-12') && (matrix.dotnet-version == '3.1.x') }}
+      if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
       continue-on-error: true
       run: docker compose -f docker-compose.yml down
