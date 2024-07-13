@@ -34,7 +34,7 @@ jobs:
 
     - name: Docker Compose (Start DB Containers)
       if: ${{ matrix.dotnet-version == '3.1.x' }}
-      run: docker compose -f ../../docker-compose.yml up -d
+      run: docker compose -f docker-compose.yml up -d
 
     - name: Docker Compose (Wait till - Healthy)
       if: ${{ matrix.dotnet-version == '3.1.x' }}
