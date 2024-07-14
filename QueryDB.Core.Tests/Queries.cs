@@ -4,7 +4,7 @@
     {
         internal static class OracleQuery
         {
-            public static string SelectSql = @"SELECT name AS current_database FROM v$database";
+            public static string SelectSql = @"SELECT global_name AS current_database FROM global_name";
         }
 
         internal static class SqlServerQuery
