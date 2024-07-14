@@ -15,11 +15,12 @@ namespace QueryDB.Core.Tests
             var selectSql = Queries.OracleQuery.SelectSql;
             var data = new DBContext(DB.Oracle, OracleDatabaseString).FetchData(selectSql);
             Assert.IsTrue(data.Count > 0);
-            System.Console.WriteLine(data[0].ReferenceData["current_database"]);
+            Assert.AreEqual("oracle", data[0].ReferenceData["current_database"]);
 
             var dbContext = new DBContext(DB.Oracle, OracleDatabaseString);
             data = dbContext.FetchData(selectSql);
             Assert.IsTrue(data.Count > 0);
+            Assert.AreEqual("oracle", data[0].ReferenceData["current_database"]);
         }
 
         #endregion
@@ -33,12 +34,12 @@ namespace QueryDB.Core.Tests
             var selectSql = Queries.SqlServerQuery.SelectSql;
             var data = new DBContext(DB.SqlServer, SqlServerDatabaseString).FetchData(selectSql);
             Assert.IsTrue(data.Count > 0);
-            Assert.AreEqual("master", data[0].ReferenceData["current_database"]);
+            Assert.AreEqual("sqlserver", data[0].ReferenceData["current_database"]);
 
             var dbContext = new DBContext(DB.SqlServer, SqlServerDatabaseString);
             data = dbContext.FetchData(selectSql);
             Assert.IsTrue(data.Count > 0);
-            Assert.AreEqual("master", data[0].ReferenceData["current_database"]);
+            Assert.AreEqual("sqlserver", data[0].ReferenceData["current_database"]);
         }
 
         #endregion

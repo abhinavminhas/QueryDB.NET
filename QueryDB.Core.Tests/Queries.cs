@@ -4,12 +4,12 @@
     {
         internal static class OracleQuery
         {
-            public static string SelectSql = @"SELECT global_name AS current_database FROM global_name";
+            public static string SelectSql = @"SELECT 'oracle' AS current_database FROM dual";
         }
 
         internal static class SqlServerQuery
         {
-            public static string SelectSql = @"SELECT DB_NAME() AS current_database";
+            public static string SelectSql = @"SELECT 'sqlserver' AS current_database";
         }
 
         internal static class MySqlQuery
