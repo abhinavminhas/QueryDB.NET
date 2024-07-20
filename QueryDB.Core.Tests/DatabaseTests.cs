@@ -15,12 +15,12 @@ namespace QueryDB.Core.Tests
             var selectSql = Queries.OracleQuery.SelectSql;
             var data = new DBContext(DB.Oracle, OracleDatabaseString).FetchData(selectSql);
             Assert.IsTrue(data.Count > 0);
-            Assert.AreEqual("oracle", data[0].ReferenceData["current_database"]);
+            Assert.AreEqual("oracle", data[0].ReferenceData["CURRENT_DATABASE"]);
 
             var dbContext = new DBContext(DB.Oracle, OracleDatabaseString);
             data = dbContext.FetchData(selectSql);
             Assert.IsTrue(data.Count > 0);
-            Assert.AreEqual("oracle", data[0].ReferenceData["current_database"]);
+            Assert.AreEqual("oracle", data[0].ReferenceData["CURRENT_DATABASE"]);
         }
 
         #endregion
