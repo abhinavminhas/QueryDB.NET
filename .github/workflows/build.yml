@@ -75,7 +75,7 @@ jobs:
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
       shell: pwsh
       run: |
-        docker exec -it sql-server-db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P Secret@1234 -i "/home/mssql.sql"
+        docker exec -it mssql-db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P Secret@1234 -i "/home/mssql.sql"
     
     - name: Test
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
@@ -127,7 +127,7 @@ jobs:
                 $oracleHealth = (docker inspect --format="{{json .State.Health.Status}}" oracle-db).Replace('"', '')
                 $msSQLHealth = (docker inspect --format="{{json .State.Health.Status}}" mssql-db).Replace('"', '')
                 $mySQLHealth = (docker inspect --format="{{json .State.Health.Status}}" mysql-db).Replace('"', '')
-                if (($mySQLHealth -ne $status) -or ($msSQLHealth -ne $status) -or ($oracleHealth -ne $status)) {
+                if (($oracleHealth -ne $status) -or ($msSQLHealth -ne $status) -or ($mySQLHealth -ne $status)) {
                     Start-Sleep -Seconds 10
                     $retry ++
                 } else {
@@ -145,7 +145,7 @@ jobs:
     - name: Docker Execute (Seed Data)
       shell: pwsh
       run: |
-        docker exec -it sql-server-db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P Secret@1234 -i "/home/mssql.sql"
+        docker exec -it mssql-db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P Secret@1234 -i "/home/mssql.sql"
     
     - name: Test
       run: dotnet test --no-build --verbosity normal --configuration Release --filter TestCategory=DB-TESTS /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
