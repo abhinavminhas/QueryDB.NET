@@ -74,7 +74,7 @@ jobs:
     - name: Docker Execute (Seed Data)
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
       run: |
-        docker exec -it mssql-db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P Secret@1234 -i "/home/mssql.sql"
+        docker exec mssql-db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P Secret@1234 -i "/home/mssql.sql"
     
     - name: Test
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
@@ -143,7 +143,7 @@ jobs:
 
     - name: Docker Execute (Seed Data)
       run: |
-        docker exec -it mssql-db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P Secret@1234 -i "/home/mssql.sql"
+        docker exec mssql-db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P Secret@1234 -i "/home/mssql.sql"
     
     - name: Test
       run: dotnet test --no-build --verbosity normal --configuration Release --filter TestCategory=DB-TESTS /p:CollectCoverage=true /p:CoverletOutputFormat=lcov

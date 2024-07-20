@@ -62,7 +62,7 @@ jobs:
     
     - name: Docker Execute (Seed Data)
       run: |
-        docker exec -it mssql-db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P Secret@1234 -i "/home/mssql.sql"
+        docker exec mssql-db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P Secret@1234 -i "/home/mssql.sql"
     
     - name: Test
       run: dotnet test --no-build --verbosity normal --configuration Release --filter TestCategory=DB-TESTS /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
