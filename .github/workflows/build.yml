@@ -106,8 +106,11 @@ jobs:
     - name: Build
       run: dotnet build QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
 
-    - name: Setup Databases
-      uses: ./.github/workflows/setup-databases
+    - name: Docker Compose (Initialize DBs)
+      uses: ./.github/workflows/docker-compose-initialize-dbs
+
+    - name: Docker Execute (Seed Data)
+      uses: ./.github/workflows/docker-execute-seed-data
     
     - name: Test
       run: dotnet test --no-build --verbosity normal --configuration Release --filter TestCategory=DB-TESTS /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
@@ -119,4 +122,4 @@ jobs:
       uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-
+        

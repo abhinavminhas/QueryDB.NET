@@ -1,0 +1,10 @@
+name: Docker Execute (Seed Data)
+
+runs:
+  using: 'composite'
+  
+  steps:
+    - name: Docker Execute (Seed Data)
+      shell: bash
+      run: |
+        docker exec mssql-db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P Secret@1234 -i "/home/mssql.sql"

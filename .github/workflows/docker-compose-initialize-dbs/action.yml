@@ -1,4 +1,4 @@
-name: Setup Databases
+name: Docker Compose (Initialize DBs)
 
 runs:
   using: 'composite'
@@ -40,8 +40,4 @@ runs:
             Write-Host "DB Container/s Not Healthy ==> [ oracle-db (Status) -> '$oracleHealth' ] | [ mssql-db (Status) -> '$msSQLHealth' ] | [ mysql-db (Status) -> '$mySQLHealth' ]"
             exit 1
         }
-
-    - name: Docker Execute (Seed Data)
-      shell: bash
-      run: |
-        docker exec mssql-db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P Secret@1234 -i "/home/mssql.sql"
+        
