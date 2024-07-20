@@ -37,6 +37,8 @@ services:
       MYSQL_ROOT_PASSWORD: "Secret@1234"
     ports:
       - "3306:3306"
+    volumes:
+      - ./QueryDB.Core.Tests/SeedData:/home
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h localhost --silent"]
       interval: 5s

@@ -4,8 +4,12 @@ runs:
   using: 'composite'
   
   steps:
-    - name: Docker Execute (Seed Data)
+    - name: Docker Execute (MSSQL - Seed Data)
       shell: bash
       run: |
         docker exec mssql-db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P Secret@1234 -i "/home/mssql.sql"
+
+    - name: Docker Execute (MYSQL - Seed Data)
+      shell: bash
+      run: |
         docker exec mysql-db mysql -uroot -pSecret@1234 -e "source /home/mysql.sql"
