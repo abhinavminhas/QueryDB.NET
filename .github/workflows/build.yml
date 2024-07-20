@@ -73,7 +73,6 @@ jobs:
     
     - name: Docker Execute (Seed Data)
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
-      shell: pwsh
       run: |
         docker exec -it mssql-db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P Secret@1234 -i "/home/mssql.sql"
     
@@ -143,7 +142,6 @@ jobs:
         }
 
     - name: Docker Execute (Seed Data)
-      shell: pwsh
       run: |
         docker exec -it mssql-db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P Secret@1234 -i "/home/mssql.sql"
     
