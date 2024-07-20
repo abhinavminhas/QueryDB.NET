@@ -107,7 +107,7 @@ jobs:
       run: dotnet build QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
 
     - name: Setup Databases
-      uses: ./.github/workflows/templates/setup-databases
+      uses: ./.github/workflows/actions/setup-databases
     
     - name: Test
       run: dotnet test --no-build --verbosity normal --configuration Release --filter TestCategory=DB-TESTS /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
