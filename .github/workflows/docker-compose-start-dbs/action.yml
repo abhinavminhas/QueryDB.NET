@@ -1,4 +1,4 @@
-name: Docker Compose (Initialize DBs)
+name: Docker Compose (Start - DB Containers)
 
 runs:
   using: 'composite'
