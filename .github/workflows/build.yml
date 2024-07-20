@@ -33,10 +33,6 @@ jobs:
     - name: Build
       run: dotnet build QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
 
-    - name: Docker Compose (Pull)
-      if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
-      run: docker compose -f docker-compose.yml pull --parallel
-
     - name: Docker Compose (Start - DB Containers)
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
       uses: ./.github/workflows/docker-compose-start-dbs
