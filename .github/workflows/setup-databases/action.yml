@@ -5,9 +5,11 @@ runs:
   
   steps:
     - name: Docker Compose (Pull)
+      shell: bash
       run: docker compose -f docker-compose.yml pull --parallel
 
     - name: Docker Compose (Start - DB Containers)
+      shell: bash
       run: docker compose -f docker-compose.yml up -d
 
     - name: Docker Inspect (Wait Status -> Healthy)
@@ -40,5 +42,6 @@ runs:
         }
 
     - name: Docker Execute (Seed Data)
+      shell: bash
       run: |
         docker exec mssql-db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P Secret@1234 -i "/home/mssql.sql"
