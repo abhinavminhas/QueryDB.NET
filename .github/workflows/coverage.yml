@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  code-coverage:
+  Code-Coverage:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -59,6 +59,11 @@ jobs:
             Write-Host "DB Container/s Not Healthy ==> [ mysql-db (Status) -> '$msSQLHealth' ] | [ sql-server-db (Status) -> '$sqlServerHealth' ] | [ oracle-db (Status) -> '$oracleHealth' ]"
             exit 1
         }
+    
+    - name: Docker Execute (Seed Data)
+      shell: pwsh
+      run: |
+        docker exec -it sql-server-db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P Secret@1234 -i "/home/mssql.sql"
     
     - name: Test
       run: dotnet test --no-build --verbosity normal --configuration Release --filter TestCategory=DB-TESTS /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
