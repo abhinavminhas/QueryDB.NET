@@ -39,42 +39,11 @@ jobs:
 
     - name: Docker Compose (Start - DB Containers)
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
-      run: docker compose -f docker-compose.yml up -d
-
-    - name: Docker Inspect (Wait Status -> Healthy)
-      if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
-      shell: pwsh
-      run: |
-        # Script (Wait Status -> Healthy)
-        $oracleHealth=""
-        $msSQLHealth=""
-        $mySQLHealth=""
-        $status="healthy"
-        $allHealthy=$false
-        $retry=1
-        do {
-                $oracleHealth = (docker inspect --format="{{json .State.Health.Status}}" oracle-db).Replace('"', '')
-                $msSQLHealth = (docker inspect --format="{{json .State.Health.Status}}" mssql-db).Replace('"', '')
-                $mySQLHealth = (docker inspect --format="{{json .State.Health.Status}}" mysql-db).Replace('"', '')
-                if (($oracleHealth -ne $status) -or ($msSQLHealth -ne $status) -or ($mySQLHealth -ne $status)) {
-                    Start-Sleep -Seconds 10
-                    $retry ++
-                } else {
-                    $allHealthy=$true
-                    break
-                }
-        } while ($retry -le 6)
-        if ($allHealthy -eq $true) {
-            Write-Host "All DB Containers Healthy ==> [ oracle-db (Status) -> '$oracleHealth' ] | [ mssql-db (Status) -> '$msSQLHealth' ] | [ mysql-db (Status) -> '$mySQLHealth' ]"
-        } else {
-            Write-Host "DB Container/s Not Healthy ==> [ oracle-db (Status) -> '$oracleHealth' ] | [ mssql-db (Status) -> '$msSQLHealth' ] | [ mysql-db (Status) -> '$mySQLHealth' ]"
-            exit 1
-        }
+      uses: ./.github/workflows/docker-compose-start-dbs
     
     - name: Docker Execute (Seed Data)
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
-      run: |
-        docker exec mssql-db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P Secret@1234 -i "/home/mssql.sql"
+      uses: ./.github/workflows/docker-execute-seed-data
     
     - name: Test
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
@@ -82,7 +51,7 @@ jobs:
     
     - name: Docker Compose (Tear Down - DB Containers)
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
-      run: docker compose -f docker-compose.yml down
+      uses: ./.github/workflows/docker-compose-teardown-dbs
 
   # Code Coverage
   Code-Coverage:
