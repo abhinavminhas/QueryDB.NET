@@ -4,13 +4,13 @@ services:
     container_name: mssql-db
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: "Secret1234"
+      MSSQL_PASSWORD: "Secret1234"
     ports:
       - "1433:1433"
     volumes:
       - ./QueryDB.Core.Tests/SeedData:/home
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P $$SA_PASSWORD -Q \"SELECT 1\""]
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P $$MSSQL_PASSWORD -Q \"SELECT 'mssql' AS current_database;\""]
       interval: 5s
       timeout: 5s
       retries: 5

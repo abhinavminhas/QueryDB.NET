@@ -3,13 +3,13 @@ services:
     image: container-registry.oracle.com/database/express:21.3.0-xe
     container_name: oracle-db
     environment:
-      ORACLE_PWD: "Secret1234"
+      ORACLE_PASSWORD: "Secret1234"
     ports:
       - "1521:1521"
     volumes:
       - ./QueryDB.Core.Tests/SeedData:/home
     healthcheck:
-      test: ["CMD-SHELL", "echo 'SELECT 1 FROM DUAL;' | sqlplus -s sys/$$ORACLE_PWD@localhost:1521/ORCLCDB as sysdba"]
+      test: ["CMD-SHELL", "echo 'SELECT 1 FROM DUAL;' | sqlplus -s sys/$$ORACLE_PASSWORD@localhost:1521/ORCLCDB as sysdba"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -20,13 +20,13 @@ services:
     container_name: mssql-db
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: "Secret1234"
+      MSSQL_PASSWORD: "Secret1234"
     ports:
       - "1433:1433"
     volumes:
       - ./QueryDB.Core.Tests/SeedData:/home
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P $$SA_PASSWORD -Q \"SELECT 1\""]
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P $$MSSQL_PASSWORD -Q \"SELECT 'mssql' AS current_database;\""]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -36,13 +36,13 @@ services:
     image: mysql:8.0.31
     container_name: mysql-db
     environment:
-      MYSQL_ROOT_PASSWORD: "Secret1234"
+      MYSQL_PASSWORD: "Secret1234"
     ports:
       - "3306:3306"
     volumes:
       - ./QueryDB.Core.Tests/SeedData:/home
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost --silent"]
+      test: ["CMD-SHELL", "mysql -uroot -p$$MYSQL_PASSWORD -e 'SELECT DATABASE() AS current_database;'"]
       interval: 5s
       timeout: 5s
       retries: 5
