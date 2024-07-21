@@ -40,6 +40,8 @@ jobs:
     - name: Docker Execute (Seed Data)
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
       uses: ./.github/workflows/docker-execute-seed-data
+      with:
+        dbPassword: ${{ secrets.DB_PASSWORD }}
     
     - name: Test
       if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
