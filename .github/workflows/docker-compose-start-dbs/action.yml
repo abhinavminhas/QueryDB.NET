@@ -13,7 +13,7 @@ runs:
       uses: abhinavminhas/replace-tokens@main
       with:
         files: '${{ github.workspace }}/docker-compose.yml'
-        replacements: '__DB_PASSWORD__=${{ inputs.dbPassword }}'
+        replacements: '__DB_PASSWORD__=${{ inputs.dbPassword }},__DB_PASSWORD__=${{ inputs.dbPassword }},__DB_PASSWORD__=${{ inputs.dbPassword }}'
 
     - name: Docker Compose (Pull)
       shell: bash
