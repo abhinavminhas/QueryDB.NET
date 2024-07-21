@@ -8,7 +8,7 @@ runs:
       shell: bash
       run: |
         echo $ORACLE_PWD
-        docker exec oracle-db bash -c "echo 'SELECT 1 FROM DUAL;' | sqlplus sys/$ORACLE_PWD@localhost:1521/XE as sysdba"
+        docker exec oracle-db bash -c "echo 'SELECT 1 FROM DUAL; EXIT;' | sqlplus sys/$ORACLE_PWD@localhost:1521/XE as sysdba"
       env:
         ORACLE_PWD: "Secret@1234"
 
