@@ -7,7 +7,7 @@ runs:
     - name: Docker Execute (ORACLE - Seed Data)
       shell: bash
       run: |
-        docker exec oracle-db bash -c "echo '@/home/oracle.sql' | sqlplus -s sys/$ORACLE_PWD@localhost:1521/ORCLCDB as sysdba"
+        docker exec oracle-db bash -c "echo '@/home/oracle.sql' | sqlplus -s sys/$ORACLE_PWD@localhost:1521/XE as sysdba"
       env:
         ORACLE_PWD: "Secret@1234"
 
