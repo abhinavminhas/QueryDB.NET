@@ -41,9 +41,9 @@ namespace QueryDB
             Database = database;
             if (Database.Equals(DB.Oracle))
                 OracleConnectionString = connectionString;
-            else if (Database.Equals(DB.SqlServer))
+            else if (Database.Equals(DB.MSSQL))
                 SqlServerConnectionString = connectionString;
-            else if (Database.Equals(DB.MySql))
+            else if (Database.Equals(DB.MySQL))
                 MySqlConnectionString = connectionString;
         }
 
@@ -78,7 +78,7 @@ namespace QueryDB
                     }
                 }
             }
-            else if (Database.Equals(DB.SqlServer))
+            else if (Database.Equals(DB.MSSQL))
             {
                 using (var sqlDBConnection = GetSqlServerConnection())
                 {
@@ -98,7 +98,7 @@ namespace QueryDB
                     }
                 }
             }
-            else if (Database.Equals(DB.MySql))
+            else if (Database.Equals(DB.MySQL))
             {
                 using (var mySqlDBConnection = GetMySqlConnection())
                 {
@@ -158,7 +158,7 @@ namespace QueryDB
     public enum DB
     {
         Oracle,
-        SqlServer,
-        MySql
+        MSSQL,
+        MySQL
     }
 }

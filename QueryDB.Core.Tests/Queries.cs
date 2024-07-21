@@ -9,7 +9,7 @@
 
         internal static class SqlServerQuery
         {
-            public static string SelectSql = @"SELECT 'sqlserver' AS current_database";
+            public static string SelectSql = @"SELECT 'mssql' AS current_database";
         }
 
         internal static class MySqlQuery
