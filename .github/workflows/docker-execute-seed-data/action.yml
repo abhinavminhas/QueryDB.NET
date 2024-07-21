@@ -1,5 +1,8 @@
 name: Docker Execute (Seed Data)
 
+env: 
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+
 runs:
   using: 'composite'
   
@@ -10,18 +13,18 @@ runs:
         echo $ORACLE_PWD
         docker exec oracle-db bash -c "sqlplus -s sys/$ORACLE_PWD@localhost:1521/XE as sysdba @/home/oracle.sql"
       env:
-        ORACLE_PWD: "Secret1234"
+        ORACLE_PWD: $DB_PASSWORD
 
     - name: Docker Execute (MSSQL - Seed Data)
       shell: bash
       run: |
         docker exec mssql-db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P $MSSQL_PWD -i "/home/mssql.sql"
       env:
-        MSSQL_PWD: "Secret1234"
+        MSSQL_PWD: $DB_PASSWORD
 
     - name: Docker Execute (MYSQL - Seed Data)
       shell: bash
       run: |
         docker exec mysql-db mysql -uroot -p$MYSQL_PWD -e "source /home/mysql.sql"
       env:
-        MYSQL_PWD: "Secret1234"
+        MYSQL_PWD: $DB_PASSWORD
