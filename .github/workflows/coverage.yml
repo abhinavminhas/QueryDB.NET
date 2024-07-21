@@ -25,7 +25,7 @@ jobs:
     - name: Find And Replace Values (App Config)
       uses: abhinavminhas/replace-tokens@main
       with:
-        files: '${{ github.workspace }}/GmailAPIHelper.CORE.Tests/App.config'
+        files: '${{ github.workspace }}/QueryDB.Core.Tests/App.config'
         replacements: '__DB_PASSWORD__=${{ secrets.DB_PASSWORD }}'
         
     - name: Build
