@@ -4,7 +4,7 @@ services:
     container_name: mssql-db
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: "Secret1234"
+      SA_PASSWORD: ""
     ports:
       - "1433:1433"
     volumes:
