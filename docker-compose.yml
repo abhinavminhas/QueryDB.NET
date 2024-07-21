@@ -20,7 +20,7 @@ services:
     container_name: mssql-db
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: "Secret@1234"
+      SA_PASSWORD: "Secret1234"
     ports:
       - "1433:1433"
     volumes:
@@ -36,7 +36,7 @@ services:
     image: mysql:8.0.31
     container_name: mysql-db
     environment:
-      MYSQL_ROOT_PASSWORD: "Secret@1234"
+      MYSQL_ROOT_PASSWORD: "Secret1234"
     ports:
       - "3306:3306"
     volumes:
