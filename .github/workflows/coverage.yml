@@ -21,12 +21,20 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
+
+    - name: Find And Replace Values (App Config)
+      uses: abhinavminhas/replace-tokens@main
+      with:
+        files: '${{ github.workspace }}/GmailAPIHelper.CORE.Tests/App.config'
+        replacements: '__DB_PASSWORD__=${{ secrets.DB_PASSWORD }}'
         
     - name: Build
       run: dotnet build QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
 
     - name: Docker Compose (Start - DB Containers)
       uses: ./.github/workflows/docker-compose-start-dbs
+      with:
+        dbPassword: ${{ secrets.DB_PASSWORD }}
 
     - name: Docker Execute (Seed Data)
       uses: ./.github/workflows/docker-execute-seed-data
