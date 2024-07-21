@@ -9,7 +9,7 @@ services:
     volumes:
       - ./QueryDB.Core.Tests/SeedData:/home
     healthcheck:
-      test: ["CMD-SHELL", "echo 'SELECT 1 FROM DUAL;' | sqlplus -s sys/$$ORACLE_PWD@localhost:1521/ORCLCDB as sysdba"]
+      test: ["CMD-SHELL", "echo \"SELECT 'oracle' AS current_database FROM dual;\" | sqlplus -s sys/$$ORACLE_PWD@localhost:1521/XE as sysdba"]
       interval: 5s
       timeout: 5s
       retries: 5
