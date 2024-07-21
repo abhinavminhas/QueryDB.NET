@@ -4,6 +4,11 @@ runs:
   using: 'composite'
   
   steps:
+    - name: Docker Execute (ORACLE - Seed Data)
+      shell: bash
+      run: |
+        docker exec -i oracle-db bash -c "echo @/home/oracle.sql | sqlplus sys/Secret@1234@ORCLCDB as sysdba"
+
     - name: Docker Execute (MSSQL - Seed Data)
       shell: bash
       run: |

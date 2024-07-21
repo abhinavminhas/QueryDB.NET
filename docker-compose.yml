@@ -6,6 +6,8 @@ services:
       ORACLE_PWD: "Secret@1234"
     ports:
       - "1521:1521"
+    volumes:
+      - ./QueryDB.Core.Tests/SeedData:/home
     healthcheck:
       test: ["CMD-SHELL", "echo 'SELECT 1 FROM DUAL;' | sqlplus -s sys/$$ORACLE_PWD@localhost:1521/ORCLCDB as sysdba"]
       interval: 5s
