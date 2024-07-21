@@ -35,6 +35,9 @@ jobs:
       uses: ./.github/workflows/docker-compose-start-dbs
       with:
         dbPassword: ${{ secrets.DB_PASSWORD }}
+    
+    - name: Docker Inspect (Health Check - DB Containers)
+      uses: ./.github/workflows/docker-inspect-health-check
 
     - name: Docker Execute (Seed Data)
       uses: ./.github/workflows/docker-execute-seed-data
