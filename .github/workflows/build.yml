@@ -12,8 +12,8 @@ on:
 
 jobs:
   # Build/Test
-  name: Build/Test (.NET Core)
   OS-NetCore:
+    name: Build/Test (.NET Core)
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -66,6 +66,7 @@ jobs:
 
   # Code Coverage
   Code-Coverage:
+    name: Code Coverage (Codecov)
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
