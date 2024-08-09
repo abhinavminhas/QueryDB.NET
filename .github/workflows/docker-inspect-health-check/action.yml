@@ -19,13 +19,13 @@ runs:
                 $msSQLHealth = (docker inspect --format="{{json .State.Health.Status}}" mssql-db).Replace('"', '')
                 $mySQLHealth = (docker inspect --format="{{json .State.Health.Status}}" mysql-db).Replace('"', '')
                 if (($oracleHealth -ne $status) -or ($msSQLHealth -ne $status) -or ($mySQLHealth -ne $status)) {
-                    Start-Sleep -Seconds 10
+                    Start-Sleep -Seconds 5
                     $retry ++
                 } else {
                     $allHealthy=$true
                     break
                 }
-        } while ($retry -le 6)
+        } while ($retry -le 12)
         if ($allHealthy -eq $true) {
             Write-Host "All DB Containers Healthy ==> [ oracle-db (Status) -> '$oracleHealth' ] | [ mssql-db (Status) -> '$msSQLHealth' ] | [ mysql-db (Status) -> '$mySQLHealth' ]"
         } else {
