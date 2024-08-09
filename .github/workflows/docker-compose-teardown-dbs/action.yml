@@ -5,5 +5,6 @@ runs:
   
   steps:
     - name: Docker Compose (Tear Down - DB Containers)
+      if: ${{ steps.docker-compose-up.outcome == 'success' }}
       shell: bash
       run: docker compose -f docker-compose.yml down

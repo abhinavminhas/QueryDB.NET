@@ -20,6 +20,7 @@ runs:
       run: docker compose -f docker-compose.yml pull --parallel
 
     - name: Docker Compose (Start - DB Containers)
+      id: docker-compose-up
       shell: bash
       run: docker compose -f docker-compose.yml up -d
       
