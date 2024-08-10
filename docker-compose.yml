@@ -16,7 +16,7 @@ services:
       start_period: 0s
 
   mssql-db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-22.04
     container_name: mssql-db
     environment:
       ACCEPT_EULA: "Y"
