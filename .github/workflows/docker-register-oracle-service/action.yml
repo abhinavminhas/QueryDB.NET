@@ -17,7 +17,7 @@ runs:
                 [string]$containerName,
                 [string]$command
             )
-            docker exec -it $containerName powershell -Command $command
+            docker exec $containerName powershell -Command $command
         }
 
         # Step 1: Check if the Oracle database instance is running
