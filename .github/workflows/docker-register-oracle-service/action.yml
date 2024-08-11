@@ -8,25 +8,6 @@ runs:
       shell: pwsh
       run: |
         # Script (Register Oracle Service)
-        $containerName = "oracle-db"
-        $services = @("listener", "database")
-
-        # Function to check if a service is running
-        function Test-Service {
-            param (
-                [string]$serviceName
-            )
-            $status = docker exec $containerName bash -c "ps -ef | grep $serviceName | grep -v grep"
-            return $status -ne ""
-        }
-
-        # Wait for all services to be ready
-        foreach ($service in $services) {
-            Write-Host "Waiting for $service to be ready..."
-            while (-not (Test-Service -serviceName $service)) {
-                Start-Sleep -Seconds 5
-            }
-            Write-Host "$service is ready."
-        }
-
-        Write-Host "All services are ready."
+        docker exec oracle-db lsnrctl status
+        Start-Sleep -Seconds 60
+        docker exec oracle-db lsnrctl status
