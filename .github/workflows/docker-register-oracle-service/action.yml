@@ -8,40 +8,5 @@ runs:
       shell: pwsh
       run: |
         # Script (Register Oracle Service)
-        $ServiceName = "ORACLEDB"
-        function Check-ServiceName {
-          $services = docker exec oracle-db lsnrctl services
-          return $services -match $ServiceName
-        }
-
-        $registerCommand = @"
-        sqlplus / as sysdba <<EOF
-        ALTER SYSTEM REGISTER;
-        EXIT;
-        EOF
-        "@
-
-        $maxRetries = 6
-        $retryInterval = 10
-        $retryCount = 0
-
-        if (-not (Check-ServiceName)) {
-          Write-Output "Service name $ServiceName not found. Registering the service..."
-          docker exec oracle-db bash -c "$registerCommand"
-          while (-not (Check-ServiceName) -and $retryCount -lt $maxRetries) {
-            Write-Output "Waiting for service name ORCLCDB to be registered... (Attempt $($retryCount + 1) of $maxRetries)"
-            Start-Sleep -Seconds $retryInterval
-            $retryCount++
-          }
-
-          if (-not (Check-ServiceName)) {
-            Write-Output "Service name $ServiceName still not found after $maxRetries attempts. Please check the Oracle configuration."
-            Write-Output "Checking listener status..."
-            docker exec oracle-db lsnrctl status
-            exit 1
-          }
-        }
-        Write-Output "Checking listener status..."
         docker exec oracle-db lsnrctl status
-        Write-Output "Oracle container is ready to receive SQL commands."
         
