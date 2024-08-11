@@ -8,39 +8,25 @@ runs:
       shell: pwsh
       run: |
         # Script (Register Oracle Service)
-        # Define the Docker container name
-        $containerName = "oracle-db"
+        $containerName = "your_oracle_container"
+        $services = @("listener", "database")
 
-        # Function to execute a SQL command inside the Docker container
-        function Exec-SqlInContainer {
+        # Function to check if a service is running
+        function Test-Service {
             param (
-                [string]$containerName,
-                [string]$sqlCommand
+                [string]$serviceName
             )
-            $escapedSqlCommand = $sqlCommand -replace '"', '\"'
-            $command = "docker exec $containerName sqlplus / as sysdba -S -L -c `"$escapedSqlCommand`""
-            Invoke-Expression $command
+            $status = docker exec $containerName bash -c "ps -ef | grep $serviceName | grep -v grep"
+            return $status -ne ""
         }
 
-        # Step 1: Check if the Oracle database instance is running
-        $instanceStatus = Exec-SqlInContainer -containerName $containerName -sqlCommand "select instance_name, status from v\$instance;"
-
-        # Step 2: Parse the instance status
-        if ($instanceStatus -match "OPEN") {
-            Write-Output "Oracle database instance is already running."
-        } else {
-            Write-Output "Starting the Oracle database instance..."
-            Exec-SqlInContainer -containerName $containerName -sqlCommand "startup;"
-            Write-Output "Oracle database instance started."
+        # Wait for all services to be ready
+        foreach ($service in $services) {
+            Write-Host "Waiting for $service to be ready..."
+            while (-not (Test-Service -serviceName $service)) {
+                Start-Sleep -Seconds 5
+            }
+            Write-Host "$service is ready."
         }
 
-        # Step 3: Manually register the database with the listener
-        Write-Output "Registering the database with the listener..."
-        Exec-SqlInContainer -containerName $containerName -sqlCommand "alter system register;"
-
-        # Step 4: Check the listener status
-        $listenerStatus = docker exec -it $containerName lsnrctl status
-
-        Write-Output "Listener Status:"
-        Write-Output $listenerStatus
-        
+        Write-Host "All services are ready."
