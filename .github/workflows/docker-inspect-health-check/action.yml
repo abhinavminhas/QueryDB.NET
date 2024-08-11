@@ -48,12 +48,30 @@ runs:
         EXIT;
         EOF
         "@
+
+        $maxRetries = 6
+        $retryInterval = 10
+        $retryCount = 0
         
         if (-not (Check-ServiceName)) {
           Write-Output "Service name ORCLCDB not found. Registering the service..."
           docker exec oracle-db bash -c "$registerCommand"
+          while (-not (Check-ServiceName) -and $retryCount -lt $maxRetries) {
+            Write-Output "Waiting for service name ORCLCDB to be registered... (Attempt $($retryCount + 1) of $maxRetries)"
+            Start-Sleep -Seconds $retryInterval
+            $retryCount++
+          }
+
           if (-not (Check-ServiceName)) {
-            Write-Output "Service name ORCLCDB still not found. Please check the Oracle configuration."
+            Write-Output "Service name ORCLCDB still not found after $maxRetries attempts. Please check the Oracle configuration."
+            Write-Output "Checking listener status..."
+            docker exec oracle-db lsnrctl status
+
+            Write-Output "Attempting manual registration..."
+            docker exec oracle-db bash -c "$registerCommand"
+
+            Write-Output "Checking Oracle logs..."
+            docker exec oracle-db bash -c "cat /opt/oracle/diag/alert*.log"
             exit 1
           }
         }
