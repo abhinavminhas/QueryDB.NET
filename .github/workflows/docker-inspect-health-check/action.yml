@@ -39,7 +39,7 @@ runs:
         # Script (Register Oracle Service)
         function Check-ServiceName {
           $services = docker exec oracle-db lsnrctl services
-          return $services -match "ORCLCDB"
+          return $services -match "XE"
         }
 
         $registerCommand = @"
