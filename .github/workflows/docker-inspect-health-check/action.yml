@@ -45,10 +45,12 @@ runs:
           Write-Output "Service name ORCLCDB not found. Registering the service..."
           
           $registerCommand = 
-          @"sqlplus / as sysdba <<EOF
+          @"
+          sqlplus / as sysdba <<EOF
           ALTER SYSTEM REGISTER;
           EXIT;
-          EOF"@
+          EOF
+          "@
 
           docker exec oracle-db bash -c "$registerCommand"
           if (-not (Check-ServiceName)) {
