@@ -1,11 +1,8 @@
 services:
   oracle-db:
-    image: container-registry.oracle.com/database/express:21.3.0-xe
+    image: container-registry.oracle.com/database/express:18.4.0-xe
     container_name: oracle-db
     environment:
-      ORACLE_SID: XE
-      ORACLE_PDB: XEPDB1
-      ORACLE_SERVICE_NAME: XE
       ORACLE_PWD: "__DB_PASSWORD__"
     ports:
       - "1521:1521"

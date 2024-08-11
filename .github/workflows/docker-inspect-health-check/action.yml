@@ -32,6 +32,4 @@ runs:
             Write-Host "DB Container/s Not Healthy ==> [ oracle-db (Status) -> '$oracleHealth' ] | [ mssql-db (Status) -> '$msSQLHealth' ] | [ mysql-db (Status) -> '$mySQLHealth' ]"
             exit 1
         }
-
-    - name: Docker Register Oracle Service
-      uses: ./.github/workflows/docker-register-oracle-service
+        
