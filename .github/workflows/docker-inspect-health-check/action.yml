@@ -32,4 +32,22 @@ runs:
             Write-Host "DB Container/s Not Healthy ==> [ oracle-db (Status) -> '$oracleHealth' ] | [ mssql-db (Status) -> '$msSQLHealth' ] | [ mysql-db (Status) -> '$mySQLHealth' ]"
             exit 1
         }
+
+    - name: Register Oracle Service
+      shell: pwsh
+      run: |
+        function Check-ServiceName {
+          $services = docker exec -it oracle-db lsnrctl services
+          return $services -match "ORCLCDB"
+        }
+        if (-not (Check-ServiceName)) {
+          Write-Output "Service name ORCLCDB not found. Registering the service..."
+          docker exec -it oracle-db sqlplus / as sysdba -c "ALTER SYSTEM REGISTER;"
+          Start-Sleep -Seconds 10
+          if (-not (Check-ServiceName)) {
+            Write-Output "Service name ORCLCDB still not found. Please check the Oracle configuration."
+            exit 1
+          }
+        }
+        Write-Output "Oracle container is ready to receive SQL commands."
         
