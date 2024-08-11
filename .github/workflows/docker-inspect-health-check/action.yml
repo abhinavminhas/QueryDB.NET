@@ -38,12 +38,11 @@ runs:
       run: |
         # Script (Register Oracle Service)
         function Check-ServiceName {
-          $services = docker exec -it oracle-db lsnrctl services
+          $services = docker exec oracle-db lsnrctl services
           return $services -match "ORCLCDB"
         }
 
-        $registerCommand = 
-        @"
+        $registerCommand = @"
         sqlplus / as sysdba <<EOF
         ALTER SYSTEM REGISTER;
         EXIT;
