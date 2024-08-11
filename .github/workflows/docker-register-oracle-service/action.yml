@@ -8,7 +8,7 @@ runs:
       shell: pwsh
       run: |
         # Script (Register Oracle Service)
-        $containerName = "your_oracle_container"
+        $containerName = "oracle-db"
         $services = @("listener", "database")
 
         # Function to check if a service is running
