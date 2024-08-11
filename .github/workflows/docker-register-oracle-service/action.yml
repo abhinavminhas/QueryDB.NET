@@ -8,5 +8,43 @@ runs:
       shell: pwsh
       run: |
         # Script (Register Oracle Service)
-        docker exec oracle-db lsnrctl status
+        # Define the Docker container name
+        $containerName = "oracle-db"
+
+        # Function to execute a command inside the Docker container
+        function Exec-InContainer {
+            param (
+                [string]$containerName,
+                [string]$command
+            )
+            docker exec -it $containerName powershell -Command $command
+        }
+
+        # Step 1: Check if the Oracle database instance is running
+        $instanceStatus = Exec-InContainer -containerName $containerName -command {
+            sqlplus / as sysdba <<< "select instance_name, status from v\$instance;"
+        }
+
+        # Step 2: Parse the instance status
+        if ($instanceStatus -match "OPEN") {
+            Write-Output "Oracle database instance is already running."
+        } else {
+            Write-Output "Starting the Oracle database instance..."
+            Exec-InContainer -containerName $containerName -command {
+                sqlplus / as sysdba <<< "startup;"
+            }
+            Write-Output "Oracle database instance started."
+        }
+
+        # Step 3: Manually register the database with the listener
+        Write-Output "Registering the database with the listener..."
+        Exec-InContainer -containerName $containerName -command {
+            sqlplus / as sysdba <<< "alter system register;"
+        }
+
+        # Step 4: Check the listener status
+        $listenerStatus = Exec-InContainer -containerName $containerName -command "lsnrctl status"
+
+        Write-Output "Listener Status:"
+        Write-Output $listenerStatus
         
