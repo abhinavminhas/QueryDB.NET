@@ -18,7 +18,7 @@ runs:
                 [string]$sqlCommand
             )
             $escapedSqlCommand = $sqlCommand -replace '"', '\"'
-            $command = "docker exec -it $containerName sqlplus / as sysdba -S -L -c `"$escapedSqlCommand`""
+            $command = "docker exec $containerName sqlplus / as sysdba -S -L -c `"$escapedSqlCommand`""
             Invoke-Expression $command
         }
 
