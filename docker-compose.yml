@@ -3,15 +3,14 @@ services:
     image: container-registry.oracle.com/database/express:21.3.0-xe
     container_name: oracle-db
     environment:
-      ORACLE_SID: "ORCLCDB"
-      ORACLE_PDB: "PDB1"
+      ORACLE_SID: "XE"
       ORACLE_PWD: "__DB_PASSWORD__"
     ports:
       - "1521:1521"
     volumes:
       - ./QueryDB.Core.Tests/SeedData:/home
     healthcheck:
-      test: ["CMD-SHELL", "echo \"SELECT 'oracle' AS current_database FROM dual;\" | sqlplus -s sys/$ORACLE_PWD@localhost:1521/ORCLCDB as sysdba"]
+      test: ["CMD-SHELL", "echo \"SELECT 'oracle' AS current_database FROM dual;\" | sqlplus -s sys/$$ORACLE_PWD@localhost:1521/XE as sysdba"]
       interval: 5s
       timeout: 5s
       retries: 5
