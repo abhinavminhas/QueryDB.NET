@@ -3,6 +3,8 @@ services:
     image: container-registry.oracle.com/database/express:21.3.0-xe
     container_name: oracle-db
     environment:
+      ORACLE_SID: "ORCLCDB"
+      ORACLE_PDB: "PDB1"
       ORACLE_PWD: "__DB_PASSWORD__"
     ports:
       - "1521:1521"
