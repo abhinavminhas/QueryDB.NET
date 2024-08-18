@@ -34,4 +34,4 @@ runs:
         }
 
     - name: Docker Register Oracle Service
-      uses: ./.github/workflows/docker-register-oracle-service
+      uses: ./.github/workflows/docker-oracle-listener-service-status

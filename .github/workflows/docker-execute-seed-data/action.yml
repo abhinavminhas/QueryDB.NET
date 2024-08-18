@@ -14,7 +14,6 @@ runs:
       run: |
         docker exec oracle-db bash -c "sqlplus -s sys/$ORACLE_PWD@localhost:1521/XE as sysdba @/home/oracle.sql"
       env:
-        ORACLE_SID: "XE"
         ORACLE_PWD: ${{ inputs.dbPassword }}
 
     - name: Docker Execute (MSSQL - Seed Data)
