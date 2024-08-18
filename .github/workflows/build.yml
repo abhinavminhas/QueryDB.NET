@@ -59,10 +59,9 @@ jobs:
     - name: Test
       if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') }}
       run: dotnet test --no-build --verbosity normal --configuration Release --filter TestCategory=DB-TESTS
-    
-    post:
+
     - name: Docker Compose (Tear Down - DB Containers)
-      if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') }}
+      if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') && always() }}
       uses: ./.github/workflows/docker-compose-teardown-dbs
 
   # Code Coverage
@@ -109,15 +108,15 @@ jobs:
     
     - name: Test
       run: dotnet test --no-build --verbosity normal --configuration Release --filter TestCategory=DB-TESTS /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
+    
+    - name: Docker Compose (Tear Down - DB Containers)
+      if: always()
+      uses: ./.github/workflows/docker-compose-teardown-dbs
 
     - name: Upload Coverage To Codecov
       uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-
-    post:
-    - name: Docker Compose (Tear Down - DB Containers)
-      uses: ./.github/workflows/docker-compose-teardown-dbs
 
   # Code Quality
   Code-Quality:
