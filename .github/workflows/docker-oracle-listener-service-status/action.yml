@@ -9,4 +9,4 @@ runs:
       run: |
         # Script (Oracle Listener Service status)
         docker exec oracle-db lsnrctl status
-        Start-Sleep -Seconds 10
+        Start-Sleep -Seconds 5
