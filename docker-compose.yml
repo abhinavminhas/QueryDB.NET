@@ -8,7 +8,6 @@ services:
       - "1521:1521"
     volumes:
       - ./QueryDB.Core.Tests/SeedData:/home
-    restart: always
     healthcheck:
       test: ["CMD-SHELL", "echo \"SELECT 'oracle' AS current_database FROM dual;\" | sqlplus -s sys/$$ORACLE_PWD@localhost:1521/XE as sysdba"]
       interval: 5s
@@ -21,7 +20,7 @@ services:
     container_name: mssql-db
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: "Secret1234"
+      SA_PASSWORD: "__DB_PASSWORD__"
     ports:
       - "1433:1433"
     volumes:
