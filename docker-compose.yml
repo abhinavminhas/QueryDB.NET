@@ -4,7 +4,6 @@ services:
     container_name: oracle-db
     environment:
       ORACLE_PWD: "__DB_PASSWORD__"
-      ORACLE_CHARACTERSET: AL32UTF8
     ports:
       - "1521:1521"
     volumes:
