@@ -9,7 +9,7 @@ runs:
       run: |
         # Script (Register Oracle Service)
         docker exec oracle-db lsnrctl status
-        docker exec oracle-db lsnrctl stop
-        docker exec oracle-db lsnrctl start
-        Start-Sleep -Seconds 10
-        docker exec oracle-db lsnrctl status
+        # docker exec oracle-db lsnrctl stop
+        # docker exec oracle-db lsnrctl start
+        # Start-Sleep -Seconds 10
+        # docker exec oracle-db lsnrctl status
