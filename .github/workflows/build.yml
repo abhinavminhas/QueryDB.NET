@@ -70,7 +70,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ ubuntu-20.04 ]
+        os: [ ubuntu-22.04 ]
         dotnet-version: [ '3.1.x' ]
     
     steps:
@@ -120,7 +120,7 @@ jobs:
   # Code Quality
   Code-Quality:
     name: Code Quality (SonarCloud)
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - name: Set Up JDK 17
         uses: actions/setup-java@v4
