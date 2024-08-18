@@ -4,8 +4,6 @@ runs:
   using: 'composite'
   
   steps:
-  post:
     - name: Docker Compose (Tear Down - DB Containers)
-      if: always()
       shell: bash
       run: docker compose -f docker-compose.yml down
