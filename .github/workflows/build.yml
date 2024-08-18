@@ -41,27 +41,27 @@ jobs:
       run: dotnet build QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
 
     - name: Docker Compose (Start - DB Containers)
-      if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
+      if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') }}
       uses: ./.github/workflows/docker-compose-start-dbs
       with:
         dbPassword: ${{ secrets.DB_PASSWORD }}
     
     - name: Docker Inspect (Health Check - DB Containers)
-      if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
+      if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') }}
       uses: ./.github/workflows/docker-inspect-health-check
     
     - name: Docker Execute (Seed Data)
-      if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
+      if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') }}
       uses: ./.github/workflows/docker-execute-seed-data
       with:
         dbPassword: ${{ secrets.DB_PASSWORD }}
     
     - name: Test
-      if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
+      if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') }}
       run: dotnet test --no-build --verbosity normal --configuration Release --filter TestCategory=DB-TESTS
     
     - name: Docker Compose (Tear Down - DB Containers)
-      if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.dotnet-version == '3.1.x') }}
+      if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') }}
       uses: ./.github/workflows/docker-compose-teardown-dbs
 
   # Code Coverage
