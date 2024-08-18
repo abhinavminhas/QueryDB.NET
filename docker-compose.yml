@@ -8,6 +8,12 @@ services:
       - "1521:1521"
     volumes:
       - ./QueryDB.Core.Tests/SeedData:/home
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+    storage_opt:
+      size: 14G
     healthcheck:
       test: ["CMD-SHELL", "echo \"SELECT 'oracle' AS current_database FROM dual;\" | sqlplus -s sys/$$ORACLE_PWD@localhost:1521/XE as sysdba"]
       interval: 5s
