@@ -38,7 +38,7 @@ runs:
             Write-Host "Attempt $($i): Trying to connect to Oracle DB in container..."
             if (Test-OracleConnection) {
                 Write-Host "Connection successful!"
-                break
+                exit 0
             } else {
                 Write-Host "Connection failed. Waiting for $($waitTime) seconds before retrying..."
                 Start-Sleep -Seconds $waitTime
