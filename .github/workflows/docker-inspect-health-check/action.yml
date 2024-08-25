@@ -33,5 +33,5 @@ runs:
             exit 1
         }
 
-    - name: Docker Register Oracle Service
+    - name: Docker Oracle Listener Service Status
       uses: ./.github/workflows/docker-oracle-listener-service-status
