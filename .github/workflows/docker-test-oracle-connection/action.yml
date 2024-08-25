@@ -21,7 +21,7 @@ runs:
 
         function Test-OracleConnection {
             try {
-                $command = "docker exec $containerName bash -c `"echo 'exit' | sqlplus -s $username/$password@localhost:1521/XE`""
+                $command = "docker exec $containerName bash -c `"sqlplus -s $username/$password@localhost:1521/XE`""
                 $result = Invoke-Expression $command
                 if ($result -notmatch "ORA-") {
                     return $true
