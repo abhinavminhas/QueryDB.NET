@@ -12,7 +12,7 @@ runs:
     - name: Docker Test Oracle Connection
       shell: pwsh
       run: |
-        # Script (Oracle Login Wait)
+        # Script (Test Oracle Connection)
         $containerName = "oracle-db"
         $username = "sys"
         $password = $ORACLE_PWD
@@ -35,12 +35,12 @@ runs:
         }
 
         for ($i = 1; $i -le $retryCount; $i++) {
-            Write-Host "Attempt $i: Trying to connect to Oracle DB in container..."
+            Write-Host "Attempt $($i): Trying to connect to Oracle DB in container..."
             if (Test-OracleConnection) {
                 Write-Host "Connection successful!"
                 break
             } else {
-                Write-Host "Connection failed. Waiting for $waitTime seconds before retrying..."
+                Write-Host "Connection failed. Waiting for $($waitTime) seconds before retrying..."
                 Start-Sleep -Seconds $waitTime
       env:
         ORACLE_PWD: ${{ inputs.dbPassword }}
