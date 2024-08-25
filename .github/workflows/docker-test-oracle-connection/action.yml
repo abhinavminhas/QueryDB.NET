@@ -1,0 +1,46 @@
+name: Docker Test Oracle Connection
+
+inputs:
+  dbPassword:
+    description: 'Database password value.'
+    required: true
+
+runs:
+  using: 'composite'
+  
+  steps:
+    - name: Docker Test Oracle Connection
+      shell: pwsh
+      run: |
+        # Script (Oracle Login Wait)
+        $containerName = "oracle-db"
+        $username = "sys"
+        $password = $ORACLE_PWD
+        $retryCount = 10
+        $waitTime = 6
+
+        function Test-OracleConnection {
+            try {
+                $command = "docker exec $containerName bash -c `"echo 'exit' | sqlplus -s $username/$password@localhost:1521/XE`""
+                $result = Invoke-Expression $command
+                if ($result -notmatch "ORA-") {
+                    return $true
+                } else {
+                    return $false
+                }
+            } catch {
+                Write-Host "Error: $_"
+                return $false
+            }
+        }
+
+        for ($i = 1; $i -le $retryCount; $i++) {
+            Write-Host "Attempt $i: Trying to connect to Oracle DB in container..."
+            if (Test-OracleConnection) {
+                Write-Host "Connection successful!"
+                break
+            } else {
+                Write-Host "Connection failed. Waiting for $waitTime seconds before retrying..."
+                Start-Sleep -Seconds $waitTime
+      env:
+        ORACLE_PWD: ${{ inputs.dbPassword }}

@@ -9,6 +9,11 @@ runs:
   using: 'composite'
   
   steps:
+    - name: Docker Test Oracle Connection
+      uses: ./.github/workflows/docker-test-oracle-connection
+      env:
+        ORACLE_PWD: ${{ inputs.dbPassword }}
+
     - name: Docker Execute (ORACLE - Seed Data)
       shell: bash
       run: |
