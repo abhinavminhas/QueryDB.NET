@@ -43,7 +43,6 @@ runs:
                 Write-Host "Connection failed. Waiting for $($waitTime) seconds before retrying..."
                 Start-Sleep -Seconds $waitTime
             }
-
             if ($i -eq $retryCount) {
                 Write-Host "Exceeded maximum retry attempts. Exiting script."
                 exit 1
