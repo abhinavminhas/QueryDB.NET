@@ -38,18 +38,20 @@ runs:
             exit 1
         }
 
-    - name: Separator
+    - name: Step Separator
       shell: pwsh
       run: |
-        Write-Host "########################################################################################################"
+        # Step Separator
+        Write-Host "`n########################################################################################################`n"
 
     - name: Docker Oracle Listener Service Status
       uses: ./.github/workflows/docker-oracle-listener-service-status
 
-    - name: Separator
+    - name: Step Separator
       shell: pwsh
       run: |
-        Write-Host "########################################################################################################"
+        # Step Separator
+        Write-Host "`n########################################################################################################`n"
 
     - name: Docker Test Oracle Connection
       uses: ./.github/workflows/docker-test-oracle-connection
