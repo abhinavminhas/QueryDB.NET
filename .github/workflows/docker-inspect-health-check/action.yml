@@ -38,9 +38,19 @@ runs:
             exit 1
         }
 
+    - name: Separator
+      shell: pwsh
+      run: |
+        Write-Host "########################################################################################################"
+
     - name: Docker Oracle Listener Service Status
       uses: ./.github/workflows/docker-oracle-listener-service-status
-    
+
+    - name: Separator
+      shell: pwsh
+      run: |
+        Write-Host "########################################################################################################"
+
     - name: Docker Test Oracle Connection
       uses: ./.github/workflows/docker-test-oracle-connection
       env:
