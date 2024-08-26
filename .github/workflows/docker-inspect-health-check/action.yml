@@ -1,5 +1,10 @@
 name: Docker Inspect (Health Check - DB Containers)
 
+inputs:
+  dbPassword:
+    description: 'Database password value.'
+    required: true
+
 runs:
   using: 'composite'
   
@@ -35,3 +40,8 @@ runs:
 
     - name: Docker Oracle Listener Service Status
       uses: ./.github/workflows/docker-oracle-listener-service-status
+    
+    - name: Docker Test Oracle Connection
+      uses: ./.github/workflows/docker-test-oracle-connection
+      env:
+        ORACLE_PWD: ${{ inputs.dbPassword }}

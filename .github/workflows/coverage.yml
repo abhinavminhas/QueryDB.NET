@@ -38,9 +38,6 @@ jobs:
     
     - name: Docker Inspect (Health Check - DB Containers)
       uses: ./.github/workflows/docker-inspect-health-check
-    
-    - name: Docker Test Oracle Connection
-      uses: ./.github/workflows/docker-test-oracle-connection
       with:
         dbPassword: ${{ secrets.DB_PASSWORD }}
 

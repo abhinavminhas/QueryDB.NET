@@ -49,13 +49,9 @@ jobs:
     - name: Docker Inspect (Health Check - DB Containers)
       if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') }}
       uses: ./.github/workflows/docker-inspect-health-check
-
-    - name: Docker Test Oracle Connection
-      if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') }}
-      uses: ./.github/workflows/docker-test-oracle-connection
       with:
         dbPassword: ${{ secrets.DB_PASSWORD }}
-    
+
     - name: Docker Execute (Seed Data)
       if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') }}
       uses: ./.github/workflows/docker-execute-seed-data
@@ -106,9 +102,6 @@ jobs:
     
     - name: Docker Inspect (Health Check - DB Containers)
       uses: ./.github/workflows/docker-inspect-health-check
-
-    - name: Docker Test Oracle Connection
-      uses: ./.github/workflows/docker-test-oracle-connection
       with:
         dbPassword: ${{ secrets.DB_PASSWORD }}
 
