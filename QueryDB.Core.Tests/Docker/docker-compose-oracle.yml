@@ -1,0 +1,17 @@
+services:
+  oracle-db:
+    image: container-registry.oracle.com/database/express:21.3.0-xe
+    container_name: oracle-db
+    environment:
+      ORACLE_PWD: "Secret123456"
+    ports:
+      - "1521:1521"
+    volumes:
+      - ./QueryDB.Core.Tests/SeedData:/home
+    shm_size: 4gb
+    healthcheck:
+      test: ["CMD-SHELL", "echo \"SELECT 'oracle' AS current_database FROM dual;\" | sqlplus -s sys/$$ORACLE_PWD@localhost:1521/XE as sysdba"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 0s

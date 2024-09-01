@@ -6,7 +6,7 @@ namespace QueryDB.Connection.Database
     /// <summary>
     /// 'Oracle' database connection.
     /// </summary>
-    internal class OracleDBConnection : IDisposable
+    internal sealed class OracleDBConnection : IDisposable
     {
         /// <summary>
         /// Holds 'Oracle' connection.
@@ -28,7 +28,10 @@ namespace QueryDB.Connection.Database
         public void Dispose()
         {
             if (OracleConnection != null)
+            {
+                OracleConnection.Clone();
                 OracleConnection.Dispose();
+            }
         }
     }
 }

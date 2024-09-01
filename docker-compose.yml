@@ -1,27 +1,51 @@
-version: "3"
 services:
-
   oracle-db:
     image: container-registry.oracle.com/database/express:21.3.0-xe
     container_name: oracle-db
     environment:
-      ORACLE_PWD: "Secret@1234"
+      ORACLE_PWD: "__DB_PASSWORD__"
     ports:
       - "1521:1521"
+    volumes:
+      - ./QueryDB.Core.Tests/SeedData:/home
+    shm_size: 4gb
+    healthcheck:
+      test: ["CMD-SHELL", "echo \"SELECT 'oracle' AS current_database FROM dual;\" | sqlplus -s sys/$$ORACLE_PWD@localhost:1521/XE as sysdba"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 0s
 
-  sql-server-db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: sql-server-db
+  mssql-db:
+    image: mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-22.04
+    container_name: mssql-db
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: "Secret@1234"
+      SA_PASSWORD: "__DB_PASSWORD__"
     ports:
       - "1433:1433"
-
+    volumes:
+      - ./QueryDB.Core.Tests/SeedData:/home
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P $$SA_PASSWORD -Q \"SELECT 'mssql' AS current_database;\""]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 0s
+      
   mysql-db:
     image: mysql:8.0.31
     container_name: mysql-db
     environment:
-      MYSQL_ROOT_PASSWORD: "Secret@1234"
+      MYSQL_ROOT_PASSWORD: "__DB_PASSWORD__"
     ports:
       - "3306:3306"
+    volumes:
+      - ./QueryDB.Core.Tests/SeedData:/home
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -uroot -p$$MYSQL_ROOT_PASSWORD -e 'SELECT DATABASE() AS current_database;'"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 0s
+      

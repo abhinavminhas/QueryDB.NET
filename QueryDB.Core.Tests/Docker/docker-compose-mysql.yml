@@ -1,0 +1,16 @@
+services:
+  mysql-db:
+    image: mysql:8.0.31
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: ""
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./QueryDB.Core.Tests/SeedData:/home
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -uroot -p$$MYSQL_ROOT_PASSWORD -e 'SELECT DATABASE() AS current_database;'"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 0s

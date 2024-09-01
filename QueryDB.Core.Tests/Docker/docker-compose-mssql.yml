@@ -1,0 +1,18 @@
+services:
+  mssql-db:
+    image: mcr.microsoft.com/mssql/server:2022-CU13-ubuntu-22.04
+    container_name: mssql-db
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: ""
+    ports:
+      - "1433:1433"
+    volumes:
+      - ./QueryDB.Core.Tests/SeedData:/home
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P $$SA_PASSWORD -Q \"SELECT 'mssql' AS current_database;\""]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 0s
+      

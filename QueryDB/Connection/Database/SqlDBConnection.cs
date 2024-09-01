@@ -6,7 +6,7 @@ namespace QueryDB.Connection.Database
     /// <summary>
     /// 'Sql Server' database connection.
     /// </summary>
-    internal class SqlDBConnection : IDisposable
+    internal sealed class SqlDBConnection : IDisposable
     {
         /// <summary>
         /// Holds 'Sql Server' connection.
@@ -28,7 +28,10 @@ namespace QueryDB.Connection.Database
         public void Dispose()
         {
             if (SqlConnection != null)
+            {
+                SqlConnection.Close();
                 SqlConnection.Dispose();
+            }
         }
     }
 }

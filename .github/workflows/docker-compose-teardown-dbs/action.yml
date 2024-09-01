@@ -1,0 +1,9 @@
+name: Docker Compose (Tear Down - DB Containers)
+
+runs:
+  using: 'composite'
+  
+  steps:
+    - name: Docker Compose (Tear Down - DB Containers)
+      shell: bash
+      run: docker compose -f docker-compose.yml down

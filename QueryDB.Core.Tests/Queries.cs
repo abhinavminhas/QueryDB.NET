@@ -4,17 +4,17 @@
     {
         internal static class OracleQuery
         {
-            public static string SelectSql = @"SELECT SYSDATE FROM DUAL";
+            public static string SelectSql = @"SELECT 'oracle' AS current_database FROM dual";
         }
 
         internal static class SqlServerQuery
         {
-            public static string SelectSql = @"SELECT NAME FROM SYS.DATABASES";
+            public static string SelectSql = @"SELECT 'mssql' AS current_database";
         }
 
         internal static class MySqlQuery
         {
-            public static string SelectSql = @"SELECT SYSDATE()";
+            public static string SelectSql = @"SELECT DATABASE() AS current_database";
         }
     }
 }

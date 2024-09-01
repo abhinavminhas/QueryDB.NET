@@ -1,0 +1,31 @@
+name: Docker Execute (Seed Data)
+
+inputs:
+  dbPassword:
+    description: 'Database password value.'
+    required: true
+
+runs:
+  using: 'composite'
+  
+  steps:
+    - name: Docker Execute (ORACLE - Seed Data)
+      shell: bash
+      run: |
+        docker exec oracle-db bash -c "sqlplus -s sys/$ORACLE_PWD@localhost:1521/XE as sysdba @/home/oracle.sql"
+      env:
+        ORACLE_PWD: ${{ inputs.dbPassword }}
+
+    - name: Docker Execute (MSSQL - Seed Data)
+      shell: bash
+      run: |
+        docker exec mssql-db /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P $MSSQL_PWD -i "/home/mssql.sql"
+      env:
+        MSSQL_PWD: ${{ inputs.dbPassword }}
+
+    - name: Docker Execute (MYSQL - Seed Data)
+      shell: bash
+      run: |
+        docker exec mysql-db mysql -uroot -p$MYSQL_PWD -e "source /home/mysql.sql"
+      env:
+        MYSQL_PWD: ${{ inputs.dbPassword }}

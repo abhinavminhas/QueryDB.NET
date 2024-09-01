@@ -10,14 +10,14 @@ namespace QueryDB.Resources
         /// <summary>
         /// Holds table data values.
         /// </summary>
-        internal IDictionary<string, string> Data { get; private set; }
+        public IDictionary<string, string> ReferenceData { get; private set; }
 
         /// <summary>
         /// Creates data dictionary to hold table data.
         /// </summary>
-        public DataDictionary()
+        internal DataDictionary()
         {
-            Data = new Dictionary<string, string>();
+            ReferenceData = new Dictionary<string, string>();
         }
     }
 }

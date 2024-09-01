@@ -41,9 +41,9 @@ namespace QueryDB
             Database = database;
             if (Database.Equals(DB.Oracle))
                 OracleConnectionString = connectionString;
-            else if (Database.Equals(DB.SqlServer))
+            else if (Database.Equals(DB.MSSQL))
                 SqlServerConnectionString = connectionString;
-            else if (Database.Equals(DB.MySql))
+            else if (Database.Equals(DB.MySQL))
                 MySqlConnectionString = connectionString;
         }
 
@@ -53,9 +53,9 @@ namespace QueryDB
         /// Note: Use aliases in query for similar column names.
         /// </summary>
         /// <param name="selectSql">'Select' query.</param>
-        /// <param name="upperCaseKeys">Optional parameter to return dictionry keys in upper case.</param>
+        /// <param name="upperCaseKeys">Optional parameter to return dictionary keys in upper case. Default - 'false'.</param>
         /// <returns>List of data Dictionary with column names as keys holding values into a list for multiple rows of data.</returns>
-        public List<DataDictionary> RetrieveData(string selectSql, bool upperCaseKeys = false)
+        public List<DataDictionary> FetchData(string selectSql, bool upperCaseKeys = false)
         {
             var dataList = new List<DataDictionary>();
             if (Database.Equals(DB.Oracle))
@@ -70,15 +70,15 @@ namespace QueryDB
                         for (int i = 0; i < reader.FieldCount; i++)
                         {
                             if (upperCaseKeys)
-                                addedRow.Data.Add(reader.GetName(i).ToUpper(), reader.GetValue(i).ToString());
+                                addedRow.ReferenceData.Add(reader.GetName(i).ToUpper(), reader.GetValue(i).ToString());
                             else
-                                addedRow.Data.Add(reader.GetName(i), reader.GetValue(i).ToString());
+                                addedRow.ReferenceData.Add(reader.GetName(i), reader.GetValue(i).ToString());
                         }
                         dataList.Add(addedRow);
                     }
                 }
             }
-            else if (Database.Equals(DB.SqlServer))
+            else if (Database.Equals(DB.MSSQL))
             {
                 using (var sqlDBConnection = GetSqlServerConnection())
                 {
@@ -90,15 +90,15 @@ namespace QueryDB
                         for (int i = 0; i < reader.FieldCount; i++)
                         {
                             if (upperCaseKeys)
-                                addedRow.Data.Add(reader.GetName(i).ToUpper(), reader.GetValue(i).ToString());
+                                addedRow.ReferenceData.Add(reader.GetName(i).ToUpper(), reader.GetValue(i).ToString());
                             else
-                                addedRow.Data.Add(reader.GetName(i), reader.GetValue(i).ToString());
+                                addedRow.ReferenceData.Add(reader.GetName(i), reader.GetValue(i).ToString());
                         }
                         dataList.Add(addedRow);
                     }
                 }
             }
-            else if (Database.Equals(DB.MySql))
+            else if (Database.Equals(DB.MySQL))
             {
                 using (var mySqlDBConnection = GetMySqlConnection())
                 {
@@ -110,9 +110,9 @@ namespace QueryDB
                         for (int i = 0; i < reader.FieldCount; i++)
                         {
                             if (upperCaseKeys)
-                                addedRow.Data.Add(reader.GetName(i).ToUpper(), reader.GetValue(i).ToString());
+                                addedRow.ReferenceData.Add(reader.GetName(i).ToUpper(), reader.GetValue(i).ToString());
                             else
-                                addedRow.Data.Add(reader.GetName(i), reader.GetValue(i).ToString());
+                                addedRow.ReferenceData.Add(reader.GetName(i), reader.GetValue(i).ToString());
                         }
                         dataList.Add(addedRow);
                     }
@@ -158,7 +158,7 @@ namespace QueryDB
     public enum DB
     {
         Oracle,
-        SqlServer,
-        MySql
+        MSSQL,
+        MySQL
     }
 }

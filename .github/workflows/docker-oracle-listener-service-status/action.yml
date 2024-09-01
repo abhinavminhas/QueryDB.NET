@@ -1,0 +1,12 @@
+name: Docker Oracle Listener Service Status
+
+runs:
+  using: 'composite'
+  
+  steps:
+    - name: Oracle Listener Service Status
+      shell: pwsh
+      run: |
+        # Script (Oracle Listener Service status)
+        docker exec oracle-db lsnrctl status
+        Start-Sleep -Seconds 0
