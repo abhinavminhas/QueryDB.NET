@@ -6,7 +6,7 @@ namespace QueryDB.Connection.Database
     /// <summary>
     /// 'MySQL' database connection.
     /// </summary>
-    internal class MySqlDBConnection : IDisposable
+    internal sealed class MySqlDBConnection : IDisposable
     {
         /// <summary>
         /// Holds 'MySQL' connection.
@@ -28,8 +28,10 @@ namespace QueryDB.Connection.Database
         public void Dispose()
         {
             if (MySqlConnection != null)
+            {
+                MySqlConnection.Close();
                 MySqlConnection.Dispose();
+            }    
         }
-
     }
 }
