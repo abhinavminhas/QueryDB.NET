@@ -2,11 +2,11 @@ USE master;
 
 CREATE TABLE AGENTS 
 (
-    Agent_Code CHAR(6) NOT NULL PRIMARY KEY, 
-    Agent_Name CHAR(40), 
-    Working_Area CHAR(35), 
+    Agent_Code VARCHAR(6) NOT NULL PRIMARY KEY, 
+    Agent_Name VARCHAR(40), 
+    Working_Area VARCHAR(35), 
     Commission DECIMAL(10,2), 
-    Phone_N0 CHAR(15), 
+    Phone_No VARCHAR(15), 
     Country VARCHAR(25)
 );
 
@@ -16,7 +16,7 @@ INSERT INTO AGENTS VALUES ('A008', 'Alford', 'New York', '0.12', '044-25874365',
 INSERT INTO AGENTS VALUES ('A011', 'Ravi Kumar', 'Bangalore', '0.15', '077-45625874', '');
 INSERT INTO AGENTS VALUES ('A010', 'Santakumar', 'Chennai', '0.14', '007-22388644', '');
 INSERT INTO AGENTS VALUES ('A012', 'Lucida', 'San Jose', '0.12', '044-52981425', '');
-INSERT INTO AGENTS VALUES ('A005', 'Anderson', 'Brisban', '0.13', '045-21447739', '');
+INSERT INTO AGENTS VALUES ('A005', 'Anderson', 'Brisbane', '0.13', '045-21447739', '');
 INSERT INTO AGENTS VALUES ('A001', 'Subbarao', 'Bangalore', '0.14', '077-12346674', '');
 INSERT INTO AGENTS VALUES ('A002', 'Mukesh', 'Mumbai', '0.11', '029-12358964', '');
 INSERT INTO AGENTS VALUES ('A006', 'McDen', 'London', '0.15', '078-22255588', '');
@@ -27,7 +27,7 @@ CREATE TABLE CUSTOMER
 (  
     Cust_Code VARCHAR(6) NOT NULL PRIMARY KEY, 
 	Cust_Name VARCHAR(40) NOT NULL, 
-	Cust_City CHAR(35), 
+	Cust_City VARCHAR(35), 
 	Working_Area VARCHAR(35) NOT NULL, 
 	Cust_Country VARCHAR(20) NOT NULL, 
 	Grade INTEGER, 
@@ -36,7 +36,7 @@ CREATE TABLE CUSTOMER
 	Payment_Amt DECIMAL(12,2) NOT NULL, 
 	Outstanding_Amt DECIMAL(12,2) NOT NULL, 
 	Phone_No VARCHAR(17) NOT NULL, 
-	Agent_Code CHAR(6) NOT NULL REFERENCES AGENTS
+	Agent_Code VARCHAR(6) NOT NULL REFERENCES AGENTS
 );
 
 INSERT INTO CUSTOMER VALUES ('C00013', 'Holmes', 'London', 'London', 'UK', '2', '6000.00', '5000.00', '7000.00', '4000.00', 'BBBBBBB', 'A003');
@@ -46,13 +46,13 @@ INSERT INTO CUSTOMER VALUES ('C00025', 'Ravindran', 'Bangalore', 'Bangalore', 'I
 INSERT INTO CUSTOMER VALUES ('C00024', 'Cook', 'London', 'London', 'UK', '2', '4000.00', '9000.00', '7000.00', '6000.00', 'FSDDSDF', 'A006');
 INSERT INTO CUSTOMER VALUES ('C00015', 'Stuart', 'London', 'London', 'UK', '1', '6000.00', '8000.00', '3000.00', '11000.00', 'GFSGERS', 'A003');
 INSERT INTO CUSTOMER VALUES ('C00002', 'Bolt', 'New York', 'New York', 'USA', '3', '5000.00', '7000.00', '9000.00', '3000.00', 'DDNRDRH', 'A008');
-INSERT INTO CUSTOMER VALUES ('C00018', 'Fleming', 'Brisban', 'Brisban', 'Australia', '2', '7000.00', '7000.00', '9000.00', '5000.00', 'NHBGVFC', 'A005');
-INSERT INTO CUSTOMER VALUES ('C00021', 'Jacks', 'Brisban', 'Brisban', 'Australia', '1', '7000.00', '7000.00', '7000.00', '7000.00', 'WERTGDF', 'A005');
+INSERT INTO CUSTOMER VALUES ('C00018', 'Fleming', 'Brisbane', 'Brisbane', 'Australia', '2', '7000.00', '7000.00', '9000.00', '5000.00', 'NHBGVFC', 'A005');
+INSERT INTO CUSTOMER VALUES ('C00021', 'Jacks', 'Brisbane', 'Brisbane', 'Australia', '1', '7000.00', '7000.00', '7000.00', '7000.00', 'WERTGDF', 'A005');
 INSERT INTO CUSTOMER VALUES ('C00019', 'Yearannaidu', 'Chennai', 'Chennai', 'India', '1', '8000.00', '7000.00', '7000.00', '8000.00', 'ZZZZBFV', 'A010');
 INSERT INTO CUSTOMER VALUES ('C00005', 'Sasikant', 'Mumbai', 'Mumbai', 'India', '1', '7000.00', '11000.00', '7000.00', '11000.00', '147-25896312', 'A002');
 INSERT INTO CUSTOMER VALUES ('C00007', 'Ramanathan', 'Chennai', 'Chennai', 'India', '1', '7000.00', '11000.00', '9000.00', '9000.00', 'GHRDWSD', 'A010');
 INSERT INTO CUSTOMER VALUES ('C00022', 'Avinash', 'Mumbai', 'Mumbai', 'India', '2', '7000.00', '11000.00', '9000.00', '9000.00', '113-12345678','A002');
-INSERT INTO CUSTOMER VALUES ('C00004', 'Winston', 'Brisban', 'Brisban', 'Australia', '1', '5000.00', '8000.00', '7000.00', '6000.00', 'AAAAAAA', 'A005');
+INSERT INTO CUSTOMER VALUES ('C00004', 'Winston', 'Brisbane', 'Brisbane', 'Australia', '1', '5000.00', '8000.00', '7000.00', '6000.00', 'AAAAAAA', 'A005');
 INSERT INTO CUSTOMER VALUES ('C00023', 'Karl', 'London', 'London', 'UK', '0', '4000.00', '6000.00', '7000.00', '3000.00', 'AAAABAA', 'A006');
 INSERT INTO CUSTOMER VALUES ('C00006', 'Shilton', 'Torento', 'Torento', 'Canada', '1', '10000.00', '7000.00', '6000.00', '11000.00', 'DDDDDDD', 'A004');
 INSERT INTO CUSTOMER VALUES ('C00010', 'Charles', 'Hampshair', 'Hampshair', 'UK', '3', '6000.00', '4000.00', '5000.00', '5000.00', 'MMMMMMM', 'A009');
@@ -72,7 +72,7 @@ CREATE TABLE ORDERS
 	Advance_Amount DECIMAL(12,2) NOT NULL, 
 	Ord_Date DATE NOT NULL, 
 	Cust_Code VARCHAR(6) NOT NULL REFERENCES CUSTOMER, 
-	Agent_Code CHAR(6) NOT NULL REFERENCES AGENTS, 
+	Agent_Code VARCHAR(6) NOT NULL REFERENCES AGENTS, 
 	Ord_Description VARCHAR(60) NOT NULL
 );
 
