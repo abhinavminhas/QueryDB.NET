@@ -3,12 +3,12 @@
     /// <summary>
     /// Connection builder.
     /// </summary>
-    internal class ConnectionBuilder
+    internal static class ConnectionBuilder
     {
         /// <summary>
         /// Gets 'SQL Server' database connection.
         /// </summary>
-        internal MSSQL.Connection GetSqlConnection
+        internal static MSSQL.Connection GetSqlConnection
         {
             get
             {
@@ -20,7 +20,7 @@
         /// <summary>
         /// Gets 'MySQL' database connection.
         /// </summary>
-        internal MySQL.Connection GetMySqlConnection
+        internal static MySQL.Connection GetMySqlConnection
         {
             get
             {
@@ -32,7 +32,7 @@
         /// <summary>
         /// Gets 'Oracle' database connection.
         /// </summary>
-        internal Oracle.Connection GetOracleConnection
+        internal static Oracle.Connection GetOracleConnection
         {
             get
             {
