@@ -10,7 +10,7 @@
             }
             internal static class SalesDB
             {
-                public static string SelectSql = @"SELECT * FROM AGENTS";
+                public static string SelectSql = @"SELECT * FROM Agents";
             }
         }
 
@@ -22,7 +22,7 @@
             }
             internal static class SalesDB
             {
-                public static string SelectSql = @"SELECT * FROM AGENTS";
+                public static string SelectSql = @"SELECT * FROM Agents";
             }
         }
 
@@ -34,7 +34,7 @@
             }
             internal static class SalesDB
             {
-                public static string SelectSql = @"SELECT * FROM AGENTS";
+                public static string SelectSql = @"SELECT * FROM Agents";
             }
         }
     }
