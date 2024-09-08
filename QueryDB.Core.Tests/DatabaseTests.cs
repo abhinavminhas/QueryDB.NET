@@ -80,7 +80,7 @@ namespace QueryDB.Core.Tests
         public void Test_MySQL_FetchData_SelectQuery_LowerCaseKeys()
         {
             var selectSql = Queries.SQLServerQueries.SalesDB.SelectSql;
-            var data = new DBContext(DB.MySQL, SqlServerDatabaseString).FetchData(selectSql);
+            var data = new DBContext(DB.MySQL, MySqlDatabaseString).FetchData(selectSql);
             Assert.IsTrue(data.Count == 12);
             var agent = data.FirstOrDefault(X => X.ReferenceData["Agent_Name"] == "Benjamin");
             Assert.AreEqual("A009", agent.ReferenceData["Agent_Code"]);
@@ -96,7 +96,7 @@ namespace QueryDB.Core.Tests
         public void Test_MySQL_FetchData_SelectQuery_UpperCaseKeys()
         {
             var selectSql = Queries.SQLServerQueries.SalesDB.SelectSql;
-            var data = new DBContext(DB.MySQL, SqlServerDatabaseString).FetchData(selectSql, upperCaseKeys: true);
+            var data = new DBContext(DB.MySQL, MySqlDatabaseString).FetchData(selectSql, upperCaseKeys: true);
             Assert.IsTrue(data.Count == 12);
             var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_NAME"] == "Benjamin");
             Assert.AreEqual("A009", agent.ReferenceData["AGENT_CODE"]);
@@ -131,7 +131,7 @@ namespace QueryDB.Core.Tests
         public void Test_Oracle_FetchData_SelectQuery_LowerCaseKeys()
         {
             var selectSql = Queries.SQLServerQueries.SalesDB.SelectSql;
-            var data = new DBContext(DB.Oracle, SqlServerDatabaseString).FetchData(selectSql);
+            var data = new DBContext(DB.Oracle, OracleDatabaseString).FetchData(selectSql);
             Assert.IsTrue(data.Count == 12);
             var agent = data.FirstOrDefault(X => X.ReferenceData["Agent_Name"] == "Benjamin");
             Assert.AreEqual("A009", agent.ReferenceData["Agent_Code"]);
@@ -147,7 +147,7 @@ namespace QueryDB.Core.Tests
         public void Test_Oracle_FetchData_SelectQuery_UpperCaseKeys()
         {
             var selectSql = Queries.SQLServerQueries.SalesDB.SelectSql;
-            var data = new DBContext(DB.Oracle, SqlServerDatabaseString).FetchData(selectSql, upperCaseKeys: true);
+            var data = new DBContext(DB.Oracle, OracleDatabaseString).FetchData(selectSql, upperCaseKeys: true);
             Assert.IsTrue(data.Count == 12);
             var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_NAME"] == "Benjamin");
             Assert.AreEqual("A009", agent.ReferenceData["AGENT_CODE"]);
