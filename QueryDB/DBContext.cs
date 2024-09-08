@@ -86,7 +86,7 @@ namespace QueryDB
         /// Gets 'SQL Server' connection.
         /// </summary>
         /// <returns>'SQL Server' Connection.</returns>
-        internal MSSQL.Connection GetSqlServerConnection()
+        internal static MSSQL.Connection GetSqlServerConnection()
         {
             var _connectionBuilder = new ConnectionBuilder();
             return _connectionBuilder.GetSqlConnection;
@@ -96,7 +96,7 @@ namespace QueryDB
         /// Gets 'MySQL' connection.
         /// </summary>
         /// <returns>'MySQL' Connection.</returns>
-        internal MySQL.Connection GetMySqlConnection()
+        internal static MySQL.Connection GetMySqlConnection()
         {
             var _connectionBuilder = new ConnectionBuilder();
             return _connectionBuilder.GetMySqlConnection;
@@ -106,7 +106,7 @@ namespace QueryDB
         /// Gets 'Oracle' connection.
         /// </summary>
         /// <returns>'Oracle' connection.</returns>
-        internal Oracle.Connection GetOracleConnection()
+        internal static Oracle.Connection GetOracleConnection()
         {
             var _connectionBuilder = new ConnectionBuilder();
             return _connectionBuilder.GetOracleConnection;
