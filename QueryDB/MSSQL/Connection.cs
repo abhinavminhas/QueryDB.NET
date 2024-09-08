@@ -1,37 +1,35 @@
 ﻿using Microsoft.Data.SqlClient;
 using System;
 
-namespace QueryDB.Connection.Database
+namespace QueryDB.MSSQL
 {
     /// <summary>
-    /// 'Sql Server' database connection.
+    /// 'SQL Server' database connection.
     /// </summary>
-    internal sealed class SqlDBConnection : IDisposable
+    internal sealed class Connection : IDisposable
     {
         /// <summary>
-        /// Holds 'Sql Server' connection.
+        /// Holds 'SQL Server' connection.
         /// </summary>
         internal SqlConnection SqlConnection { get; private set; }
 
         /// <summary>
-        /// Creates 'Sql Server' database connection.
+        /// Creates 'SQL Server' database connection.
         /// </summary>
-        /// <param name="connectionString">'Sql Server' connection string value.</param>
-        internal SqlDBConnection(string connectionString)
+        /// <param name="connectionString">'SQL Server' connection string value.</param>
+        internal Connection(string connectionString)
         {
             SqlConnection = new SqlConnection(connectionString);
         }
 
         /// <summary>
-        /// Disposes 'Sql Server' connection.
+        /// Disposes 'SQL Server' connection.
         /// </summary>
         public void Dispose()
         {
             if (SqlConnection != null)
-            {
                 SqlConnection.Close();
                 SqlConnection.Dispose();
-            }
         }
     }
 }

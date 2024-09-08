@@ -13,6 +13,6 @@
 QueryDB framework project is a flexible database query tool designed to facilitate and simplify querying multiple database systems.
 
 ## Supported Databases
-- [Oracle](https://www.oracle.com/)
 - [MSSQL](https://www.microsoft.com/en-us/sql-server)
 - [MySQL](https://www.mysql.com/)
+- [Oracle](https://www.oracle.com/)
