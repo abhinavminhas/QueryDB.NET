@@ -50,7 +50,7 @@ namespace QueryDB
         /// Note: Use aliases in query for similar column names.
         /// </summary>
         /// <param name="selectSql">'Select' query.</param>
-        /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase / lowercase.. Default - 'false'.</param>
+        /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase / lowercase. Default - 'false'.</param>
         /// <returns>List of data Dictionary with column names as keys holding values into a list for multiple rows of data.</returns>
         public List<DataDictionary> FetchData(string selectSql, bool upperCaseKeys = false)
         {
