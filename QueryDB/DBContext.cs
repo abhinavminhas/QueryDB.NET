@@ -11,22 +11,22 @@ namespace QueryDB
         /// <summary>
         /// Database type value to connect to.
         /// </summary>
-        internal static DB Database;
+        internal static DB Database { get; private set; }
 
         /// <summary>
         /// Holds 'SQL Server' connection string value for the DBContext created.
         /// </summary>
-        internal static string SqlConnectionString;
+        internal static string SqlConnectionString { get; private set; }
 
         /// <summary>
         /// Holds 'MySQL' connection string value for the DBContext created.
         /// </summary>
-        internal static string MySqlConnectionString;
+        internal static string MySqlConnectionString { get; private set; }
 
         /// <summary>
         /// Holds 'Oracle' connection string value for the DBContext created.
         /// </summary>
-        internal static string OracleConnectionString;
+        internal static string OracleConnectionString { get; private set; }
 
         /// <summary>
         /// Defines database type and connection string to connect to.
