@@ -28,7 +28,6 @@ namespace QueryDB.MSSQL
         public void Dispose()
         {
             if (SqlConnection != null)
-                SqlConnection.Close();
                 SqlConnection.Dispose();
         }
     }

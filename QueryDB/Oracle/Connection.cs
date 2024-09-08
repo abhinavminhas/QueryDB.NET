@@ -29,7 +29,6 @@ namespace QueryDB.Oracle
         {
             if (OracleConnection != null)
             {
-                OracleConnection.Close();
                 OracleConnection.Dispose();
             }
         }

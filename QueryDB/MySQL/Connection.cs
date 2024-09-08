@@ -29,7 +29,6 @@ namespace QueryDB.MySQL
         {
             if (MySqlConnection != null)
             {
-                MySqlConnection.Close();
                 MySqlConnection.Dispose();
             }
         }
