@@ -2,11 +2,11 @@ ALTER SESSION SET CURRENT_SCHEMA = SYS;
 
 CREATE TABLE AGENTS 
 (
-    Agent_Code CHAR(6) NOT NULL PRIMARY KEY, 
-    Agent_Name CHAR(40), 
-    Working_Area CHAR(35), 
+    Agent_Code VARCHAR(6) NOT NULL PRIMARY KEY, 
+    Agent_Name VARCHAR(40), 
+    Working_Area VARCHAR(35), 
     Commission DECIMAL(10,2), 
-    Phone_No CHAR(15), 
+    Phone_No VARCHAR(15), 
     Country VARCHAR(25)
 );
 
