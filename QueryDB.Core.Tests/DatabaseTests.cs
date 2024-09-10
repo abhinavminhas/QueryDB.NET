@@ -133,13 +133,13 @@ namespace QueryDB.Core.Tests
             var selectSql = Queries.SQLServerQueries.SalesDB.SelectSql;
             var data = new DBContext(DB.Oracle, OracleDatabaseString).FetchData(selectSql);
             Assert.IsTrue(data.Count == 12);
-            var agent = data.FirstOrDefault(X => X.ReferenceData["Agent_Name"] == "Benjamin");
-            Assert.AreEqual("A009", agent.ReferenceData["Agent_Code"]);
-            Assert.AreEqual("Benjamin", agent.ReferenceData["Agent_Name"]);
-            Assert.AreEqual("Hampshair", agent.ReferenceData["Working_Area"]);
-            Assert.AreEqual("0.11", agent.ReferenceData["Commission"]);
-            Assert.AreEqual("008-22536178", agent.ReferenceData["Phone_No"]);
-            Assert.AreEqual("", agent.ReferenceData["Country"]);
+            var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_NAME"] == "Benjamin");
+            Assert.AreEqual("A009", agent.ReferenceData["AGENT_CODE"]);
+            Assert.AreEqual("Benjamin", agent.ReferenceData["AGENT_NAME"]);
+            Assert.AreEqual("Hampshair", agent.ReferenceData["WORKING_AREA"]);
+            Assert.AreEqual("0.11", agent.ReferenceData["COMMISSION"]);
+            Assert.AreEqual("008-22536178", agent.ReferenceData["PHONE_NO"]);
+            Assert.AreEqual("", agent.ReferenceData["COUNTRY"]);
         }
 
         [TestMethod]
@@ -159,5 +159,6 @@ namespace QueryDB.Core.Tests
         }
 
         #endregion
+
     }
 }
