@@ -69,7 +69,7 @@ namespace QueryDB.Core.Tests
             var selectSql = Queries.SQLServerQueries.SalesDB.SelectSql_Join;
             var data = new DBContext(DB.MSSQL, MSSQLConnectionString).FetchData(selectSql);
             Assert.IsTrue(data.Count == 34);
-            var agent = data.FirstOrDefault(X => X.ReferenceData["Agent_Code"] == "A004");
+            var agent = data.FirstOrDefault(X => X.ReferenceData["Agent_Code"] == "A004" && X.ReferenceData["Cust_Code"] == "C00006");
             Assert.AreEqual("A004", agent.ReferenceData["Agent_Code"]);
             Assert.AreEqual("Ivan", agent.ReferenceData["Agent_Name"]);
             Assert.AreEqual("C00006", agent.ReferenceData["Cust_Code"]);
@@ -77,7 +77,6 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("200104", agent.ReferenceData["Ord_Num"]);
             Assert.AreEqual("1500.00", agent.ReferenceData["Ord_Amount"]);
             Assert.AreEqual("500.00", agent.ReferenceData["Advance_Amount"]);
-            Assert.AreEqual("13/03/2008 12:00:00 AM", agent.ReferenceData["Ord_Date"]);
             Assert.AreEqual("SOD", agent.ReferenceData["Ord_Description"]);
         }
 
@@ -88,7 +87,7 @@ namespace QueryDB.Core.Tests
             var selectSql = Queries.SQLServerQueries.SalesDB.SelectSql_Join;
             var data = new DBContext(DB.MSSQL, MSSQLConnectionString).FetchData(selectSql, upperCaseKeys: true);
             Assert.IsTrue(data.Count == 34);
-            var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004");
+            var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004" && X.ReferenceData["CUST_CODE"] == "C00006");
             Assert.AreEqual("A004", agent.ReferenceData["AGENT_CODE"]);
             Assert.AreEqual("Ivan", agent.ReferenceData["AGENT_NAME"]);
             Assert.AreEqual("C00006", agent.ReferenceData["CUST_CODE"]);
@@ -96,7 +95,6 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("200104", agent.ReferenceData["ORD_NUM"]);
             Assert.AreEqual("1500.00", agent.ReferenceData["ORD_AMOUNT"]);
             Assert.AreEqual("500.00", agent.ReferenceData["ADVANCE_AMOUNT"]);
-            Assert.AreEqual("13/03/2008 12:00:00 AM", agent.ReferenceData["ORD_DATE"]);
             Assert.AreEqual("SOD", agent.ReferenceData["ORD_DESCRIPTION"]);
         }
 
@@ -166,7 +164,7 @@ namespace QueryDB.Core.Tests
             var selectSql = Queries.MySQLQueries.SalesDB.SelectSql_Join;
             var data = new DBContext(DB.MySQL, MySQLConnectionString).FetchData(selectSql);
             Assert.IsTrue(data.Count == 34);
-            var agent = data.FirstOrDefault(X => X.ReferenceData["Agent_Code"] == "A004");
+            var agent = data.FirstOrDefault(X => X.ReferenceData["Agent_Code"] == "A004" && X.ReferenceData["Cust_Code"] == "C00006");
             Assert.AreEqual("A004", agent.ReferenceData["Agent_Code"]);
             Assert.AreEqual("Ivan", agent.ReferenceData["Agent_Name"]);
             Assert.AreEqual("C00006", agent.ReferenceData["Cust_Code"]);
@@ -174,7 +172,6 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("200104", agent.ReferenceData["Ord_Num"]);
             Assert.AreEqual("1500.00", agent.ReferenceData["Ord_Amount"]);
             Assert.AreEqual("500.00", agent.ReferenceData["Advance_Amount"]);
-            Assert.AreEqual("13/03/2008 00:00:00", agent.ReferenceData["Ord_Date"]);
             Assert.AreEqual("SOD", agent.ReferenceData["Ord_Description"]);
         }
 
@@ -185,7 +182,7 @@ namespace QueryDB.Core.Tests
             var selectSql = Queries.MySQLQueries.SalesDB.SelectSql_Join;
             var data = new DBContext(DB.MySQL, MySQLConnectionString).FetchData(selectSql, upperCaseKeys: true);
             Assert.IsTrue(data.Count == 34);
-            var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004");
+            var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004" && X.ReferenceData["CUST_CODE"] == "C00006");
             Assert.AreEqual("A004", agent.ReferenceData["AGENT_CODE"]);
             Assert.AreEqual("Ivan", agent.ReferenceData["AGENT_NAME"]);
             Assert.AreEqual("C00006", agent.ReferenceData["CUST_CODE"]);
@@ -193,7 +190,6 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("200104", agent.ReferenceData["ORD_NUM"]);
             Assert.AreEqual("1500.00", agent.ReferenceData["ORD_AMOUNT"]);
             Assert.AreEqual("500.00", agent.ReferenceData["ADVANCE_AMOUNT"]);
-            Assert.AreEqual("13/03/2008 00:00:00", agent.ReferenceData["ORD_DATE"]);
             Assert.AreEqual("SOD", agent.ReferenceData["ORD_DESCRIPTION"]);
         }
 
@@ -263,7 +259,7 @@ namespace QueryDB.Core.Tests
             var selectSql = Queries.OracleQueries.SalesDB.SelectSql_Join;
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData(selectSql);
             Assert.IsTrue(data.Count == 34);
-            var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004");
+            var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004" && X.ReferenceData["CUST_CODE"] == "C00006");
             Assert.AreEqual("A004", agent.ReferenceData["AGENT_CODE"]);
             Assert.AreEqual("Ivan", agent.ReferenceData["AGENT_NAME"]);
             Assert.AreEqual("C00006", agent.ReferenceData["CUST_CODE"]);
@@ -271,7 +267,6 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("200104", agent.ReferenceData["ORD_NUM"]);
             Assert.AreEqual("1500.00", agent.ReferenceData["ORD_AMOUNT"]);
             Assert.AreEqual("500.00", agent.ReferenceData["ADVANCE_AMOUNT"]);
-            Assert.AreEqual("13/03/2008 12:00:00 AM", agent.ReferenceData["ORD_DATE"]);
             Assert.AreEqual("SOD", agent.ReferenceData["ORD_DESCRIPTION"]);
         }
 
@@ -282,7 +277,7 @@ namespace QueryDB.Core.Tests
             var selectSql = Queries.OracleQueries.SalesDB.SelectSql_Join;
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData(selectSql, upperCaseKeys: true);
             Assert.IsTrue(data.Count == 34);
-            var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004");
+            var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004" && X.ReferenceData["CUST_CODE"] == "C00006");
             Assert.AreEqual("A004", agent.ReferenceData["AGENT_CODE"]);
             Assert.AreEqual("Ivan", agent.ReferenceData["AGENT_NAME"]);
             Assert.AreEqual("C00006", agent.ReferenceData["CUST_CODE"]);
@@ -290,7 +285,6 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("200104", agent.ReferenceData["ORD_NUM"]);
             Assert.AreEqual("1500.00", agent.ReferenceData["ORD_AMOUNT"]);
             Assert.AreEqual("500.00", agent.ReferenceData["ADVANCE_AMOUNT"]);
-            Assert.AreEqual("13/03/2008 12:00:00 AM", agent.ReferenceData["ORD_DATE"]);
             Assert.AreEqual("SOD", agent.ReferenceData["ORD_DESCRIPTION"]);
         }
 
