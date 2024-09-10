@@ -9,6 +9,8 @@ namespace QueryDB.Core.Tests
 
         #region MSSQL DB Tests
 
+        #region Smoke Tests
+
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS), TestCategory(SMOKE_TESTS)]
         public void Test_MSSQL_FetchData()
@@ -23,6 +25,10 @@ namespace QueryDB.Core.Tests
             Assert.IsTrue(data.Count > 0);
             Assert.AreEqual("mssql", data[0].ReferenceData["current_database"]);
         }
+
+        #endregion
+
+        #region Fetch Data Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
@@ -96,7 +102,11 @@ namespace QueryDB.Core.Tests
 
         #endregion
 
+        #endregion
+
         #region MySQL DB Tests
+
+        #region Smoke Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS), TestCategory(SMOKE_TESTS)]
@@ -112,6 +122,10 @@ namespace QueryDB.Core.Tests
             Assert.IsTrue(data.Count > 0);
             Assert.AreEqual("mysql", data[0].ReferenceData["current_database"]);
         }
+
+        #endregion
+
+        #region Fetch Data Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
@@ -160,7 +174,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("200104", agent.ReferenceData["Ord_Num"]);
             Assert.AreEqual("1500.00", agent.ReferenceData["Ord_Amount"]);
             Assert.AreEqual("500.00", agent.ReferenceData["Advance_Amount"]);
-            Assert.AreEqual("13/03/2008 12:00:00 AM", agent.ReferenceData["Ord_Date"]);
+            Assert.AreEqual("13/03/2008 00:00:00", agent.ReferenceData["Ord_Date"]);
             Assert.AreEqual("SOD", agent.ReferenceData["Ord_Description"]);
         }
 
@@ -169,7 +183,7 @@ namespace QueryDB.Core.Tests
         public void Test_MySQL_FetchData_SelectQuery_Joins_UpperCaseKeys()
         {
             var selectSql = Queries.MySQLQueries.SalesDB.SelectSql_Join;
-            var data = new DBContext(DB.MySQL, MySQLConnectionString).FetchData(selectSql);
+            var data = new DBContext(DB.MySQL, MySQLConnectionString).FetchData(selectSql, upperCaseKeys: true);
             Assert.IsTrue(data.Count == 34);
             var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004");
             Assert.AreEqual("A004", agent.ReferenceData["AGENT_CODE"]);
@@ -179,13 +193,17 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("200104", agent.ReferenceData["ORD_NUM"]);
             Assert.AreEqual("1500.00", agent.ReferenceData["ORD_AMOUNT"]);
             Assert.AreEqual("500.00", agent.ReferenceData["ADVANCE_AMOUNT"]);
-            Assert.AreEqual("13/03/2008 12:00:00 AM", agent.ReferenceData["ORD_DATE"]);
+            Assert.AreEqual("13/03/2008 00:00:00", agent.ReferenceData["ORD_DATE"]);
             Assert.AreEqual("SOD", agent.ReferenceData["ORD_DESCRIPTION"]);
         }
 
         #endregion
 
+        #endregion
+
         #region Oracle DB Tests
+
+        #region Smoke Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS), TestCategory(SMOKE_TESTS)]
@@ -201,6 +219,10 @@ namespace QueryDB.Core.Tests
             Assert.IsTrue(data.Count > 0);
             Assert.AreEqual("oracle", data[0].ReferenceData["CURRENT_DATABASE"]);
         }
+
+        #endregion
+
+        #region Fetch Data Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
@@ -258,7 +280,7 @@ namespace QueryDB.Core.Tests
         public void Test_Oracle_FetchData_SelectQuery_Joins_UpperCaseKeys()
         {
             var selectSql = Queries.OracleQueries.SalesDB.SelectSql_Join;
-            var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData(selectSql);
+            var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData(selectSql, upperCaseKeys: true);
             Assert.IsTrue(data.Count == 34);
             var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004");
             Assert.AreEqual("A004", agent.ReferenceData["AGENT_CODE"]);
@@ -271,6 +293,8 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("13/03/2008 12:00:00 AM", agent.ReferenceData["ORD_DATE"]);
             Assert.AreEqual("SOD", agent.ReferenceData["ORD_DESCRIPTION"]);
         }
+
+        #endregion
 
         #endregion
 
