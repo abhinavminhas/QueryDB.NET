@@ -6,9 +6,9 @@ namespace QueryDB.Core.Tests
     public class TestBase
     {
         private readonly string _useDocker = ConfigurationManager.AppSettings["UseDocker"];
-        protected readonly string SqlServerDatabaseString = ConfigurationManager.AppSettings["SQLServerConnection"];
-        protected readonly string MySqlDatabaseString = ConfigurationManager.AppSettings["MySQLConnection"];
-        protected readonly string OracleDatabaseString = ConfigurationManager.AppSettings["OracleConnection"];
+        protected readonly string MSSQLConnectionString = ConfigurationManager.AppSettings["MSSQLConnection"];
+        protected readonly string MySQLConnectionString = ConfigurationManager.AppSettings["MySQLConnection"];
+        protected readonly string OracleConnectionString = ConfigurationManager.AppSettings["OracleConnection"];
         protected const string DB_TESTS = "DB-TESTS";
         protected const string SMOKE_TESTS = "SMOKE-TESTS";
         protected const string ORACLE_TESTS = "ORACLE-TESTS";
