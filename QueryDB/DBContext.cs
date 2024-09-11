@@ -29,7 +29,7 @@ namespace QueryDB
         internal static string OracleConnectionString { get; private set; }
 
         /// <summary>
-        /// Defines database type and connection string to connect to.
+        /// Defines database type and connection string for connection.
         /// </summary>
         /// <param name="database">'DB' enum value for database type.</param>
         /// <param name="connectionString">Connection string for the database selected.</param>
@@ -50,7 +50,7 @@ namespace QueryDB
         /// Note: Use aliases in query for similar column names.
         /// </summary>
         /// <param name="selectSql">'Select' query.</param>
-        /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase / lowercase. Default - 'false'.</param>
+        /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase. Default - 'false'.</param>
         /// <returns>List of data Dictionary with column names as keys holding values into a list for multiple rows of data.</returns>
         public List<DataDictionary> FetchData(string selectSql, bool upperCaseKeys = false)
         {
