@@ -98,6 +98,38 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("SOD", agent.ReferenceData["ORD_DESCRIPTION"]);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_FetchData_SelectQuery_Aliases()
+        {
+            var selectSql = Queries.MSSQLQueries.SalesDB.SelectSql_Alias;
+            var data = new DBContext(DB.MSSQL, MSSQLConnectionString).FetchData(selectSql);
+            Assert.IsTrue(data.Count == 34);
+            var agent = data.FirstOrDefault(X => X.ReferenceData["Agent_Code"] == "A004" && X.ReferenceData["Cust_Code"] == "C00006");
+            Assert.AreEqual("A004", agent.ReferenceData["Agent_Code"]);
+            Assert.AreEqual("Ivan", agent.ReferenceData["Agent"]);
+            Assert.AreEqual("Torento", agent.ReferenceData["Agent_Location"]);
+            Assert.AreEqual("C00006", agent.ReferenceData["Cust_Code"]);
+            Assert.AreEqual("Shilton", agent.ReferenceData["Customer"]);
+            Assert.AreEqual("Torento", agent.ReferenceData["Customer_Location"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_FetchData_SelectQuery_Aliases_UpperCaseKeys()
+        {
+            var selectSql = Queries.MSSQLQueries.SalesDB.SelectSql_Alias;
+            var data = new DBContext(DB.MSSQL, MSSQLConnectionString).FetchData(selectSql, upperCaseKeys: true);
+            Assert.IsTrue(data.Count == 34);
+            var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004" && X.ReferenceData["CUST_CODE"] == "C00006");
+            Assert.AreEqual("A004", agent.ReferenceData["AGENT_CODE"]);
+            Assert.AreEqual("Ivan", agent.ReferenceData["AGENT"]);
+            Assert.AreEqual("Torento", agent.ReferenceData["AGENT_LOCATION"]);
+            Assert.AreEqual("C00006", agent.ReferenceData["CUST_CODE"]);
+            Assert.AreEqual("Shilton", agent.ReferenceData["CUSTOMER"]);
+            Assert.AreEqual("Torento", agent.ReferenceData["CUSTOMER_LOCATION"]);
+        }
+
         #endregion
 
         #endregion
@@ -193,6 +225,38 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("SOD", agent.ReferenceData["ORD_DESCRIPTION"]);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
+        public void Test_MySQL_FetchData_SelectQuery_Aliases()
+        {
+            var selectSql = Queries.MySQLQueries.SalesDB.SelectSql_Alias;
+            var data = new DBContext(DB.MySQL, MySQLConnectionString).FetchData(selectSql);
+            Assert.IsTrue(data.Count == 34);
+            var agent = data.FirstOrDefault(X => X.ReferenceData["Agent_Code"] == "A004" && X.ReferenceData["Cust_Code"] == "C00006");
+            Assert.AreEqual("A004", agent.ReferenceData["Agent_Code"]);
+            Assert.AreEqual("Ivan", agent.ReferenceData["Agent"]);
+            Assert.AreEqual("Torento", agent.ReferenceData["Agent_Location"]);
+            Assert.AreEqual("C00006", agent.ReferenceData["Cust_Code"]);
+            Assert.AreEqual("Shilton", agent.ReferenceData["Customer"]);
+            Assert.AreEqual("Torento", agent.ReferenceData["Customer_Location"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
+        public void Test_MySQL_FetchData_SelectQuery_Aliases_UpperCaseKeys()
+        {
+            var selectSql = Queries.MySQLQueries.SalesDB.SelectSql_Alias;
+            var data = new DBContext(DB.MySQL, MySQLConnectionString).FetchData(selectSql, upperCaseKeys: true);
+            Assert.IsTrue(data.Count == 34);
+            var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004" && X.ReferenceData["CUST_CODE"] == "C00006");
+            Assert.AreEqual("A004", agent.ReferenceData["AGENT_CODE"]);
+            Assert.AreEqual("Ivan", agent.ReferenceData["AGENT"]);
+            Assert.AreEqual("Torento", agent.ReferenceData["AGENT_LOCATION"]);
+            Assert.AreEqual("C00006", agent.ReferenceData["CUST_CODE"]);
+            Assert.AreEqual("Shilton", agent.ReferenceData["CUSTOMER"]);
+            Assert.AreEqual("Torento", agent.ReferenceData["CUSTOMER_LOCATION"]);
+        }
+
         #endregion
 
         #endregion
@@ -286,6 +350,38 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("1500", agent.ReferenceData["ORD_AMOUNT"]);
             Assert.AreEqual("500", agent.ReferenceData["ADVANCE_AMOUNT"]);
             Assert.AreEqual("SOD", agent.ReferenceData["ORD_DESCRIPTION"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public void Test_Oracle_FetchData_SelectQuery_Aliases()
+        {
+            var selectSql = Queries.OracleQueries.SalesDB.SelectSql_Alias;
+            var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData(selectSql);
+            Assert.IsTrue(data.Count == 34);
+            var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004" && X.ReferenceData["CUST_CODE"] == "C00006");
+            Assert.AreEqual("A004", agent.ReferenceData["AGENT_CODE"]);
+            Assert.AreEqual("Ivan", agent.ReferenceData["AGENT"]);
+            Assert.AreEqual("Torento", agent.ReferenceData["AGENT_LOCATION"]);
+            Assert.AreEqual("C00006", agent.ReferenceData["CUST_CODE"]);
+            Assert.AreEqual("Shilton", agent.ReferenceData["CUSTOMER"]);
+            Assert.AreEqual("Torento", agent.ReferenceData["CUSTOMER_LOCATION"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public void Test_Oracle_FetchData_SelectQuery_Aliases_UpperCaseKeys()
+        {
+            var selectSql = Queries.OracleQueries.SalesDB.SelectSql_Alias;
+            var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData(selectSql, upperCaseKeys: true);
+            Assert.IsTrue(data.Count == 34);
+            var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004" && X.ReferenceData["CUST_CODE"] == "C00006");
+            Assert.AreEqual("A004", agent.ReferenceData["AGENT_CODE"]);
+            Assert.AreEqual("Ivan", agent.ReferenceData["AGENT"]);
+            Assert.AreEqual("Torento", agent.ReferenceData["AGENT_LOCATION"]);
+            Assert.AreEqual("C00006", agent.ReferenceData["CUST_CODE"]);
+            Assert.AreEqual("Shilton", agent.ReferenceData["CUSTOMER"]);
+            Assert.AreEqual("Torento", agent.ReferenceData["CUSTOMER_LOCATION"]);
         }
 
         #endregion
