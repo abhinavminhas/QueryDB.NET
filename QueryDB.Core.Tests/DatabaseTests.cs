@@ -265,8 +265,8 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("C00006", agent.ReferenceData["CUST_CODE"]);
             Assert.AreEqual("Shilton", agent.ReferenceData["CUST_NAME"]);
             Assert.AreEqual("200104", agent.ReferenceData["ORD_NUM"]);
-            Assert.AreEqual("1500.00", agent.ReferenceData["ORD_AMOUNT"]);
-            Assert.AreEqual("500.00", agent.ReferenceData["ADVANCE_AMOUNT"]);
+            Assert.AreEqual("1500", agent.ReferenceData["ORD_AMOUNT"]);
+            Assert.AreEqual("500", agent.ReferenceData["ADVANCE_AMOUNT"]);
             Assert.AreEqual("SOD", agent.ReferenceData["ORD_DESCRIPTION"]);
         }
 
@@ -283,8 +283,8 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("C00006", agent.ReferenceData["CUST_CODE"]);
             Assert.AreEqual("Shilton", agent.ReferenceData["CUST_NAME"]);
             Assert.AreEqual("200104", agent.ReferenceData["ORD_NUM"]);
-            Assert.AreEqual("1500.00", agent.ReferenceData["ORD_AMOUNT"]);
-            Assert.AreEqual("500.00", agent.ReferenceData["ADVANCE_AMOUNT"]);
+            Assert.AreEqual("1500", agent.ReferenceData["ORD_AMOUNT"]);
+            Assert.AreEqual("500", agent.ReferenceData["ADVANCE_AMOUNT"]);
             Assert.AreEqual("SOD", agent.ReferenceData["ORD_DESCRIPTION"]);
         }
 
