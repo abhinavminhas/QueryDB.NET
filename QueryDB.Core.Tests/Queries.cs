@@ -2,7 +2,7 @@
 {
     internal static class Queries
     {
-        internal static class SQLServerQueries
+        internal static class MSSQLQueries
         {
             internal static class Smoke
             {
