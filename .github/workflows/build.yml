@@ -35,7 +35,7 @@ jobs:
       uses: abhinavminhas/replace-tokens@main
       with:
         files: '${{ github.workspace }}/QueryDB.Core.Tests/App.config'
-        replacements: '__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }}'
+        replacements: '__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }}'
         
     - name: Build
       run: dotnet build QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
@@ -90,7 +90,7 @@ jobs:
       uses: abhinavminhas/replace-tokens@main
       with:
         files: '${{ github.workspace }}/QueryDB.Core.Tests/App.config'
-        replacements: '__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }}'
+        replacements: '__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }}'
         
     - name: Build
       run: dotnet build QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release

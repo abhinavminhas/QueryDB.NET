@@ -1,0 +1,18 @@
+services:
+  postgres-db:
+    image: postgres:16.4
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: "sys"
+      POSTGRES_PASSWORD: ""
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./QueryDB.Core.Tests/SeedData:/home
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sys"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 0s

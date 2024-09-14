@@ -29,6 +29,11 @@ namespace QueryDB
         internal static string OracleConnectionString { get; private set; }
 
         /// <summary>
+        /// Holds 'PostgreSQL' connection string value for the DBContext created.
+        /// </summary>
+        internal static string PostgreSqlConnectionString { get; private set; }
+
+        /// <summary>
         /// Defines database type and connection string for connection.
         /// </summary>
         /// <param name="database">'DB' enum value for database type.</param>
@@ -42,6 +47,8 @@ namespace QueryDB
                 MySqlConnectionString = connectionString;
             else if(Database.Equals(DB.Oracle))
                 OracleConnectionString = connectionString;
+            else if (Database.Equals(DB.PostgreSQL))
+                PostgreSqlConnectionString = connectionString;
         }
 
         /// <summary>
@@ -79,6 +86,14 @@ namespace QueryDB
                     dataList = _systemAdapter.FetchData(selectSql, oracleDBConnection.OracleConnection, upperCaseKeys);
                 }
             }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    var _systemAdapter = new PostgreSQL.Adapter();
+                    dataList = _systemAdapter.FetchData(selectSql, postgreSqlDBConnection.PostgreSQLConnection, upperCaseKeys);
+                }
+            }
             return dataList;
         }
 
@@ -108,6 +123,15 @@ namespace QueryDB
         {
             return ConnectionBuilder.GetOracleConnection;
         }
+
+        /// <summary>
+        /// Gets 'PostgreSQL' connection.
+        /// </summary>
+        /// <returns>'PostgreSQL' connection.</returns>
+        internal static PostgreSQL.Connection GetPostgreSqlConnection()
+        {
+            return ConnectionBuilder.GetPostgreSqlConnection;
+        }
     }
 
     /// <summary>
@@ -117,6 +141,7 @@ namespace QueryDB
     {
         MSSQL = 1,
         MySQL = 2,
-        Oracle = 3
+        Oracle = 3,
+        PostgreSQL = 4
     }
 }
