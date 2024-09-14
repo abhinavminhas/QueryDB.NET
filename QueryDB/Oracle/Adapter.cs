@@ -13,13 +13,14 @@ namespace QueryDB.Oracle
         /// <summary>
         /// Gets the 'Oracle' data reader.
         /// </summary>
-        /// <param name="selectSql">'Select' sql value.</param>
+        /// <param name="cmdText">The text of the query.</param>
         /// <param name="connection">'Oracle' connection.</param>
-        /// <returns>'Oracle' data reader for the select sql.</returns>
-        internal OracleDataReader GetOracleReader(string selectSql, OracleConnection connection)
+        /// <param name="commandType">Sql command type.</param>
+        /// <returns>'Oracle' data reader.</returns>
+        internal OracleDataReader GetOracleReader(string cmdText, OracleConnection connection, CommandType commandType)
         {
             connection.Open();
-            using (var sqlCommand = new OracleCommand(selectSql, connection) { CommandType = CommandType.Text })
+            using (var sqlCommand = new OracleCommand(cmdText, connection) { CommandType = commandType })
             {
                 return sqlCommand.ExecuteReader();
             }
@@ -36,7 +37,7 @@ namespace QueryDB.Oracle
         internal List<DataDictionary> FetchData(string selectSql, OracleConnection connection, bool upperCaseKeys)
         {
             var dataList = new List<DataDictionary>();
-            using (var reader = GetOracleReader(selectSql, connection))
+            using (var reader = GetOracleReader(selectSql, connection, CommandType.Text))
             {
                 while (reader.Read())
                 {

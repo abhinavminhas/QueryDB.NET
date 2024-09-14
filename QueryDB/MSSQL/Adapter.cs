@@ -13,13 +13,14 @@ namespace QueryDB.MSSQL
         /// <summary>
         /// Gets the 'SQL Server' data reader.
         /// </summary>
-        /// <param name="selectSql">'Select' sql value.</param>
+        /// <param name="cmdText">The text of the query.</param>
         /// <param name="connection">'SQL Server' connection.</param>
-        /// <returns>'SQL Server' data reader for the select sql.</returns>
-        internal SqlDataReader GetSqlReader(string selectSql, SqlConnection connection)
+        /// <param name="commandType">Sql command type.</param>
+        /// <returns>'SQL Server' data reader.</returns>
+        internal SqlDataReader GetSqlReader(string cmdText, SqlConnection connection, CommandType commandType)
         {
             connection.Open();
-            using (var sqlCommand = new SqlCommand(selectSql, connection) { CommandType = CommandType.Text })
+            using (var sqlCommand = new SqlCommand(cmdText, connection) { CommandType = commandType })
             {
                 return sqlCommand.ExecuteReader();
             }
@@ -36,7 +37,7 @@ namespace QueryDB.MSSQL
         internal List<DataDictionary> FetchData(string selectSql, SqlConnection connection, bool upperCaseKeys)
         {
             var dataList = new List<DataDictionary>();
-            using (var reader = GetSqlReader(selectSql, connection))
+            using (var reader = GetSqlReader(selectSql, connection, CommandType.Text))
             {
                 while (reader.Read())
                 {

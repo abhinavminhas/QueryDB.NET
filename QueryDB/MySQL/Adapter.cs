@@ -13,13 +13,14 @@ namespace QueryDB.MySQL
         /// <summary>
         /// Gets the 'MySQL' data reader.
         /// </summary>
-        /// <param name="selectSql">'Select' sql value.</param>
+        /// <param name="cmdText">The text of the query.</param>
         /// <param name="connection">'MySQL' connection.</param>
-        /// <returns>'MySQL' data reader for the select sql.</returns>
-        internal MySqlDataReader GetMySqlReader(string selectSql, MySqlConnection connection)
+        /// <param name="commandType">Sql command type.</param>
+        /// <returns>'MySQL' data reader.</returns>
+        internal MySqlDataReader GetMySqlReader(string cmdText, MySqlConnection connection, CommandType commandType)
         {
             connection.Open();
-            using (var sqlCommand = new MySqlCommand(selectSql, connection) { CommandType = CommandType.Text })
+            using (var sqlCommand = new MySqlCommand(cmdText, connection) { CommandType = commandType })
             {
                 return sqlCommand.ExecuteReader();
             }
@@ -36,7 +37,7 @@ namespace QueryDB.MySQL
         internal List<DataDictionary> FetchData(string selectSql, MySqlConnection connection, bool upperCaseKeys)
         {
             var dataList = new List<DataDictionary>();
-            using (var reader = GetMySqlReader(selectSql, connection))
+            using (var reader = GetMySqlReader(selectSql, connection, CommandType.Text))
             {
                 while (reader.Read())
                 {
