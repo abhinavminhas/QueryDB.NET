@@ -9,13 +9,6 @@ runs:
   using: 'composite'
   
   steps:
-    - name: Docker Execute (ORACLE - Seed Data)
-      shell: bash
-      run: |
-        docker exec oracle-db bash -c "sqlplus -s sys/$ORACLE_PWD@localhost:1521/XE as sysdba @/home/oracle.sql"
-      env:
-        ORACLE_PWD: ${{ inputs.dbPassword }}
-
     - name: Docker Execute (MSSQL - Seed Data)
       shell: bash
       run: |
@@ -29,3 +22,17 @@ runs:
         docker exec mysql-db mysql -uroot -p$MYSQL_PWD -e "source /home/mysql.sql"
       env:
         MYSQL_PWD: ${{ inputs.dbPassword }}
+
+    - name: Docker Execute (ORACLE - Seed Data)
+      shell: bash
+      run: |
+        docker exec oracle-db bash -c "sqlplus -s sys/$ORACLE_PWD@localhost:1521/XE as sysdba @/home/oracle.sql"
+      env:
+        ORACLE_PWD: ${{ inputs.dbPassword }}
+
+    - name: Docker Execute (POSTGRESQL - Seed Data)
+      shell: bash
+      run: |
+        docker exec postgres-db bash -c "PGPASSWORD=$POSTGRESQL_PWD psql -U sys -f /home/postgresql.sql"
+      env:
+        POSTGRESQL_PWD: ${{ inputs.dbPassword }}
