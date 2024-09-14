@@ -1,12 +1,12 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 
-namespace QueryDB.Connection.Database
+namespace QueryDB.MySQL
 {
     /// <summary>
     /// 'MySQL' database connection.
     /// </summary>
-    internal sealed class MySqlDBConnection : IDisposable
+    internal sealed class Connection : IDisposable
     {
         /// <summary>
         /// Holds 'MySQL' connection.
@@ -17,7 +17,7 @@ namespace QueryDB.Connection.Database
         /// Creates 'MySQL' database connection.
         /// </summary>
         /// <param name="connectionString">'MySQL' connection string value.</param>
-        internal MySqlDBConnection(string connectionString)
+        internal Connection(string connectionString)
         {
             MySqlConnection = new MySqlConnection(connectionString);
         }
@@ -29,9 +29,8 @@ namespace QueryDB.Connection.Database
         {
             if (MySqlConnection != null)
             {
-                MySqlConnection.Close();
                 MySqlConnection.Dispose();
-            }    
+            }
         }
     }
 }

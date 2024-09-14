@@ -1,154 +1,112 @@
-﻿using QueryDB.Adapter;
-using QueryDB.Connection;
-using QueryDB.Connection.Database;
-using QueryDB.Resources;
+﻿using QueryDB.Resources;
 using System.Collections.Generic;
 
 namespace QueryDB
 {
     /// <summary>
-    /// DBContext to connect to a database type and run commands.
+    /// Allows to connect to a database type and run commands.
     /// </summary>
-    public class DBContext
+    public sealed class DBContext : IDBContext
     {
         /// <summary>
         /// Database type value to connect to.
         /// </summary>
-        internal static DB Database;
+        internal static DB Database { get; private set; }
 
         /// <summary>
-        /// Holds 'Oracle' connection string value for the DBContext created.
+        /// Holds 'SQL Server' connection string value for the DBContext created.
         /// </summary>
-        internal static string OracleConnectionString;
-
-        /// <summary>
-        /// Holds 'Sql Server' connection string value for the DBContext created.
-        /// </summary>
-        internal static string SqlServerConnectionString;
+        internal static string SqlConnectionString { get; private set; }
 
         /// <summary>
         /// Holds 'MySQL' connection string value for the DBContext created.
         /// </summary>
-        internal static string MySqlConnectionString;
+        internal static string MySqlConnectionString { get; private set; }
 
         /// <summary>
-        /// Defines database type and connection string to connect to.
+        /// Holds 'Oracle' connection string value for the DBContext created.
+        /// </summary>
+        internal static string OracleConnectionString { get; private set; }
+
+        /// <summary>
+        /// Defines database type and connection string for connection.
         /// </summary>
         /// <param name="database">'DB' enum value for database type.</param>
         /// <param name="connectionString">Connection string for the database selected.</param>
         public DBContext(DB database, string connectionString)
         {
             Database = database;
-            if (Database.Equals(DB.Oracle))
-                OracleConnectionString = connectionString;
-            else if (Database.Equals(DB.MSSQL))
-                SqlServerConnectionString = connectionString;
+            if (Database.Equals(DB.MSSQL))
+                SqlConnectionString = connectionString;
             else if (Database.Equals(DB.MySQL))
                 MySqlConnectionString = connectionString;
+            else if(Database.Equals(DB.Oracle))
+                OracleConnectionString = connectionString;
         }
 
         /// <summary>
-        /// Retrives records for the 'Select' query from the database.
+        /// Retrieves records for 'Select' queries from the database.
         /// Converts column names to keys holding values, with multiple database rows returned into a list.
         /// Note: Use aliases in query for similar column names.
         /// </summary>
         /// <param name="selectSql">'Select' query.</param>
-        /// <param name="upperCaseKeys">Optional parameter to return dictionary keys in upper case. Default - 'false'.</param>
+        /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase. Default - 'false'.</param>
         /// <returns>List of data Dictionary with column names as keys holding values into a list for multiple rows of data.</returns>
         public List<DataDictionary> FetchData(string selectSql, bool upperCaseKeys = false)
         {
             var dataList = new List<DataDictionary>();
-            if (Database.Equals(DB.Oracle))
+            if (Database.Equals(DB.MSSQL))
             {
-                using (var oracleDBConnection = GetOracleConnection())
+                using (var msSqlDBConnection = GetSqlServerConnection())
                 {
-                    var _systemAdapter = new OracleAdapter();
-                    var reader = _systemAdapter.GetOracleReader(selectSql, oracleDBConnection.OracleConnection);
-                    while (reader.Read())
-                    {
-                        var addedRow = new DataDictionary();
-                        for (int i = 0; i < reader.FieldCount; i++)
-                        {
-                            if (upperCaseKeys)
-                                addedRow.ReferenceData.Add(reader.GetName(i).ToUpper(), reader.GetValue(i).ToString());
-                            else
-                                addedRow.ReferenceData.Add(reader.GetName(i), reader.GetValue(i).ToString());
-                        }
-                        dataList.Add(addedRow);
-                    }
-                }
-            }
-            else if (Database.Equals(DB.MSSQL))
-            {
-                using (var sqlDBConnection = GetSqlServerConnection())
-                {
-                    var _systemAdapter = new SqlAdapter();
-                    var reader = _systemAdapter.GetSqlReader(selectSql, sqlDBConnection.SqlConnection);
-                    while (reader.Read())
-                    {
-                        var addedRow = new DataDictionary();
-                        for (int i = 0; i < reader.FieldCount; i++)
-                        {
-                            if (upperCaseKeys)
-                                addedRow.ReferenceData.Add(reader.GetName(i).ToUpper(), reader.GetValue(i).ToString());
-                            else
-                                addedRow.ReferenceData.Add(reader.GetName(i), reader.GetValue(i).ToString());
-                        }
-                        dataList.Add(addedRow);
-                    }
+                    var _systemAdapter = new MSSQL.Adapter();
+                    dataList = _systemAdapter.FetchData(selectSql, msSqlDBConnection.SqlConnection, upperCaseKeys);
                 }
             }
             else if (Database.Equals(DB.MySQL))
             {
                 using (var mySqlDBConnection = GetMySqlConnection())
                 {
-                    var _systemAdapter = new MySqlAdapter();
-                    var reader = _systemAdapter.GetSqlReader(selectSql, mySqlDBConnection.MySqlConnection);
-                    while (reader.Read())
-                    {
-                        var addedRow = new DataDictionary();
-                        for (int i = 0; i < reader.FieldCount; i++)
-                        {
-                            if (upperCaseKeys)
-                                addedRow.ReferenceData.Add(reader.GetName(i).ToUpper(), reader.GetValue(i).ToString());
-                            else
-                                addedRow.ReferenceData.Add(reader.GetName(i), reader.GetValue(i).ToString());
-                        }
-                        dataList.Add(addedRow);
-                    }
+                    var _systemAdapter = new MySQL.Adapter();
+                    dataList = _systemAdapter.FetchData(selectSql, mySqlDBConnection.MySqlConnection, upperCaseKeys);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    var _systemAdapter = new Oracle.Adapter();
+                    dataList = _systemAdapter.FetchData(selectSql, oracleDBConnection.OracleConnection, upperCaseKeys);
                 }
             }
             return dataList;
         }
 
         /// <summary>
-        /// Gets 'Oracle' connection.
+        /// Gets 'SQL Server' connection.
         /// </summary>
-        /// <returns>'Oracle' connection.</returns>
-        private OracleDBConnection GetOracleConnection()
+        /// <returns>'SQL Server' Connection.</returns>
+        internal static MSSQL.Connection GetSqlServerConnection()
         {
-            var _connectionBuilder = new ConnectionBuilder();
-            return _connectionBuilder.GetOracleConnection;
-        }
-
-        /// <summary>
-        /// Gets 'Sql Server' connection.
-        /// </summary>
-        /// <returns>'Sql Server' Connection.</returns>
-        private SqlDBConnection GetSqlServerConnection()
-        {
-            var _connectionBuilder = new ConnectionBuilder();
-            return _connectionBuilder.GetSqlServerConnection;
+            return ConnectionBuilder.GetSqlConnection;
         }
 
         /// <summary>
         /// Gets 'MySQL' connection.
         /// </summary>
         /// <returns>'MySQL' Connection.</returns>
-        private MySqlDBConnection GetMySqlConnection()
+        internal static MySQL.Connection GetMySqlConnection()
         {
-            var _connectionBuilder = new ConnectionBuilder();
-            return _connectionBuilder.GetMySqlConnection;
+            return ConnectionBuilder.GetMySqlConnection;
+        }
+
+        /// <summary>
+        /// Gets 'Oracle' connection.
+        /// </summary>
+        /// <returns>'Oracle' connection.</returns>
+        internal static Oracle.Connection GetOracleConnection()
+        {
+            return ConnectionBuilder.GetOracleConnection;
         }
     }
 
@@ -157,8 +115,8 @@ namespace QueryDB
     /// </summary>
     public enum DB
     {
-        Oracle,
-        MSSQL,
-        MySQL
+        MSSQL = 1,
+        MySQL = 2,
+        Oracle = 3
     }
 }

@@ -1,12 +1,12 @@
 ﻿using Oracle.ManagedDataAccess.Client;
 using System;
 
-namespace QueryDB.Connection.Database
+namespace QueryDB.Oracle
 {
     /// <summary>
     /// 'Oracle' database connection.
     /// </summary>
-    internal sealed class OracleDBConnection : IDisposable
+    internal sealed class Connection : IDisposable
     {
         /// <summary>
         /// Holds 'Oracle' connection.
@@ -17,7 +17,7 @@ namespace QueryDB.Connection.Database
         /// Creates 'Oracle' database connection.
         /// </summary>
         /// <param name="connectionString">'Oracle' connection string value.</param>
-        internal OracleDBConnection(string connectionString)
+        internal Connection(string connectionString)
         {
             OracleConnection = new OracleConnection(connectionString);
         }
@@ -29,7 +29,6 @@ namespace QueryDB.Connection.Database
         {
             if (OracleConnection != null)
             {
-                OracleConnection.Clone();
                 OracleConnection.Dispose();
             }
         }
