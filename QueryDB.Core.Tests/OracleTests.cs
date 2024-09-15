@@ -147,7 +147,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("Hampshair", agent.Working_Area);
             Assert.AreEqual(0.11, agent.Commission);
             Assert.AreEqual("008-22536178", agent.Phone_No);
-            Assert.AreEqual("", agent.Country);
+            Assert.AreEqual(null, agent.Country);
         }
 
         #endregion
