@@ -41,15 +41,15 @@ namespace QueryDB.MySQL
             {
                 while (reader.Read())
                 {
-                    var addedRow = new DataDictionary();
+                    var addRow = new DataDictionary();
                     for (int i = 0; i < reader.FieldCount; i++)
                     {
                         if (upperCaseKeys)
-                            addedRow.ReferenceData.Add(reader.GetName(i).ToUpper(), reader.GetValue(i).ToString());
+                            addRow.ReferenceData.Add(reader.GetName(i).ToUpper(), reader.GetValue(i).ToString());
                         else
-                            addedRow.ReferenceData.Add(reader.GetName(i), reader.GetValue(i).ToString());
+                            addRow.ReferenceData.Add(reader.GetName(i), reader.GetValue(i).ToString());
                     }
-                    dataList.Add(addedRow);
+                    dataList.Add(addRow);
                 }
             }
             return dataList;
