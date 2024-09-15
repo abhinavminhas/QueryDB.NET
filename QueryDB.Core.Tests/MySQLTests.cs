@@ -32,7 +32,7 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
-        public void Test_MySQL_FetchData_SelectQuery()
+        public void Test_MySQL_FetchData_Dictionary_SelectQuery()
         {
             var selectSql = Queries.MySQLQueries.SalesDB.SelectSql;
             var data = new DBContext(DB.MySQL, MySQLConnectionString).FetchData(selectSql);
@@ -48,7 +48,7 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
-        public void Test_MySQL_FetchData_SelectQuery_UpperCaseKeys()
+        public void Test_MySQL_FetchData_Dictionary_SelectQuery_UpperCaseKeys()
         {
             var selectSql = Queries.MySQLQueries.SalesDB.SelectSql;
             var data = new DBContext(DB.MySQL, MySQLConnectionString).FetchData(selectSql, upperCaseKeys: true);
@@ -64,7 +64,7 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
-        public void Test_MySQL_FetchData_SelectQuery_Joins()
+        public void Test_MySQL_FetchData_Dictionary_SelectQuery_Joins()
         {
             var selectSql = Queries.MySQLQueries.SalesDB.SelectSql_Join;
             var data = new DBContext(DB.MySQL, MySQLConnectionString).FetchData(selectSql);
@@ -82,7 +82,7 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
-        public void Test_MySQL_FetchData_SelectQuery_Joins_UpperCaseKeys()
+        public void Test_MySQL_FetchData_Dictionary_SelectQuery_Joins_UpperCaseKeys()
         {
             var selectSql = Queries.MySQLQueries.SalesDB.SelectSql_Join;
             var data = new DBContext(DB.MySQL, MySQLConnectionString).FetchData(selectSql, upperCaseKeys: true);
@@ -100,7 +100,7 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
-        public void Test_MySQL_FetchData_SelectQuery_Aliases()
+        public void Test_MySQL_FetchData_Dictionary_SelectQuery_Aliases()
         {
             var selectSql = Queries.MySQLQueries.SalesDB.SelectSql_Alias;
             var data = new DBContext(DB.MySQL, MySQLConnectionString).FetchData(selectSql);
@@ -116,7 +116,7 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
-        public void Test_MySQL_FetchData_SelectQuery_Aliases_UpperCaseKeys()
+        public void Test_MySQL_FetchData_Dictionary_SelectQuery_Aliases_UpperCaseKeys()
         {
             var selectSql = Queries.MySQLQueries.SalesDB.SelectSql_Alias;
             var data = new DBContext(DB.MySQL, MySQLConnectionString).FetchData(selectSql, upperCaseKeys: true);
