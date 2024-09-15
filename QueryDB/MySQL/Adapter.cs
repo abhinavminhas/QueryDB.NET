@@ -31,7 +31,7 @@ namespace QueryDB.MySQL
         /// Converts column names to keys holding values, with multiple database rows returned into a list.
         /// </summary>
         /// <param name="selectSql">'Select' query.</param>
-        /// <param name="connection">MySQL Connection.</param>
+        /// <param name="connection">'MySQL' Connection.</param>
         /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase.</param>
         /// <returns>List of data Dictionary with column names as keys holding values into a list for multiple rows of data.</returns>
         internal List<DataDictionary> FetchData(string selectSql, MySqlConnection connection, bool upperCaseKeys)
@@ -53,6 +53,35 @@ namespace QueryDB.MySQL
                 }
             }
             return dataList;
+        }
+
+        /// <summary>
+        ///  Retrieves records for 'Select' queries from the database.
+        /// </summary>
+        /// <typeparam name="T">Object entity to return data mapped into.</typeparam>
+        /// <param name="selectSql">'Select' query.</param>
+        /// <param name="connection">'MySQL' Connection.</param>
+        /// <returns>List of data rows mapped into object entity into a list for multiple rows of data.</returns>
+        internal List<T> FetchData<T>(string selectSql, MySqlConnection connection) where T : new()
+        {
+            var dataList = new List<T>();
+            using (var reader = GetMySqlReader(selectSql, connection, CommandType.Text))
+            {
+                while (reader.Read())
+                {
+                    var addObjectRow = new T();
+                    foreach (var prop in typeof(T).GetProperties())
+                    {
+                        if (!reader.IsDBNull(reader.GetOrdinal(prop.Name)))
+                        {
+                            prop.SetValue(addObjectRow, reader[prop.Name]);
+                        }
+                    }
+                    dataList.Add(addObjectRow);
+                }
+            }
+            return dataList;
+
         }
     }
 }

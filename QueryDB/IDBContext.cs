@@ -15,5 +15,13 @@ namespace QueryDB
         /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase. Default - 'false'.</param>
         /// <returns>List of data Dictionary with column names as keys holding values into a list for multiple rows of data.</returns>
         List<DataDictionary> FetchData(string selectSql, bool upperCaseKeys = false);
+
+        /// <summary>
+        ///  Retrieves records for 'Select' queries from the database.
+        /// </summary>
+        /// <typeparam name="T">Object entity to return data mapped into.</typeparam>
+        /// <param name="selectSql">'Select' query.</param>
+        /// <returns>List of data rows mapped into object entity into a list for multiple rows of data.</returns>
+        List<T> FetchData<T>(string selectSql) where T : new();
     }
 }

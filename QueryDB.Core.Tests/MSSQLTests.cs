@@ -28,7 +28,7 @@ namespace QueryDB.Core.Tests
 
         #endregion
 
-        #region Fetch Data Tests
+        #region Fetch Data Tests - << List<DataDictionary> FetchData(string selectSql, bool upperCaseKeys = false) >>
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
@@ -128,6 +128,26 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("C00006", agent.ReferenceData["CUST_CODE"]);
             Assert.AreEqual("Shilton", agent.ReferenceData["CUSTOMER"]);
             Assert.AreEqual("Torento", agent.ReferenceData["CUSTOMER_LOCATION"]);
+        }
+
+        #endregion
+
+        #region Fetch Data Tests - << List<T> FetchData<T>(string selectSql) >>
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_FetchData_Entity_SelectQuery()
+        {
+            var selectSql = Queries.MSSQLQueries.SalesDB.SelectSql;
+            var data = new DBContext(DB.MSSQL, MSSQLConnectionString).FetchData<Entities.MSSQL.Agents>(selectSql);
+            Assert.IsTrue(data.Count == 12);
+            var agent = data.FirstOrDefault(X => X.Agent_Name == "Benjamin");
+            Assert.AreEqual("A009", agent.Agent_Code);
+            Assert.AreEqual("Benjamin", agent.Agent_Name);
+            Assert.AreEqual("Hampshair", agent.Working_Area);
+            Assert.AreEqual((decimal)0.11, agent.Commission);
+            Assert.AreEqual("008-22536178", agent.Phone_No);
+            Assert.AreEqual("", agent.Country);
         }
 
         #endregion
