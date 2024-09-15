@@ -37,7 +37,7 @@ namespace QueryDB.Core.Tests
                 public string Agent_Code { get; set; }
                 public string Agent_Name { get; set; }
                 public string Working_Area { get; set; }
-                public decimal Commission { get; set; }
+                public double Commission { get; set; }
                 public string Phone_No { get; set; }
                 public string Country { get; set; }
             }

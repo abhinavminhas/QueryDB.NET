@@ -145,7 +145,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("A009", agent.Agent_Code);
             Assert.AreEqual("Benjamin", agent.Agent_Name);
             Assert.AreEqual("Hampshair", agent.Working_Area);
-            Assert.AreEqual((decimal)0.11, agent.Commission);
+            Assert.AreEqual(0.11, agent.Commission);
             Assert.AreEqual("008-22536178", agent.Phone_No);
             Assert.AreEqual("", agent.Country);
         }
