@@ -40,5 +40,17 @@
                 return connection;
             }
         }
+
+        /// <summary>
+        /// Gets 'PostgreSQL' database connection.
+        /// </summary>
+        internal static PostgreSQL.Connection GetPostgreSqlConnection
+        {
+            get
+            {
+                var connection = new PostgreSQL.Connection(DBContext.PostgreSqlConnectionString);
+                return connection;
+            }
+        }
     }
 }

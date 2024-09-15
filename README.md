@@ -16,3 +16,4 @@ QueryDB framework project is a flexible database query tool designed to facilita
 - [MSSQL](https://www.microsoft.com/en-us/sql-server)
 - [MySQL](https://www.mysql.com/)
 - [Oracle](https://www.oracle.com/)
+- [PostgreSQL](https://www.postgresql.org/)
