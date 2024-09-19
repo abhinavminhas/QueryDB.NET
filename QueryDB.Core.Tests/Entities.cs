@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace QueryDB.Core.Tests
+﻿namespace QueryDB.Core.Tests
 {
     public class Entities
     {
@@ -17,6 +13,21 @@ namespace QueryDB.Core.Tests
                 public string Phone_No { get; set; }
                 public string Country { get; set; }
             }
+            public class Orders
+            {
+                public string Agent_Code { get; set; }
+                public string Agent { get; set; }
+                public string Agent_Name { get; set; }
+                public string Agent_Location { get; set; }
+                public string Cust_Code { get; set; }
+                public string Customer { get; set; }
+                public string Cust_Name { get; set; }
+                public string Customer_Location { get; set; }
+                public decimal Ord_Num { get; set; }
+                public decimal Ord_Amount { get; set; }
+                public decimal Advance_Amount { get; set; }
+                public string Ord_Description { get; set; }
+            }
         }
         public class MySQL
         {
@@ -28,6 +39,21 @@ namespace QueryDB.Core.Tests
                 public decimal Commission { get; set; }
                 public string Phone_No { get; set; }
                 public string Country { get; set; }
+            }
+            public class Orders
+            {
+                public string Agent_Code { get; set; }
+                public string Agent { get; set; }
+                public string Agent_Name { get; set; }
+                public string Agent_Location { get; set; }
+                public string Cust_Code { get; set; }
+                public string Customer { get; set; }
+                public string Cust_Name { get; set; }
+                public string Customer_Location { get; set; }
+                public decimal Ord_Num { get; set; }
+                public decimal Ord_Amount { get; set; }
+                public decimal Advance_Amount { get; set; }
+                public string Ord_Description { get; set; }
             }
         }
         public class Oracle
@@ -41,6 +67,21 @@ namespace QueryDB.Core.Tests
                 public string Phone_No { get; set; }
                 public string Country { get; set; }
             }
+            public class Orders
+            {
+                public string Agent_Code { get; set; }
+                public string Agent { get; set; }
+                public string Agent_Name { get; set; }
+                public string Agent_Location { get; set; }
+                public string Cust_Code { get; set; }
+                public string Customer { get; set; }
+                public string Cust_Name { get; set; }
+                public string Customer_Location { get; set; }
+                public decimal Ord_Num { get; set; }
+                public decimal Ord_Amount { get; set; }
+                public decimal Advance_Amount { get; set; }
+                public string Ord_Description { get; set; }
+            }
         }
         public class PostgreSQL
         {
@@ -52,6 +93,21 @@ namespace QueryDB.Core.Tests
                 public decimal Commission { get; set; }
                 public string Phone_No { get; set; }
                 public string Country { get; set; }
+            }
+            public class Orders
+            {
+                public string Agent_Code { get; set; }
+                public string Agent { get; set; }
+                public string Agent_Name { get; set; }
+                public string Agent_Location { get; set; }
+                public string Cust_Code { get; set; }
+                public string Customer { get; set; }
+                public string Cust_Name { get; set; }
+                public string Customer_Location { get; set; }
+                public decimal Ord_Num { get; set; }
+                public decimal Ord_Amount { get; set; }
+                public decimal Advance_Amount { get; set; }
+                public string Ord_Description { get; set; }
             }
         }
     }

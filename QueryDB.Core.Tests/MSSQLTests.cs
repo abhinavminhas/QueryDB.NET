@@ -150,6 +150,52 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("", agent.Country);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_FetchData_Entity_SelectQuery_Joins()
+        {
+            var selectSql = Queries.MSSQLQueries.SalesDB.SelectSql_Join;
+            var data = new DBContext(DB.MSSQL, MSSQLConnectionString).FetchData<Entities.MSSQL.Orders>(selectSql);
+            Assert.IsTrue(data.Count == 34);
+            var agent = data.FirstOrDefault(X => X.Agent_Code == "A004" && X.Cust_Code == "C00006");
+            Assert.AreEqual("A004", agent.Agent_Code);
+            Assert.AreEqual("Ivan", agent.Agent_Name);
+            Assert.AreEqual("C00006", agent.Cust_Code);
+            Assert.AreEqual("Shilton", agent.Cust_Name);
+            Assert.AreEqual(200104, agent.Ord_Num);
+            Assert.AreEqual((decimal)1500.00, agent.Ord_Amount);
+            Assert.AreEqual((decimal)500.00, agent.Advance_Amount);
+            Assert.AreEqual("SOD", agent.Ord_Description);
+            // Non Existent Query Data
+            Assert.AreEqual(null, agent.Agent);
+            Assert.AreEqual(null, agent.Agent_Location);
+            Assert.AreEqual(null, agent.Customer);
+            Assert.AreEqual(null, agent.Customer_Location);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_FetchData_Entity_SelectQuery_Aliases()
+        {
+            var selectSql = Queries.MSSQLQueries.SalesDB.SelectSql_Alias;
+            var data = new DBContext(DB.MSSQL, MSSQLConnectionString).FetchData<Entities.MSSQL.Orders>(selectSql);
+            Assert.IsTrue(data.Count == 34);
+            var agent = data.FirstOrDefault(X => X.Agent_Code == "A004" && X.Cust_Code == "C00006");
+            Assert.AreEqual("A004", agent.Agent_Code);
+            Assert.AreEqual("Ivan", agent.Agent);
+            Assert.AreEqual("Torento", agent.Agent_Location);
+            Assert.AreEqual("C00006", agent.Cust_Code);
+            Assert.AreEqual("Shilton", agent.Customer);
+            Assert.AreEqual("Torento", agent.Customer_Location);
+            // Non Existent Query Data
+            Assert.AreEqual(null, agent.Agent_Name);
+            Assert.AreEqual(null, agent.Cust_Name);
+            Assert.AreEqual(0, agent.Ord_Num);
+            Assert.AreEqual(0, agent.Ord_Amount);
+            Assert.AreEqual(0, agent.Advance_Amount);
+            Assert.AreEqual(null, agent.Ord_Description);
+        }
+
         #endregion
 
         #endregion
