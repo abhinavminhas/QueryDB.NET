@@ -163,8 +163,8 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("C00006", agent.Cust_Code);
             Assert.AreEqual("Shilton", agent.Cust_Name);
             Assert.AreEqual(200104, agent.Ord_Num);
-            Assert.AreEqual((decimal)1500.00, agent.Ord_Amount);
-            Assert.AreEqual((decimal)500.00, agent.Advance_Amount);
+            Assert.AreEqual(1500, agent.Ord_Amount);
+            Assert.AreEqual(500, agent.Advance_Amount);
             Assert.AreEqual("SOD", agent.Ord_Description);
             // Non Existent Query Data
             Assert.AreEqual(null, agent.Agent);
