@@ -34,7 +34,7 @@ CREATE TABLE Customer
 	Opening_Amt DECIMAL(12,2) NOT NULL, 
 	Recieve_Amt DECIMAL(12,2) NOT NULL, 
 	Payment_Amt DECIMAL(12,2) NOT NULL, 
-	Outstanding_Amt DECIMAL(12,2) NOT NULL, 
+	Outstanding_Amt NUMBER(12,2) NOT NULL, 
 	Phone_No VARCHAR(17) NOT NULL, 
 	Agent_Code VARCHAR(6) NOT NULL REFERENCES Agents
 );
@@ -67,9 +67,9 @@ INSERT INTO Customer VALUES ('C00011', 'Sundariya', 'Chennai', 'Chennai', 'India
 
 CREATE TABLE Orders 
 (
-    Ord_Num DECIMAL(6,0) NOT NULL PRIMARY KEY, 
-	Ord_Amount DECIMAL(12,2) NOT NULL, 
-	Advance_Amount DECIMAL(12,2) NOT NULL, 
+    Ord_Num NUMBER(6,0) NOT NULL PRIMARY KEY, 
+	Ord_Amount NUMBER(12,2) NOT NULL, 
+	Advance_Amount NUMBER(12,2) NOT NULL, 
 	Ord_Date DATE NOT NULL, 
 	Cust_Code VARCHAR(6) NOT NULL REFERENCES Customer, 
 	Agent_Code VARCHAR(6) NOT NULL REFERENCES Agents, 
