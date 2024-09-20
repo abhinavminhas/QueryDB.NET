@@ -78,8 +78,8 @@
                 public string Cust_Name { get; set; }
                 public string Customer_Location { get; set; }
                 public int Ord_Num { get; set; }
-                public decimal Ord_Amount { get; set; }
-                public decimal Advance_Amount { get; set; }
+                public double Ord_Amount { get; set; }
+                public double Advance_Amount { get; set; }
                 public string Ord_Description { get; set; }
             }
         }
