@@ -5,7 +5,7 @@ CREATE TABLE Agents
     Agent_Code VARCHAR(6) NOT NULL PRIMARY KEY, 
     Agent_Name VARCHAR(40), 
     Working_Area VARCHAR(35), 
-    Commission DECIMAL(10,2), 
+    Commission NUMBER(10,2), 
     Phone_No VARCHAR(15), 
     Country VARCHAR(25)
 );
@@ -31,9 +31,9 @@ CREATE TABLE Customer
 	Working_Area VARCHAR(35) NOT NULL, 
 	Cust_Country VARCHAR(20) NOT NULL, 
 	Grade INTEGER, 
-	Opening_Amt DECIMAL(12,2) NOT NULL, 
-	Recieve_Amt DECIMAL(12,2) NOT NULL, 
-	Payment_Amt DECIMAL(12,2) NOT NULL, 
+	Opening_Amt NUMBER(12,2) NOT NULL, 
+	Recieve_Amt NUMBER(12,2) NOT NULL, 
+	Payment_Amt NUMBER(12,2) NOT NULL, 
 	Outstanding_Amt NUMBER(12,2) NOT NULL, 
 	Phone_No VARCHAR(17) NOT NULL, 
 	Agent_Code VARCHAR(6) NOT NULL REFERENCES Agents
