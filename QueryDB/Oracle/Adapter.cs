@@ -73,7 +73,10 @@ namespace QueryDB.Oracle
                     foreach (var prop in typeof(T).GetProperties())
                     {
                         if (Utils.ColumnExists(reader, prop.Name) && !reader.IsDBNull(reader.GetOrdinal(prop.Name)))
+                        {
+                            System.Console.WriteLine(prop.Name);
                             prop.SetValue(addObjectRow, reader[prop.Name]);
+                        }
                     }
                     dataList.Add(addObjectRow);
                 }
