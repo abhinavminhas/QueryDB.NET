@@ -8,7 +8,7 @@
             {
                 public static string SelectSql = @"SELECT 'mssql' AS current_database";
             }
-            internal static class SalesDB
+            internal static class TestDB
             {
                 public static string SelectSql = @"SELECT * FROM Agents";
                 public static string SelectSql_Join = @"SELECT A.Agent_Code, A.Agent_Name, C.Cust_Code, C.Cust_Name, O.Ord_Num, O.Ord_Amount, O.Advance_Amount, O.Ord_Date, O.Ord_Description FROM Agents A INNER JOIN 
@@ -26,7 +26,7 @@
             {
                 public static string SelectSql = @"SELECT DATABASE() AS current_database";
             }
-            internal static class SalesDB
+            internal static class TestDB
             {
                 public static string SelectSql = @"SELECT * FROM Agents";
                 public static string SelectSql_Join = @"SELECT A.Agent_Code, A.Agent_Name, C.Cust_Code, C.Cust_Name, O.Ord_Num, O.Ord_Amount, O.Advance_Amount, O.Ord_Date, O.Ord_Description FROM Agents A INNER JOIN 
@@ -44,7 +44,7 @@
             {
                 public static string SelectSql = @"SELECT 'oracle' AS current_database FROM dual";
             }
-            internal static class SalesDB
+            internal static class TestDB
             {
                 public static string SelectSql = @"SELECT * FROM Agents";
                 public static string SelectSql_Join = @"SELECT A.Agent_Code, A.Agent_Name, C.Cust_Code, C.Cust_Name, O.Ord_Num, O.Ord_Amount, O.Advance_Amount, O.Ord_Date, O.Ord_Description FROM Agents A INNER JOIN 
@@ -62,7 +62,7 @@
             {
                 public static string SelectSql = @"SELECT 'postgres' AS current_database";
             }
-            internal static class SalesDB
+            internal static class TestDB
             {
                 public static string SelectSql = @"SELECT * FROM Agents";
                 public static string SelectSql_Join = @"SELECT A.Agent_Code, A.Agent_Name, C.Cust_Code, C.Cust_Name, O.Ord_Num, O.Ord_Amount, O.Advance_Amount, O.Ord_Date, O.Ord_Description FROM Agents A INNER JOIN 

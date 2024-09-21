@@ -34,7 +34,7 @@ namespace QueryDB.Core.Tests
         [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
         public void Test_PostgreSQL_FetchData_Dictionary_SelectQuery()
         {
-            var selectSql = Queries.PostgreSQLQueries.SalesDB.SelectSql;
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql;
             var data = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData(selectSql);
             Assert.IsTrue(data.Count == 12);
             var agent = data.FirstOrDefault(X => X.ReferenceData["agent_name"] == "Benjamin");
@@ -50,7 +50,7 @@ namespace QueryDB.Core.Tests
         [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
         public void Test_PostgreSQL_FetchData_Dictionary_SelectQuery_UpperCaseKeys()
         {
-            var selectSql = Queries.PostgreSQLQueries.SalesDB.SelectSql;
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql;
             var data = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData(selectSql, upperCaseKeys: true);
             Assert.IsTrue(data.Count == 12);
             var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_NAME"] == "Benjamin");
@@ -66,7 +66,7 @@ namespace QueryDB.Core.Tests
         [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
         public void Test_PostgreSQL_FetchData_Dictionary_SelectQuery_Joins()
         {
-            var selectSql = Queries.PostgreSQLQueries.SalesDB.SelectSql_Join;
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_Join;
             var data = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData(selectSql);
             Assert.IsTrue(data.Count == 34);
             var agent = data.FirstOrDefault(X => X.ReferenceData["agent_code"] == "A004" && X.ReferenceData["cust_code"] == "C00006");
@@ -84,7 +84,7 @@ namespace QueryDB.Core.Tests
         [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
         public void Test_PostgreSQL_FetchData_Dictionary_SelectQuery_Joins_UpperCaseKeys()
         {
-            var selectSql = Queries.PostgreSQLQueries.SalesDB.SelectSql_Join;
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_Join;
             var data = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData(selectSql, upperCaseKeys: true);
             Assert.IsTrue(data.Count == 34);
             var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004" && X.ReferenceData["CUST_CODE"] == "C00006");
@@ -102,7 +102,7 @@ namespace QueryDB.Core.Tests
         [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
         public void Test_PostgreSQL_FetchData_Dictionary_SelectQuery_Aliases()
         {
-            var selectSql = Queries.PostgreSQLQueries.SalesDB.SelectSql_Alias;
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_Alias;
             var data = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData(selectSql);
             Assert.IsTrue(data.Count == 34);
             var agent = data.FirstOrDefault(X => X.ReferenceData["agent_code"] == "A004" && X.ReferenceData["cust_code"] == "C00006");
@@ -118,7 +118,7 @@ namespace QueryDB.Core.Tests
         [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
         public void Test_PostgreSQL_FetchData_Dictionary_SelectQuery_Aliases_UpperCaseKeys()
         {
-            var selectSql = Queries.PostgreSQLQueries.SalesDB.SelectSql_Alias;
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_Alias;
             var data = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData(selectSql, upperCaseKeys: true);
             Assert.IsTrue(data.Count == 34);
             var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004" && X.ReferenceData["CUST_CODE"] == "C00006");
@@ -138,7 +138,7 @@ namespace QueryDB.Core.Tests
         [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
         public void Test_PostgreSQL_FetchData_Entity_SelectQuery()
         {
-            var selectSql = Queries.PostgreSQLQueries.SalesDB.SelectSql;
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql;
             var data = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData<Entities.PostgreSQL.Agents>(selectSql);
             Assert.IsTrue(data.Count == 12);
             var agent = data.FirstOrDefault(X => X.Agent_Name == "Benjamin");
@@ -154,7 +154,7 @@ namespace QueryDB.Core.Tests
         [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
         public void Test_PostgreSQL_FetchData_Entity_SelectQuery_Joins()
         {
-            var selectSql = Queries.PostgreSQLQueries.SalesDB.SelectSql_Join;
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_Join;
             var data = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData<Entities.PostgreSQL.Orders>(selectSql);
             Assert.IsTrue(data.Count == 34);
             var agent = data.FirstOrDefault(X => X.Agent_Code == "A004" && X.Cust_Code == "C00006");
@@ -177,7 +177,7 @@ namespace QueryDB.Core.Tests
         [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
         public void Test_PostgreSQL_FetchData_Entity_SelectQuery_Aliases()
         {
-            var selectSql = Queries.PostgreSQLQueries.SalesDB.SelectSql_Alias;
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_Alias;
             var data = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData<Entities.PostgreSQL.Orders>(selectSql);
             Assert.IsTrue(data.Count == 34);
             var agent = data.FirstOrDefault(X => X.Agent_Code == "A004" && X.Cust_Code == "C00006");
