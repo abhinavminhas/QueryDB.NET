@@ -40,16 +40,6 @@ jobs:
     - name: Build
       run: dotnet build QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
 
-    - name: Set Custom Date Format In UTC
-      if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') }}
-      run: |
-        DATE_FORMAT=$(date -u +"%d/%m/%Y %I:%M:%S %p")
-        echo "CUSTOM_DATE=$DATE_FORMAT" >> $GITHUB_ENV
-
-    - name: Display Custom Date
-      if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') }}
-      run: echo "The custom formatted UTC date is ${{ env.CUSTOM_DATE }}"
-
     - name: Docker Compose (Start - DB Containers)
       if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') }}
       uses: ./.github/workflows/docker-compose-start-dbs
@@ -104,16 +94,6 @@ jobs:
         
     - name: Build
       run: dotnet build QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
-
-    - name: Set Custom Date Format In UTC
-      if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') }}
-      run: |
-        DATE_FORMAT=$(date -u +"%d/%m/%Y %I:%M:%S %p")
-        echo "CUSTOM_DATE=$DATE_FORMAT" >> $GITHUB_ENV
-
-    - name: Display Custom Date
-      if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') }}
-      run: echo "The custom formatted UTC date is ${{ env.CUSTOM_DATE }}"
 
     - name: Docker Compose (Start - DB Containers)
       uses: ./.github/workflows/docker-compose-start-dbs
