@@ -5,7 +5,7 @@ CREATE TABLE Agents
     Agent_Code VARCHAR(6) NOT NULL PRIMARY KEY, 
     Agent_Name VARCHAR(40), 
     Working_Area VARCHAR(35), 
-    Commission NUMBER(10,2), 
+    Commission DECIMAL(10,2), 
     Phone_No VARCHAR(15), 
     Country VARCHAR(25)
 );
@@ -31,10 +31,10 @@ CREATE TABLE Customer
 	Working_Area VARCHAR(35) NOT NULL, 
 	Cust_Country VARCHAR(20) NOT NULL, 
 	Grade INTEGER, 
-	Opening_Amt NUMBER(12,2) NOT NULL, 
-	Recieve_Amt NUMBER(12,2) NOT NULL, 
-	Payment_Amt NUMBER(12,2) NOT NULL, 
-	Outstanding_Amt NUMBER(12,2) NOT NULL, 
+	Opening_Amt DECIMAL(12,2) NOT NULL, 
+	Recieve_Amt DECIMAL(12,2) NOT NULL, 
+	Payment_Amt DECIMAL(12,2) NOT NULL, 
+	Outstanding_Amt DECIMAL(12,2) NOT NULL, 
 	Phone_No VARCHAR(17) NOT NULL, 
 	Agent_Code VARCHAR(6) NOT NULL REFERENCES Agents
 );
@@ -67,9 +67,9 @@ INSERT INTO Customer VALUES ('C00011', 'Sundariya', 'Chennai', 'Chennai', 'India
 
 CREATE TABLE Orders 
 (
-    Ord_Num NUMBER(6,0) NOT NULL PRIMARY KEY, 
-	Ord_Amount NUMBER(12,2) NOT NULL, 
-	Advance_Amount NUMBER(12,2) NOT NULL, 
+    Ord_Num DECIMAL(6,0) NOT NULL PRIMARY KEY, 
+	Ord_Amount DECIMAL(12,2) NOT NULL, 
+	Advance_Amount DECIMAL(12,2) NOT NULL, 
 	Ord_Date DATE NOT NULL, 
 	Cust_Code VARCHAR(6) NOT NULL REFERENCES Customer, 
 	Agent_Code VARCHAR(6) NOT NULL REFERENCES Agents, 
