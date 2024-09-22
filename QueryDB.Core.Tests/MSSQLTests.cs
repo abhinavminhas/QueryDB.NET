@@ -1,6 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Globalization;
 using System.Linq;
 
 namespace QueryDB.Core.Tests
@@ -134,7 +132,7 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
-        public void Test_MSSQL_FetchData_Dictionary_DataTypes()
+        public void Test_MSSQL_FetchData_Dictionary_DataTypes_Check()
         {
             var selectSql = Queries.MSSQLQueries.TestDB.SelectSql_DataTypes;
             var data = new DBContext(DB.MSSQL, MSSQLConnectionString).FetchData(selectSql);
@@ -144,10 +142,10 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("System.Byte[]", dataType.ReferenceData["Binary_Column"]);
             Assert.AreEqual("True", dataType.ReferenceData["Bit_Column"]);
             Assert.AreEqual("CharData  ", dataType.ReferenceData["Char_Column"]);
-            Assert.AreEqual("21/09/2024 00:00:00", DateTime.ParseExact(dataType.ReferenceData["Date_Column"], "M/d/yyyy h:m:s", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToString());
-            Assert.AreEqual("21/09/2024 08:34:51", DateTime.ParseExact(dataType.ReferenceData["DateTime_Column"], "M/d/yyyy h:m:s", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToString());
-            Assert.AreEqual("21/09/2024 08:34:51", DateTime.ParseExact(dataType.ReferenceData["DateTime2_Column"], "M/d/yyyy h:m:s", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToString());
-            Assert.AreEqual("21/09/2024 08:34:51", DateTime.ParseExact(dataType.ReferenceData["DateTimeOffset_Column"], "M/d/yyyy h:m:s +10:00", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToString());
+            Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.ReferenceData["Date_Column"]));
+            Assert.AreEqual("09/21/2024 08:34:51", ConvertToUSFormat(dataType.ReferenceData["DateTime_Column"]));
+            Assert.AreEqual("09/21/2024 08:34:51", ConvertToUSFormat(dataType.ReferenceData["DateTime2_Column"]));
+            Assert.AreEqual("09/21/2024 08:34:51", ConvertToUSFormat(dataType.ReferenceData["DateTimeOffset_Column"]));
             Assert.AreEqual("123456.78", dataType.ReferenceData["Decimal_Column"]);
             Assert.AreEqual("123456.78", dataType.ReferenceData["Float_Column"]);
             Assert.AreEqual("System.Byte[]", dataType.ReferenceData["Image_Column"]);
@@ -158,7 +156,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("123456.78", dataType.ReferenceData["Numeric_Column"]);
             Assert.AreEqual("NVarCharData", dataType.ReferenceData["NVarChar_Column"]);
             Assert.AreEqual("123.45", dataType.ReferenceData["Real_Column"]);
-            Assert.AreEqual("21/09/2024 08:35:00", DateTime.ParseExact(dataType.ReferenceData["SmallDateTime_Column"], "M/d/yyyy h:m:s", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToString());
+            Assert.AreEqual("09/21/2024 08:35:00", ConvertToUSFormat(dataType.ReferenceData["SmallDateTime_Column"]));
             Assert.AreEqual("32767", dataType.ReferenceData["SmallInt_Column"]);
             Assert.AreEqual("123456.7800", dataType.ReferenceData["SmallMoney_Column"]);
             Assert.AreEqual("SampleVariant", dataType.ReferenceData["SqlVariant_Column"]);
@@ -239,7 +237,7 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
-        public void Test_MSSQL_FetchData_Entity_DataTypes()
+        public void Test_MSSQL_FetchData_Entity_DataTypes_Check()
         {
             var selectSql = Queries.MSSQLQueries.TestDB.SelectSql_DataTypes;
             var data = new DBContext(DB.MSSQL, MSSQLConnectionString).FetchData<Entities.MSSQL.DataTypes>(selectSql);
@@ -249,10 +247,10 @@ namespace QueryDB.Core.Tests
             Assert.IsTrue(dataType.Binary_Column is byte[] && dataType.Binary_Column != null);
             Assert.AreEqual(true, dataType.Bit_Column);
             Assert.AreEqual("CharData  ", dataType.Char_Column);
-            Assert.AreEqual("21/09/2024 00:00:00", DateTime.ParseExact(dataType.Date_Column.ToString(), "M/d/yyyy h:m:s", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToString());
-            Assert.AreEqual("21/09/2024 08:34:51", DateTime.ParseExact(dataType.DateTime_Column.ToString(), "M/d/yyyy h:m:s", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToString());
-            Assert.AreEqual("21/09/2024 08:34:51", DateTime.ParseExact(dataType.DateTime2_Column.ToString(), "M/d/yyyy h:m:s", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToString());
-            Assert.AreEqual("21/09/2024 08:34:51", DateTime.ParseExact(dataType.DateTimeOffset_Column.ToString(), "M/d/yyyy h:m:s +10:00", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToString());
+            Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.Date_Column.ToString()));
+            Assert.AreEqual("09/21/2024 08:34:51", ConvertToUSFormat(dataType.DateTime_Column.ToString()));
+            Assert.AreEqual("09/21/2024 08:34:51", ConvertToUSFormat(dataType.DateTime2_Column.ToString()));
+            Assert.AreEqual("09/21/2024 08:34:51", ConvertToUSFormat(dataType.DateTimeOffset_Column.ToString()));
             Assert.AreEqual((decimal)123456.78, dataType.Decimal_Column);
             Assert.AreEqual((double)123456.78, dataType.Float_Column);
             Assert.IsTrue(dataType.VarBinary_Column is byte[] && dataType.Image_Column != null);
@@ -263,7 +261,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual((decimal)123456.78, dataType.Numeric_Column);
             Assert.AreEqual("NVarCharData", dataType.NVarChar_Column);
             Assert.AreEqual((float)123.45, dataType.Real_Column);
-            Assert.AreEqual("21/09/2024 08:35:00", DateTime.ParseExact(dataType.SmallDateTime_Column.ToString(), "M/d/yyyy h:m:s", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal).ToString());
+            Assert.AreEqual("09/21/2024 08:35:00", ConvertToUSFormat(dataType.SmallDateTime_Column.ToString()));
             Assert.AreEqual(32767, dataType.SmallInt_Column);
             Assert.AreEqual((decimal)123456.7800, dataType.SmallMoney_Column);
             Assert.AreEqual("SampleVariant", dataType.SqlVariant_Column.ToString());
