@@ -91,6 +91,28 @@ namespace QueryDB.Core.Tests
                 public decimal Advance_Amount { get; set; }
                 public string Ord_Description { get; set; }
             }
+            public class DataTypes
+            {
+                public long BigInt_Column { get; set; }
+                public ulong Bit_Column { get; set; }
+                public string Char_Column { get; set; }
+                public DateTime Date_Column { get; set; }
+                public DateTime DateTime_Column { get; set; }
+                public decimal Decimal_Column { get; set; }
+                public float Float_Column { get; set; }
+                public int Int_Column { get; set; }
+                public string LongText_Column { get; set; }
+                public int MediumInt_Column { get; set; }
+                public string MediumText_Column { get; set; }
+                public short SmallInt_Column { get; set; }
+                public string Text_Column { get; set; }
+                public TimeSpan Time_Column { get; set; }
+                public DateTime Timestamp_Column { get; set; }
+                public sbyte TinyInt_Column { get; set; }
+                public string TinyText_Column { get; set; }
+                public byte[] VarBinary_Column { get; set; }
+                public string VarChar_Column { get; set; }
+            }
         }
         public class Oracle
         {

@@ -110,3 +110,52 @@ INSERT INTO Orders VALUES('200128', '3500.00', '1500.00', '2008-07-20', 'C00009'
 INSERT INTO Orders VALUES('200135', '2000.00', '800.00', '2008-09-16', 'C00007', 'A010', 'SOD');
 INSERT INTO Orders VALUES('200131', '900.00', '150.00', '2008-08-26', 'C00012', 'A012', 'SOD');
 INSERT INTO Orders VALUES('200133', '1200.00', '400.00', '2008-06-29', 'C00009', 'A002', 'SOD');
+
+CREATE TABLE DataTypes 
+(
+    BigInt_Column BIGINT,
+    Bit_Column BIT,
+    Char_Column CHAR(1),
+    Date_Column DATE,
+    DateTime_Column DATETIME DEFAULT CURRENT_TIMESTAMP,
+    Decimal_Column DECIMAL(10, 2),
+    Float_Column FLOAT,
+    Int_Column INT,
+    LongText_Column LONGTEXT,
+    MediumInt_Column MEDIUMINT,
+    MediumText_Column MEDIUMTEXT,
+    SmallInt_Column SMALLINT,
+    Text_Column TEXT,
+    Time_Column TIME,
+    Timestamp_Column TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    TinyInt_Column TINYINT,
+    TinyText_Column TINYTEXT,
+    VarBinary_Column VARBINARY(255),
+    VarChar_Column VARCHAR(255)
+);
+
+INSERT INTO DataTypes (
+    BigInt_Column, Bit_Column, Char_Column, Date_Column, DateTime_Column, Decimal_Column, Float_Column, Int_Column, 
+    LongText_Column, MediumInt_Column, MediumText_Column, SmallInt_Column, Text_Column, Time_Column, Timestamp_Column, 
+    TinyInt_Column, TinyText_Column, VarBinary_Column, VarChar_Column
+) VALUES (
+    9223372036854775807, -- BigInt Column
+    1, -- Bit Column
+    'A', -- Char Column
+    '2024-09-21', -- Date Column
+    '2024-09-21 13:24:10', -- DateTime Column
+    12345.67, -- Decimal Column
+    123.45, -- Float Column
+    2147483647, -- Int Column
+    'This is a long text', -- LongText Column
+    8388607, -- MediumInt Column
+    'This is a medium text', -- MediumText Column
+    32767, -- SmallInt Column
+    'This is a text', -- Text Column
+    '13:24:10', -- Time Column
+    '2024-09-21 13:24:10', -- Timestamp Column
+    127, -- TinyInt Column
+    'This is a tiny text', -- TinyText Column
+    0xDEADBEEF, -- VarBinary Column
+    'This is a varchar' -- VarChar Column
+);

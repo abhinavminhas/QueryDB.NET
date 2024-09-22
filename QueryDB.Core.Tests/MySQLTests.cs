@@ -130,6 +130,35 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("Torento", agent.ReferenceData["CUSTOMER_LOCATION"]);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
+        public void Test_MySQL_FetchData_Dictionary_DataTypes_Check()
+        {
+            var selectSql = Queries.MySQLQueries.TestDB.SelectSql_DataTypes;
+            var data = new DBContext(DB.MySQL, MySQLConnectionString).FetchData(selectSql);
+            Assert.IsTrue(data.Count == 1);
+            var dataType = data.FirstOrDefault();
+            Assert.AreEqual("9223372036854775807", dataType.ReferenceData["BigInt_Column"]);
+            Assert.AreEqual("1", dataType.ReferenceData["Bit_Column"]);
+            Assert.AreEqual("A", dataType.ReferenceData["Char_Column"]);
+            Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.ReferenceData["Date_Column"]));
+            Assert.AreEqual("09/21/2024 13:24:10", ConvertToUSFormat(dataType.ReferenceData["DateTime_Column"]));
+            Assert.AreEqual("12345.67", dataType.ReferenceData["Decimal_Column"]);
+            Assert.AreEqual("123.45", dataType.ReferenceData["Float_Column"]);
+            Assert.AreEqual("2147483647", dataType.ReferenceData["Int_Column"]);
+            Assert.AreEqual("This is a long text", dataType.ReferenceData["LongText_Column"]);
+            Assert.AreEqual("8388607", dataType.ReferenceData["MediumInt_Column"]);
+            Assert.AreEqual("This is a medium text", dataType.ReferenceData["MediumText_Column"]);
+            Assert.AreEqual("32767", dataType.ReferenceData["SmallInt_Column"]);
+            Assert.AreEqual("This is a text", dataType.ReferenceData["Text_Column"]);
+            Assert.AreEqual("13:24:10", dataType.ReferenceData["Time_Column"]);
+            Assert.AreEqual("09/21/2024 13:24:10", ConvertToUSFormat(dataType.ReferenceData["Timestamp_Column"]));
+            Assert.AreEqual("127", dataType.ReferenceData["TinyInt_Column"]);
+            Assert.AreEqual("This is a tiny text", dataType.ReferenceData["TinyText_Column"]);
+            Assert.AreEqual("System.Byte[]", dataType.ReferenceData["VarBinary_Column"]);
+            Assert.AreEqual("This is a varchar", dataType.ReferenceData["VarChar_Column"]);
+        }
+
         #endregion
 
         #region Fetch Data Tests - << List<T> FetchData<T>(string selectSql) >>
@@ -194,6 +223,35 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual(0, agent.Ord_Amount);
             Assert.AreEqual(0, agent.Advance_Amount);
             Assert.AreEqual(null, agent.Ord_Description);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
+        public void Test_MySQL_FetchData_Entity_DataTypes_Check()
+        {
+            var selectSql = Queries.MySQLQueries.TestDB.SelectSql_DataTypes;
+            var data = new DBContext(DB.MySQL, MySQLConnectionString).FetchData<Entities.MySQL.DataTypes>(selectSql);
+            Assert.IsTrue(data.Count == 1);
+            var dataType = data.FirstOrDefault();
+            Assert.AreEqual(9223372036854775807, dataType.BigInt_Column);
+            Assert.AreEqual((ulong?)1, dataType.Bit_Column);
+            Assert.AreEqual("A", dataType.Char_Column);
+            Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.Date_Column.ToString()));
+            Assert.AreEqual("09/21/2024 13:24:10", ConvertToUSFormat(dataType.DateTime_Column.ToString()));
+            Assert.AreEqual((decimal)12345.67, dataType.Decimal_Column);
+            Assert.AreEqual((float)123.45, dataType.Float_Column);
+            Assert.AreEqual(2147483647, dataType.Int_Column);
+            Assert.AreEqual("This is a long text", dataType.LongText_Column);
+            Assert.AreEqual(8388607, dataType.MediumInt_Column);
+            Assert.AreEqual("This is a medium text", dataType.MediumText_Column);
+            Assert.AreEqual((short)32767, dataType.SmallInt_Column);
+            Assert.AreEqual("This is a text", dataType.Text_Column);
+            Assert.AreEqual("13:24:10", dataType.Time_Column.ToString());
+            Assert.AreEqual("09/21/2024 13:24:10", ConvertToUSFormat(dataType.Timestamp_Column.ToString()));
+            Assert.AreEqual((sbyte?)127, dataType.TinyInt_Column);
+            Assert.AreEqual("This is a tiny text", dataType.TinyText_Column);
+            Assert.IsTrue(dataType.VarBinary_Column is byte[] && dataType.VarBinary_Column != null);
+            Assert.AreEqual("This is a varchar", dataType.VarChar_Column);
         }
 
         #endregion
