@@ -130,6 +130,32 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("Torento", agent.ReferenceData["CUSTOMER_LOCATION"]);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_FetchData_Dictionary_DataTypes_Check()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_DataTypes;
+            var data = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData(selectSql);
+            Assert.IsTrue(data.Count == 1);
+            var dataType = data.FirstOrDefault();
+            Assert.AreEqual("9223372036854775807", dataType.ReferenceData["bigint_column"]);
+            Assert.AreEqual("True", dataType.ReferenceData["boolean_column"]);
+            Assert.AreEqual("System.Byte[]", dataType.ReferenceData["bytea_column"]);
+            Assert.AreEqual("char10", dataType.ReferenceData["char_column"]);
+            Assert.AreEqual("varchar50", dataType.ReferenceData["varchar_column"]);
+            Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.ReferenceData["date_column"]));
+            Assert.AreEqual("123456.789", dataType.ReferenceData["double_column"]);
+            Assert.AreEqual("2147483647", dataType.ReferenceData["int_column"]);
+            Assert.AreEqual("12345.67", dataType.ReferenceData["money_column"]);
+            Assert.AreEqual("123456.789", dataType.ReferenceData["numeric_column"]);
+            Assert.AreEqual("12345.67", dataType.ReferenceData["real_column"]);
+            Assert.AreEqual("32767", dataType.ReferenceData["smallint_column"]);
+            Assert.AreEqual("some text", dataType.ReferenceData["text_column"]);
+            Assert.AreEqual("12:34:56", dataType.ReferenceData["time_column"]);
+            Assert.AreEqual("09/21/2024 14:34:56", ConvertToUSFormat(dataType.ReferenceData["timestamp_column"]));
+            Assert.AreEqual("123e4567-e89b-12d3-a456-426614174000", dataType.ReferenceData["uuid_column"]);
+        }
+
         #endregion
 
         #region Fetch Data Tests - << List<T> FetchData<T>(string selectSql) >>
@@ -194,6 +220,32 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual(0, agent.Ord_Amount);
             Assert.AreEqual(0, agent.Advance_Amount);
             Assert.AreEqual(null, agent.Ord_Description);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_FetchData_Entity_DataTypes_Check()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_DataTypes;
+            var data = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData<Entities.PostgreSQL.DataTypes>(selectSql);
+            Assert.IsTrue(data.Count == 1);
+            var dataType = data.FirstOrDefault();
+            Assert.AreEqual(9223372036854775807, dataType.BigInt_Column);
+            Assert.AreEqual(true, dataType.Boolean_Column);
+            //Assert.AreEqual("System.Byte[]", dataType.Bytea_Column);
+            Assert.AreEqual("char10", dataType.Char_Column);
+            Assert.AreEqual("varchar50", dataType.Varchar_Column);
+            Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.Date_Column.ToString()));
+            Assert.AreEqual(123456.789, dataType.Double_Column);
+            Assert.AreEqual(2147483647, dataType.Int_Column);
+            Assert.AreEqual((decimal)12345.67, dataType.Money_Column);
+            Assert.AreEqual((decimal)123456.789, dataType.Numeric_Column);
+            Assert.AreEqual((float)12345.67, dataType.Real_Column);
+            Assert.AreEqual(32767, dataType.SmallInt_Column);
+            Assert.AreEqual("some text", dataType.Text_Column);
+            Assert.AreEqual("12:34:56", dataType.Time_Column.ToString());
+            Assert.AreEqual("09/21/2024 14:34:56", ConvertToUSFormat(dataType.Timestamp_Column.ToString()));
+            Assert.AreEqual("123e4567-e89b-12d3-a456-426614174000", dataType.Uuid_Column.ToString());
         }
 
         #endregion

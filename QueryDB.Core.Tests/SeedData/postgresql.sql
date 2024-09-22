@@ -108,3 +108,61 @@ INSERT INTO Orders VALUES('200128', '3500.00', '1500.00', '07/20/2008', 'C00009'
 INSERT INTO Orders VALUES('200135', '2000.00', '800.00', '09/16/2008', 'C00007', 'A010', 'SOD');
 INSERT INTO Orders VALUES('200131', '900.00', '150.00', '08/26/2008', 'C00012', 'A012', 'SOD');
 INSERT INTO Orders VALUES('200133', '1200.00', '400.00', '06/29/2008', 'C00009', 'A002', 'SOD');
+
+CREATE TABLE DataTypes 
+(
+    BigInt_Column BIGINT,
+    Boolean_Column BOOLEAN,
+    Bytea_Column BYTEA,
+    Char_Column CHARACTER(6),
+    Varchar_Column CHARACTER VARYING(50),
+    Date_Column DATE,
+    Double_Column DOUBLE PRECISION,
+    Int_Column INTEGER,
+    Money_Column MONEY,
+    Numeric_Column NUMERIC,
+    Real_Column REAL,
+    SmallInt_Column SMALLINT,
+    Text_Column TEXT,
+    Time_Column TIME,
+    Timestamp_Column TIMESTAMP DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
+    Uuid_Column UUID
+);
+
+INSERT INTO DataTypes 
+(
+    BigInt_Column, 
+    Boolean_Column, 
+    Bytea_Column, 
+    Char_Column, 
+    Varchar_Column, 
+    Date_Column, 
+    Double_Column, 
+    Int_Column, 
+    Money_Column, 
+    Numeric_Column, 
+    Real_Column, 
+    SmallInt_Column, 
+    Text_Column, 
+    Time_Column, 
+    Timestamp_Column, 
+    Uuid_Column
+) VALUES 
+(
+    9223372036854775807, -- bigint_Column
+    true, -- boolean_Column
+    E'\\xDEADBEEF', -- bytea_Column
+    'char10', -- char_Column
+    'varchar50', -- varchar_Column
+    '2024-09-21', -- date_Column
+    123456.789, -- double_Column
+    2147483647, -- int_Column
+    12345.67, -- money_Column
+    123456.789, -- numeric_Column
+    12345.67, -- real_Column
+    32767, -- smallint_Column
+    'some text', -- text_Column
+    '12:34:56', -- time_Column
+    '2024-09-21 14:34:56', -- timestamp_Column
+    '123e4567-e89b-12d3-a456-426614174000' -- uuid_Column
+);

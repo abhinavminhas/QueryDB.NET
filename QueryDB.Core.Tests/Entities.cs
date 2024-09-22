@@ -167,6 +167,25 @@ namespace QueryDB.Core.Tests
                 public decimal Advance_Amount { get; set; }
                 public string Ord_Description { get; set; }
             }
+            public class DataTypes
+            {
+                public long BigInt_Column { get; set; }
+                public bool Boolean_Column { get; set; }
+                public byte[] Bytea_Column { get; set; }
+                public string Char_Column { get; set; }
+                public string Varchar_Column { get; set; }
+                public DateTime Date_Column { get; set; }
+                public double Double_Column { get; set; }
+                public int Int_Column { get; set; }
+                public decimal Money_Column { get; set; }
+                public decimal Numeric_Column { get; set; }
+                public float Real_Column { get; set; }
+                public short SmallInt_Column { get; set; }
+                public string Text_Column { get; set; }
+                public TimeSpan Time_Column { get; set; }
+                public DateTime Timestamp_Column { get; set; }
+                public Guid Uuid_Column { get; set; }
+            }
         }
     }
 }
