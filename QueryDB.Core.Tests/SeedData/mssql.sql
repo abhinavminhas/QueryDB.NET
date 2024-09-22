@@ -111,7 +111,8 @@ INSERT INTO Orders VALUES('200135', '2000.00', '800.00', '09/16/2008', 'C00007',
 INSERT INTO Orders VALUES('200131', '900.00', '150.00', '08/26/2008', 'C00012', 'A012', 'SOD');
 INSERT INTO Orders VALUES('200133', '1200.00', '400.00', '06/29/2008', 'C00009', 'A002', 'SOD');
 
-CREATE TABLE DataTypes (
+CREATE TABLE DataTypes 
+(
     BigInt_Column BIGINT,
     Binary_Column BINARY(50),
     Bit_Column BIT,
@@ -143,7 +144,8 @@ CREATE TABLE DataTypes (
     Xml_Column XML
 );
 
-INSERT INTO DataTypes (
+INSERT INTO DataTypes 
+(
     BigInt_Column,
     Binary_Column,
     Bit_Column,
