@@ -145,7 +145,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.ReferenceData["Date_Column"]));
             Assert.AreEqual("09/21/2024 08:34:51", ConvertToUSFormat(dataType.ReferenceData["DateTime_Column"]));
             Assert.AreEqual("09/21/2024 08:34:51", ConvertToUSFormat(dataType.ReferenceData["DateTime2_Column"]));
-            Assert.AreEqual("09/21/2024 08:34:51", ConvertToUSFormat(dataType.ReferenceData["DateTimeOffset_Column"]));
+            Assert.AreEqual("09/20/2024 22:34:51", ConvertToUTCInUSFormat(dataType.ReferenceData["DateTimeOffset_Column"]));
             Assert.AreEqual("123456.78", dataType.ReferenceData["Decimal_Column"]);
             Assert.AreEqual("123456.78", dataType.ReferenceData["Float_Column"]);
             Assert.AreEqual("System.Byte[]", dataType.ReferenceData["Image_Column"]);
@@ -250,7 +250,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.Date_Column.ToString()));
             Assert.AreEqual("09/21/2024 08:34:51", ConvertToUSFormat(dataType.DateTime_Column.ToString()));
             Assert.AreEqual("09/21/2024 08:34:51", ConvertToUSFormat(dataType.DateTime2_Column.ToString()));
-            Assert.AreEqual("09/21/2024 08:34:51", ConvertToUSFormat(dataType.DateTimeOffset_Column.ToString()));
+            Assert.AreEqual("09/20/2024 22:34:51", ConvertToUTCInUSFormat(dataType.DateTimeOffset_Column.ToString()));
             Assert.AreEqual((decimal)123456.78, dataType.Decimal_Column);
             Assert.AreEqual((double)123456.78, dataType.Float_Column);
             Assert.IsTrue(dataType.VarBinary_Column is byte[] && dataType.Image_Column != null);
