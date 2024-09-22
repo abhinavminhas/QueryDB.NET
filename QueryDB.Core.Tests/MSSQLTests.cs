@@ -245,7 +245,7 @@ namespace QueryDB.Core.Tests
             var dataType = data.FirstOrDefault();
             Assert.AreEqual(9223372036854775807, dataType.BigInt_Column);
             Assert.IsTrue(dataType.Binary_Column is byte[] && dataType.Binary_Column != null);
-            Assert.AreEqual(true, dataType.Bit_Column);
+            Assert.IsTrue(dataType.Bit_Column);
             Assert.AreEqual("CharData  ", dataType.Char_Column);
             Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.Date_Column.ToString()));
             Assert.AreEqual("09/21/2024 08:34:51", ConvertToUSFormat(dataType.DateTime_Column.ToString()));

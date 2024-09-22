@@ -119,7 +119,7 @@ CREATE TABLE DataTypes (
     Date_Column DATE DEFAULT GETUTCDATE(),
     DateTime_Column DATETIME DEFAULT GETUTCDATE(),
     DateTime2_Column DATETIME2 DEFAULT GETUTCDATE(),
-    DateTimeOffset_Column DATETIMEOFFSET DEFAULT GETUTCDATE(),
+    DateTimeOffset_Column DATETIMEOFFSET,
     Decimal_Column DECIMAL(18, 2),
     Float_Column FLOAT,
     Image_Column IMAGE,

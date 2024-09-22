@@ -53,7 +53,6 @@ namespace QueryDB.Core.Tests
             try
             {
                 date = DateTime.ParseExact(dateString, formats, provider, DateTimeStyles.None);
-                var hjj = date.ToString("MM/dd/yyyy hh:mm:ss", provider);
                 return date.ToString("MM/dd/yyyy HH:mm:ss", provider);
             }
             catch (FormatException)
