@@ -116,7 +116,7 @@ CREATE TABLE DataTypes
     BigInt_Column BIGINT,
     Binary_Column BINARY(50),
     Bit_Column BIT,
-    Char_Column CHAR(10),
+    Char_Column CHAR(8),
     Date_Column DATE DEFAULT GETUTCDATE(),
     DateTime_Column DATETIME DEFAULT GETUTCDATE(),
     DateTime2_Column DATETIME2 DEFAULT GETUTCDATE(),
@@ -126,7 +126,7 @@ CREATE TABLE DataTypes
     Image_Column IMAGE,
     Int_Column INT,
     Money_Column MONEY,
-    NChar_Column NCHAR(10),
+    NChar_Column NCHAR(9),
     NText_Column NTEXT,
     Numeric_Column NUMERIC(18, 2),
     NVarChar_Column NVARCHAR(50),
@@ -175,7 +175,8 @@ INSERT INTO DataTypes
     VarBinary_Column,
     VarChar_Column,
     Xml_Column
-) VALUES (
+) VALUES 
+(
     9223372036854775807, -- BigInt_Column
     0x1234567890, -- Binary_Column
     1, -- Bit_Column

@@ -141,7 +141,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("9223372036854775807", dataType.ReferenceData["BigInt_Column"]);
             Assert.AreEqual("System.Byte[]", dataType.ReferenceData["Binary_Column"]);
             Assert.AreEqual("True", dataType.ReferenceData["Bit_Column"]);
-            Assert.AreEqual("CharData  ", dataType.ReferenceData["Char_Column"]);
+            Assert.AreEqual("CharData", dataType.ReferenceData["Char_Column"]);
             Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.ReferenceData["Date_Column"]));
             Assert.AreEqual("09/21/2024 08:34:51", ConvertToUSFormat(dataType.ReferenceData["DateTime_Column"]));
             Assert.AreEqual("09/21/2024 08:34:51", ConvertToUSFormat(dataType.ReferenceData["DateTime2_Column"]));
@@ -151,7 +151,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("System.Byte[]", dataType.ReferenceData["Image_Column"]);
             Assert.AreEqual("2147483647", dataType.ReferenceData["Int_Column"]);
             Assert.AreEqual("123456.7800", dataType.ReferenceData["Money_Column"]);
-            Assert.AreEqual("NCharData ", dataType.ReferenceData["NChar_Column"]);
+            Assert.AreEqual("NCharData", dataType.ReferenceData["NChar_Column"]);
             Assert.AreEqual("NTextData", dataType.ReferenceData["NText_Column"]);
             Assert.AreEqual("123456.78", dataType.ReferenceData["Numeric_Column"]);
             Assert.AreEqual("NVarCharData", dataType.ReferenceData["NVarChar_Column"]);
@@ -246,7 +246,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual(9223372036854775807, dataType.BigInt_Column);
             Assert.IsTrue(dataType.Binary_Column is byte[] && dataType.Binary_Column != null);
             Assert.IsTrue(dataType.Bit_Column);
-            Assert.AreEqual("CharData  ", dataType.Char_Column);
+            Assert.AreEqual("CharData", dataType.Char_Column);
             Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.Date_Column.ToString()));
             Assert.AreEqual("09/21/2024 08:34:51", ConvertToUSFormat(dataType.DateTime_Column.ToString()));
             Assert.AreEqual("09/21/2024 08:34:51", ConvertToUSFormat(dataType.DateTime2_Column.ToString()));
@@ -256,7 +256,7 @@ namespace QueryDB.Core.Tests
             Assert.IsTrue(dataType.VarBinary_Column is byte[] && dataType.Image_Column != null);
             Assert.AreEqual(2147483647, dataType.Int_Column);
             Assert.AreEqual((decimal)123456.7800, dataType.Money_Column);
-            Assert.AreEqual("NCharData ", dataType.NChar_Column);
+            Assert.AreEqual("NCharData", dataType.NChar_Column);
             Assert.AreEqual("NTextData", dataType.NText_Column);
             Assert.AreEqual((decimal)123456.78, dataType.Numeric_Column);
             Assert.AreEqual("NVarCharData", dataType.NVarChar_Column);

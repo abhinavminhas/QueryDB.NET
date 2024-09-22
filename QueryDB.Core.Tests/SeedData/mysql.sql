@@ -135,10 +135,27 @@ CREATE TABLE DataTypes
 );
 
 INSERT INTO DataTypes (
-    BigInt_Column, Bit_Column, Char_Column, Date_Column, DateTime_Column, Decimal_Column, Float_Column, Int_Column, 
-    LongText_Column, MediumInt_Column, MediumText_Column, SmallInt_Column, Text_Column, Time_Column, Timestamp_Column, 
-    TinyInt_Column, TinyText_Column, VarBinary_Column, VarChar_Column
-) VALUES (
+    BigInt_Column, 
+    Bit_Column, 
+    Char_Column, 
+    Date_Column, 
+    DateTime_Column, 
+    Decimal_Column, 
+    Float_Column, 
+    Int_Column, 
+    LongText_Column, 
+    MediumInt_Column, 
+    MediumText_Column, 
+    SmallInt_Column, 
+    Text_Column, 
+    Time_Column, 
+    Timestamp_Column, 
+    TinyInt_Column, 
+    TinyText_Column, 
+    VarBinary_Column, 
+    VarChar_Column
+) VALUES 
+(
     9223372036854775807, -- BigInt Column
     1, -- Bit Column
     'A', -- Char Column
