@@ -231,8 +231,8 @@ namespace QueryDB.Core.Tests
             Assert.IsTrue(data.Count == 1);
             var dataType = data.FirstOrDefault();
             Assert.AreEqual(9223372036854775807, dataType.BigInt_Column);
-            Assert.AreEqual(true, dataType.Boolean_Column);
-            //Assert.AreEqual("System.Byte[]", dataType.Bytea_Column);
+            Assert.IsTrue(dataType.Boolean_Column);
+            Assert.IsTrue(dataType.Bytea_Column is byte[] && dataType.Bytea_Column != null);
             Assert.AreEqual("char10", dataType.Char_Column);
             Assert.AreEqual("varchar50", dataType.Varchar_Column);
             Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.Date_Column.ToString()));
