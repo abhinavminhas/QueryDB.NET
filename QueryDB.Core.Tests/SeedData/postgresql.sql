@@ -149,20 +149,20 @@ INSERT INTO DataTypes
     Uuid_Column
 ) VALUES 
 (
-    9223372036854775807, -- bigint_Column
-    true, -- boolean_Column
-    E'\\xDEADBEEF', -- bytea_Column
-    'char10', -- char_Column
-    'varchar50', -- varchar_Column
-    '2024-09-21', -- date_Column
-    123456.789, -- double_Column
-    2147483647, -- int_Column
-    12345.67, -- money_Column
-    123456.789, -- numeric_Column
-    12345.67, -- real_Column
-    32767, -- smallint_Column
-    'some text', -- text_Column
-    '12:34:56', -- time_Column
-    '2024-09-21 14:34:56', -- timestamp_Column
-    '123e4567-e89b-12d3-a456-426614174000' -- uuid_Column
+    9223372036854775807, -- BigInt_Column
+    true, -- Boolean_Column
+    E'\\xDEADBEEF', -- Bytea_Column
+    'char10', -- Char_Column
+    'varchar50', -- Varchar_Column
+    '2024-09-21', -- Date_Column
+    123456.789, -- Double_Column
+    2147483647, -- Int_Column
+    12345.67, -- Money_Column
+    123456.789, -- Numeric_Column
+    12345.67, -- Real_Column
+    32767, -- SmallInt_Column
+    'some text', -- Text_Column
+    '12:34:56', -- Time_Column
+    '2024-09-21 14:34:56', -- Timestamp_Column
+    '123e4567-e89b-12d3-a456-426614174000' -- Uuid_Column
 );
