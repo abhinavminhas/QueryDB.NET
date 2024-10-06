@@ -24,7 +24,7 @@ INSERT INTO Agents VALUES ('A004', 'Ivan', 'Torento', '0.15', '008-22544166', ''
 INSERT INTO Agents VALUES ('A009', 'Benjamin', 'Hampshair', '0.11', '008-22536178', '');
 
 CREATE TABLE Customer 
-(  
+(
     Cust_Code VARCHAR(6) NOT NULL PRIMARY KEY, 
 	Cust_Name VARCHAR(40) NOT NULL, 
 	Cust_City VARCHAR(35), 
@@ -110,3 +110,75 @@ INSERT INTO Orders VALUES('200128', '3500.00', '1500.00', '20-JUL-2008', 'C00009
 INSERT INTO Orders VALUES('200135', '2000.00', '800.00', '16-SEP-2008', 'C00007', 'A010', 'SOD');
 INSERT INTO Orders VALUES('200131', '900.00', '150.00', '26-AUG-2008', 'C00012', 'A012', 'SOD');
 INSERT INTO Orders VALUES('200133', '1200.00', '400.00', '29-JUN-2008', 'C00009', 'A002', 'SOD');
+
+CREATE TABLE DataTypes 
+(
+    BFile_Column BFILE, 
+    Blob_Column BLOB, 
+    Char_Column CHAR(1), 
+    Clob_Column CLOB, 
+    Date_Column DATE, 
+    Float_Column FLOAT, 
+    Integer_Column INTEGER, 
+    IntervalYearToMonth_Column INTERVAL YEAR TO MONTH, 
+    InternalDayToSecond_Column INTERVAL DAY TO SECOND, 
+    Long_Column LONG, 
+    NChar_Column NCHAR, 
+    NClob_Column NCLOB, 
+    Number_Column NUMBER, 
+    NVarchar2_Column NVARCHAR2(50), 
+    Raw_Column RAW(2000), 
+    RowId_Column ROWID, 
+    Timestamp_Column TIMESTAMP WITH LOCAL TIME ZONE, 
+    TimestampWithTimeZone_Column TIMESTAMP WITH LOCAL TIME ZONE, 
+    TimestampWithLocalTimeZone_Column TIMESTAMP WITH LOCAL TIME ZONE, 
+    Varchar_Column VARCHAR(50), 
+    Varchar2_Column VARCHAR2(50) 
+);
+
+INSERT INTO DataTypes 
+(
+    BFile_Column, 
+    Blob_Column, 
+    Char_Column, 
+    Clob_Column, 
+    Date_Column, 
+    Float_Column, 
+    Integer_Column, 
+    IntervalYearToMonth_Column, 
+    InternalDayToSecond_Column, 
+    Long_Column, 
+    NChar_Column, 
+    NClob_Column, 
+    Number_Column, 
+    NVarchar2_Column, 
+    Raw_Column, 
+    RowId_Column, 
+    Timestamp_Column, 
+    TimestampWithTimeZone_Column, 
+    TimestampWithLocalTimeZone_Column, 
+    Varchar_Column, 
+    Varchar2_Column 
+) VALUES (
+    NULL, -- BFile_Column
+    HEXTORAW('DEADBEEF'), -- Blob_Column
+    'A', -- Char_Column
+    'Sample CLOB data', -- Clob_Column
+    TO_DATE('2024-01-01', 'YYYY-MM-DD'), -- Date_Column
+    123.45, -- Float_Column
+    123, -- Integer_Column
+    INTERVAL '1-2' YEAR TO MONTH, -- IntervalYearToMonth_Column
+    INTERVAL '1 2:3:4.5' DAY TO SECOND, -- InternalDayToSecond_Column
+    'Sample LONG data', -- Long_Column
+    'A', -- NChar_Column
+    'Sample NCLOB data', -- NClob_Column
+    123.45, -- Number_Column
+    'Sample NVARCHAR2 data', -- NVarchar2_Column
+    HEXTORAW('DEADBEEF'), -- Raw_Column
+    '', -- RowId_Column
+    TO_TIMESTAMP('2024-09-21 12:34:56', 'YYYY-MM-DD HH24:MI:SS'), -- Timestamp_Column
+    TO_TIMESTAMP_TZ('2024-09-21 12:34:56 +00:00', 'YYYY-MM-DD HH24:MI:SS TZH:TZM'), -- TimestampWithTimeZone_Column
+    TO_TIMESTAMP('2024-09-21 12:34:56', 'YYYY-MM-DD HH24:MI:SS'), -- TimestampWithLocalTimeZone_Column
+    'Sample VARCHAR data', -- Varchar_Column
+    'Sample VARCHAR2 data' -- Varchar2_Column
+);

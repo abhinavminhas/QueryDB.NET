@@ -130,6 +130,24 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("Torento", agent.ReferenceData["CUSTOMER_LOCATION"]);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public void Test_Oracle_FetchData_Dictionary_DataTypes_Check()
+        {
+            var selectSql = Queries.OracleQueries.TestDB.SelectSql_DataTypes;
+            var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData(selectSql);
+            Assert.IsTrue(data.Count == 1);
+            var dataType = data.FirstOrDefault();
+            System.Console.WriteLine(dataType.ReferenceData.Count);
+            foreach (var dictionary in data)
+            {
+                foreach (var value in dictionary.ReferenceData.Values)
+                {
+                    System.Console.WriteLine(value);
+                }
+            }
+        }
+
         #endregion
 
         #region Fetch Data Tests - << List<T> FetchData<T>(string selectSql) >>

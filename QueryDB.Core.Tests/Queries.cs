@@ -55,6 +55,7 @@
                 public static string SelectSql_Alias = @"SELECT A.Agent_Name AS Agent, A.WORKING_AREA AS Agent_Location, C.Cust_Name AS Customer, C.WORKING_AREA AS Customer_Location, O.Agent_Code, O.Cust_Code FROM Agents A INNER JOIN 
                                                         Customer C ON C.Agent_Code = A.Agent_Code INNER JOIN 
                                                         Orders O ON O.Cust_Code = C.Cust_Code AND O.Agent_Code = A.Agent_Code";
+                public static string SelectSql_DataTypes = @"SELECT * FROM DataTypes";
             }
         }
 
