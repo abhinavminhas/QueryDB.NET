@@ -47,7 +47,7 @@ jobs:
         dbPassword: ${{ secrets.DB_PASSWORD }}
     
     - name: Test
-      run: dotnet test --no-build --verbosity detailed --configuration Release --filter TestCategory=DB-TESTS /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
+      run: dotnet test --no-build --logger "console;verbosity=detailed" --verbosity normal --configuration Release --filter TestCategory=DB-TESTS /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
 
     - name: Docker Compose (Tear Down - DB Containers)
       uses: ./.github/workflows/docker-compose-teardown-dbs
