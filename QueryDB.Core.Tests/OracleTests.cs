@@ -214,6 +214,36 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual(null, agent.Ord_Description);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public void Test_Oracle_FetchData_Entity_DataTypes_Check()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_DataTypes;
+            var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData<Entities.Oracle.DataTypes>(selectSql);
+            Assert.IsTrue(data.Count == 1);
+            var dataType = data.FirstOrDefault();
+            Assert.IsTrue(dataType.BFile_Column is byte[] && dataType.BFile_Column != null);
+            Assert.IsTrue(dataType.Blob_Column is byte[] && dataType.Blob_Column != null);
+            Assert.AreEqual("A", dataType.Char_Column);
+            Assert.AreEqual("Sample CLOB data", dataType.Clob_Column);
+            Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.Date_Column.ToString()));
+            Assert.AreEqual(123456.789, dataType.Float_Column);
+            Assert.AreEqual(2147483647, dataType.Integer_Column);
+            Assert.AreEqual(1, dataType.IntervalYearToMonth_Column);
+            Assert.AreEqual(new System.TimeSpan(), dataType.InternalDayToSecond_Column);
+            Assert.AreEqual("Sample LONG data", dataType.Long_Column);
+            Assert.IsTrue(dataType.NChar_Column is byte[] && dataType.NChar_Column != null);
+            Assert.AreEqual("Sample NCLOB data", dataType.NClob_Column);
+            Assert.AreEqual((decimal)123.45, dataType.Number_Column);
+            Assert.AreEqual("Sample NVARCHAR2 data", dataType.NVarchar2_Column);
+            Assert.IsTrue(dataType.Raw_Column is byte[] && dataType.Raw_Column != null);
+            Assert.AreEqual("09/21/2024 12:34:56", ConvertToUSFormat(dataType.Timestamp_Column.ToString()));
+            Assert.AreEqual("09/21/2024 12:34:56", ConvertToUSFormat(dataType.TimestampWithTimeZone_Column.ToString()));
+            Assert.AreEqual("09/21/2024 12:34:56", ConvertToUSFormat(dataType.TimestampWithLocalTimeZone_Column.ToString()));
+            Assert.AreEqual("Sample VARCHAR data", dataType.Varchar_Column);
+            Assert.AreEqual("Sample VARCHAR2 data", dataType.Varchar2_Column);
+        }
+
         #endregion
 
         #endregion

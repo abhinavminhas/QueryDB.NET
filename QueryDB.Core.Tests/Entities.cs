@@ -140,6 +140,29 @@ namespace QueryDB.Core.Tests
                 public double Advance_Amount { get; set; }
                 public string Ord_Description { get; set; }
             }
+            public class DataTypes
+            {
+                public byte[] BFile_Column { get; set; }
+                public byte[] Blob_Column { get; set; }
+                public string Char_Column { get; set; }
+                public string Clob_Column { get; set; }
+                public DateTime Date_Column { get; set; }
+                public float Float_Column { get; set; }
+                public int Integer_Column { get; set; }
+                public int IntervalYearToMonth_Column { get; set; }
+                public TimeSpan InternalDayToSecond_Column { get; set; }
+                public string Long_Column { get; set; }
+                public byte[] NChar_Column { get; set; }
+                public string NClob_Column { get; set; }
+                public decimal Number_Column { get; set; }
+                public string NVarchar2_Column { get; set; }
+                public byte[] Raw_Column { get; set; }
+                public DateTime Timestamp_Column { get; set; }
+                public DateTime TimestampWithLocalTimeZone_Column { get; set; }
+                public DateTime TimestampWithTimeZone_Column { get; set; }
+                public string Varchar_Column { get; set; }
+                public string Varchar2_Column { get; set; }
+            }
         }
         public class PostgreSQL
         {

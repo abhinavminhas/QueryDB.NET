@@ -164,7 +164,7 @@ INSERT INTO DataTypes
     HEXTORAW('DEADBEEF'), -- Blob_Column
     'A', -- Char_Column
     'Sample CLOB data', -- Clob_Column
-    TO_DATE('2024-01-01', 'YYYY-MM-DD'), -- Date_Column
+    TO_DATE('2024-09-21', 'YYYY-MM-DD'), -- Date_Column
     123.45, -- Float_Column
     123, -- Integer_Column
     INTERVAL '1-2' YEAR TO MONTH, -- IntervalYearToMonth_Column
