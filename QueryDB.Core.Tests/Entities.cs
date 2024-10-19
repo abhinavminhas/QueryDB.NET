@@ -152,7 +152,7 @@ namespace QueryDB.Core.Tests
                 public long IntervalYearToMonth_Column { get; set; }
                 public TimeSpan InternalDayToSecond_Column { get; set; }
                 public string Long_Column { get; set; }
-                public byte[] NChar_Column { get; set; }
+                public string NChar_Column { get; set; }
                 public string NClob_Column { get; set; }
                 public decimal Number_Column { get; set; }
                 public string NVarchar2_Column { get; set; }

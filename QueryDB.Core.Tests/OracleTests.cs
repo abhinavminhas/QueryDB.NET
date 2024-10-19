@@ -232,7 +232,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual(1, dataType.IntervalYearToMonth_Column);
             Assert.AreEqual("1.02:03:04.5000000", dataType.InternalDayToSecond_Column.ToString());
             Assert.AreEqual("Sample LONG data", dataType.Long_Column);
-            Assert.IsTrue(dataType.NChar_Column is byte[] && dataType.NChar_Column != null);
+            Assert.AreEqual("A", dataType.NChar_Column);
             Assert.AreEqual("Sample NCLOB data", dataType.NClob_Column);
             Assert.AreEqual((decimal)123.45, dataType.Number_Column);
             Assert.AreEqual("Sample NVARCHAR2 data", dataType.NVarchar2_Column);
