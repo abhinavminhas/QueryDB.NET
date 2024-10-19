@@ -27,7 +27,7 @@ runs:
       shell: bash
       run: |
         mkdir -p /tmp/.docker-cache
-        docker load -i /tmp/.docker-cache/image.tar || true
+        if [ -f /tmp/.docker-cache/image.tar ]; then docker load -i /tmp/.docker-cache/image.tar; fi
 
     # - name: Pull Docker Images
     #   run: |
@@ -38,7 +38,7 @@ runs:
       shell: bash
       run: |
         docker compose -f docker-compose.yml pull --parallel
-        docker save $(docker-compose config | awk '/image:/ {print $2}') -o /tmp/.docker-cache/image.tar
+        docker save -o /tmp/.docker-cache/image.tar $(docker-compose config | awk '/image:/ {print $2}')
 
     - name: Docker Compose (Start - DB Containers)
       shell: bash
