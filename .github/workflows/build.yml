@@ -60,7 +60,7 @@ jobs:
     
     - name: Test
       if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') }}
-      run: dotnet test --no-build --verbosity normal --configuration Release --filter TestCategory=DB-TESTS
+      run: dotnet test --no-build --verbosity detailed --configuration Release --filter TestCategory=DB-TESTS
 
     - name: Docker Compose (Tear Down - DB Containers)
       if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') && always() }}
@@ -111,7 +111,7 @@ jobs:
         dbPassword: ${{ secrets.DB_PASSWORD }}
     
     - name: Test
-      run: dotnet test --no-build --verbosity normal --configuration Release --filter TestCategory=DB-TESTS /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
+      run: dotnet test --no-build --verbosity detailed --configuration Release --filter TestCategory=DB-TESTS /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
     
     - name: Docker Compose (Tear Down - DB Containers)
       if: always()
