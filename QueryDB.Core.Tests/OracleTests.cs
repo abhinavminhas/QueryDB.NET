@@ -139,7 +139,7 @@ namespace QueryDB.Core.Tests
             Assert.IsTrue(data.Count == 1);
             var dataType = data.FirstOrDefault();
             Assert.AreEqual("", dataType.ReferenceData["BFILE_COLUMN"]);
-            Assert.AreEqual("System.Byte[]", dataType.ReferenceData["BLOB_COLUMN"]);
+            Assert.AreEqual("3q2+7w==", dataType.ReferenceData["BLOB_COLUMN"]);
             Assert.AreEqual("A", dataType.ReferenceData["CHAR_COLUMN"]);
             Assert.AreEqual("Sample CLOB data", dataType.ReferenceData["CLOB_COLUMN"]);
             Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.ReferenceData["DATE_COLUMN"]));
@@ -152,7 +152,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("Sample NCLOB data", dataType.ReferenceData["NCLOB_COLUMN"]);
             Assert.AreEqual("123.45", dataType.ReferenceData["NUMBER_COLUMN"]);
             Assert.AreEqual("Sample NVARCHAR2 data", dataType.ReferenceData["NVARCHAR2_COLUMN"]);
-            Assert.AreEqual("System.Byte[]", dataType.ReferenceData["RAW_COLUMN"]);
+            Assert.AreEqual("3q2+7w==", dataType.ReferenceData["RAW_COLUMN"]);
             Assert.AreEqual("09/21/2024 12:34:56", ConvertToUSFormat(dataType.ReferenceData["TIMESTAMP_COLUMN"]));
             Assert.AreEqual("09/21/2024 12:34:56", ConvertToUSFormat(dataType.ReferenceData["TIMESTAMPWITHTIMEZONE_COLUMN"]));
             Assert.AreEqual("09/21/2024 12:34:56", ConvertToUSFormat(dataType.ReferenceData["TIMESTAMPWITHLOCALTIMEZONE_COLUMN"]));
