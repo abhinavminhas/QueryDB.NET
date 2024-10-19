@@ -14,6 +14,24 @@ runs:
       with:
         files: '${{ github.workspace }}/docker-compose.yml'
         replacements: '__DB_PASSWORD__=${{ inputs.dbPassword }},__DB_PASSWORD__=${{ inputs.dbPassword }},__DB_PASSWORD__=${{ inputs.dbPassword }},__DB_PASSWORD__=${{ inputs.dbPassword }}'
+    
+    - name: Set Up Docker Cache
+      uses: actions/cache@v3
+      with:
+        path: /tmp/.docker-cache
+        key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile') }}
+        restore-keys: |
+          ${{ runner.os }}-docker-
+
+    - name: Load Docker cache
+      run: |
+        mkdir -p /tmp/.docker-cache
+        docker load -i /tmp/.docker-cache/image.tar || true
+
+    - name: Pull Docker Images
+      run: |
+        docker-compose pull
+        docker save $(docker-compose config | awk '/image:/ {print $2}') -o /tmp/.docker-cache/image.tar
 
     - name: Docker Compose (Pull)
       shell: bash
