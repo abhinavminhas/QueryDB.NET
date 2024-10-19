@@ -139,7 +139,7 @@ namespace QueryDB.Core.Tests
             Assert.IsTrue(data.Count == 1);
             var dataType = data.FirstOrDefault();
             Assert.AreEqual("9223372036854775807", dataType.ReferenceData["BigInt_Column"]);
-            Assert.AreEqual("System.Byte[]", dataType.ReferenceData["Binary_Column"]);
+            Assert.AreEqual("EjRWeJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=", dataType.ReferenceData["Binary_Column"]);
             Assert.AreEqual("True", dataType.ReferenceData["Bit_Column"]);
             Assert.AreEqual("CharData", dataType.ReferenceData["Char_Column"]);
             Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.ReferenceData["Date_Column"]));
@@ -148,7 +148,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("09/20/2024 22:34:51", ConvertToUTCInUSFormat(dataType.ReferenceData["DateTimeOffset_Column"]));
             Assert.AreEqual("123456.78", dataType.ReferenceData["Decimal_Column"]);
             Assert.AreEqual("123456.78", dataType.ReferenceData["Float_Column"]);
-            Assert.AreEqual("System.Byte[]", dataType.ReferenceData["Image_Column"]);
+            Assert.AreEqual("EjRWeJA=", dataType.ReferenceData["Image_Column"]);
             Assert.AreEqual("2147483647", dataType.ReferenceData["Int_Column"]);
             Assert.AreEqual("123456.7800", dataType.ReferenceData["Money_Column"]);
             Assert.AreEqual("NCharData", dataType.ReferenceData["NChar_Column"]);
@@ -164,7 +164,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("08:34:51", dataType.ReferenceData["Time_Column"]);
             Assert.AreEqual("255", dataType.ReferenceData["TinyInt_Column"]);
             Assert.AreEqual("12345678-1234-1234-1234-123456789012", dataType.ReferenceData["UniqueIdentifier_Column"]);
-            Assert.AreEqual("System.Byte[]", dataType.ReferenceData["VarBinary_Column"]);
+            Assert.AreEqual("EjRWeJA=", dataType.ReferenceData["VarBinary_Column"]);
             Assert.AreEqual("VarCharData", dataType.ReferenceData["VarChar_Column"]);
             Assert.AreEqual("<root><element>XmlData</element></root>", dataType.ReferenceData["Xml_Column"]);
         }

@@ -140,7 +140,7 @@ namespace QueryDB.Core.Tests
             var dataType = data.FirstOrDefault();
             Assert.AreEqual("9223372036854775807", dataType.ReferenceData["bigint_column"]);
             Assert.AreEqual("True", dataType.ReferenceData["boolean_column"]);
-            Assert.AreEqual("System.Byte[]", dataType.ReferenceData["bytea_column"]);
+            Assert.AreEqual("3q2+7w==", dataType.ReferenceData["bytea_column"]);
             Assert.AreEqual("char10", dataType.ReferenceData["char_column"]);
             Assert.AreEqual("varchar50", dataType.ReferenceData["varchar_column"]);
             Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.ReferenceData["date_column"]));

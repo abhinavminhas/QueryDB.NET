@@ -1,5 +1,6 @@
 ﻿using Npgsql;
 using QueryDB.Resources;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
@@ -45,9 +46,19 @@ namespace QueryDB.PostgreSQL
                     for (int i = 0; i < reader.FieldCount; i++)
                     {
                         if (upperCaseKeys)
-                            addRow.ReferenceData.Add(reader.GetName(i).ToUpper(), reader.GetValue(i).ToString());
+                        {
+                            if (reader.GetValue(i) is byte[] value)
+                                addRow.ReferenceData.Add(reader.GetName(i).ToUpper(), Convert.ToBase64String(value));
+                            else
+                                addRow.ReferenceData.Add(reader.GetName(i).ToUpper(), reader.GetValue(i).ToString());
+                        }
                         else
-                            addRow.ReferenceData.Add(reader.GetName(i), reader.GetValue(i).ToString());
+                        {
+                            if (reader.GetValue(i) is byte[] value)
+                                addRow.ReferenceData.Add(reader.GetName(i), Convert.ToBase64String(value));
+                            else
+                                addRow.ReferenceData.Add(reader.GetName(i), reader.GetValue(i).ToString());
+                        }
                     }
                     dataList.Add(addRow);
                 }

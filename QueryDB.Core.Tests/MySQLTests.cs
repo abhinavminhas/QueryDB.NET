@@ -155,7 +155,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("09/21/2024 13:24:10", ConvertToUSFormat(dataType.ReferenceData["Timestamp_Column"]));
             Assert.AreEqual("127", dataType.ReferenceData["TinyInt_Column"]);
             Assert.AreEqual("This is a tiny text", dataType.ReferenceData["TinyText_Column"]);
-            Assert.AreEqual("System.Byte[]", dataType.ReferenceData["VarBinary_Column"]);
+            Assert.AreEqual("3q2+7w==", dataType.ReferenceData["VarBinary_Column"]);
             Assert.AreEqual("This is a varchar", dataType.ReferenceData["VarChar_Column"]);
         }
 
