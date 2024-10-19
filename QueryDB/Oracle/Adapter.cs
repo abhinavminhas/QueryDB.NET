@@ -72,6 +72,7 @@ namespace QueryDB.Oracle
                     var addObjectRow = new T();
                     foreach (var prop in typeof(T).GetProperties())
                     {
+                        System.Console.WriteLine(prop.Name);
                         if (Utils.ColumnExists(reader, prop.Name) && !reader.IsDBNull(reader.GetOrdinal(prop.Name)))
                             prop.SetValue(addObjectRow, reader[prop.Name]);
                     }
