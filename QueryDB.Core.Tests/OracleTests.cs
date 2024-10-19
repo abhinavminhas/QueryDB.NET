@@ -222,8 +222,8 @@ namespace QueryDB.Core.Tests
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData<Entities.Oracle.DataTypes>(selectSql);
             Assert.IsTrue(data.Count == 1);
             var dataType = data.FirstOrDefault();
-            Assert.IsTrue(dataType.BFile_Column is byte[] && dataType.BFile_Column == null);
-            Assert.IsTrue(dataType.Blob_Column is byte[] && dataType.Blob_Column != null);
+            Assert.IsTrue(dataType.BFile_Column is byte[] && dataType.BFile_Column == null, "1");
+            Assert.IsTrue(dataType.Blob_Column is byte[] && dataType.Blob_Column != null, "2");
             Assert.AreEqual("A", dataType.Char_Column);
             Assert.AreEqual("Sample CLOB data", dataType.Clob_Column);
             Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.Date_Column.ToString()));
@@ -236,7 +236,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("Sample NCLOB data", dataType.NClob_Column);
             Assert.AreEqual((decimal)123.45, dataType.Number_Column);
             Assert.AreEqual("Sample NVARCHAR2 data", dataType.NVarchar2_Column);
-            Assert.IsTrue(dataType.Raw_Column is byte[] && dataType.Raw_Column != null);
+            Assert.IsTrue(dataType.Raw_Column is byte[] && dataType.Raw_Column != null, "3");
             Assert.AreEqual("09/21/2024 12:34:56", ConvertToUSFormat(dataType.Timestamp_Column.ToString()));
             Assert.AreEqual("09/21/2024 12:34:56", ConvertToUSFormat(dataType.TimestampWithTimeZone_Column.ToString()));
             Assert.AreEqual("09/21/2024 12:34:56", ConvertToUSFormat(dataType.TimestampWithLocalTimeZone_Column.ToString()));
