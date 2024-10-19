@@ -23,19 +23,22 @@ runs:
         restore-keys: |
           ${{ runner.os }}-docker-
 
-    - name: Load Docker cache
+    - name: Load Docker Cache
+      shell: bash
       run: |
         mkdir -p /tmp/.docker-cache
         docker load -i /tmp/.docker-cache/image.tar || true
 
-    - name: Pull Docker Images
-      run: |
-        docker-compose pull
-        docker save $(docker-compose config | awk '/image:/ {print $2}') -o /tmp/.docker-cache/image.tar
+    # - name: Pull Docker Images
+    #   run: |
+    #     docker-compose pull
+    #     docker save $(docker-compose config | awk '/image:/ {print $2}') -o /tmp/.docker-cache/image.tar
 
     - name: Docker Compose (Pull)
       shell: bash
-      run: docker compose -f docker-compose.yml pull --parallel
+      run: |
+        docker compose -f docker-compose.yml pull --parallel
+        docker save $(docker-compose config | awk '/image:/ {print $2}') -o /tmp/.docker-cache/image.tar
 
     - name: Docker Compose (Start - DB Containers)
       shell: bash
