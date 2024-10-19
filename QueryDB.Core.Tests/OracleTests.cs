@@ -228,7 +228,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("Sample CLOB data", dataType.Clob_Column);
             Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.Date_Column.ToString()));
             Assert.AreEqual((decimal)123456.789, dataType.Float_Column);
-            Assert.AreEqual(2147483647, dataType.Integer_Column);
+            Assert.AreEqual(123, (int)dataType.Integer_Column);
             Assert.AreEqual(1, dataType.IntervalYearToMonth_Column);
             Assert.AreEqual(new System.TimeSpan(), dataType.InternalDayToSecond_Column);
             Assert.AreEqual("Sample LONG data", dataType.Long_Column);

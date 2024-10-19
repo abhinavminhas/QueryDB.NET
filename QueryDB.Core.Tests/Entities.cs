@@ -148,7 +148,7 @@ namespace QueryDB.Core.Tests
                 public string Clob_Column { get; set; }
                 public DateTime Date_Column { get; set; }
                 public decimal Float_Column { get; set; }
-                public int Integer_Column { get; set; }
+                public decimal Integer_Column { get; set; }
                 public int IntervalYearToMonth_Column { get; set; }
                 public TimeSpan InternalDayToSecond_Column { get; set; }
                 public string Long_Column { get; set; }
