@@ -230,7 +230,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual((decimal)123456.789, dataType.Float_Column);
             Assert.AreEqual(123, (int)dataType.Integer_Column);
             Assert.AreEqual(1, dataType.IntervalYearToMonth_Column);
-            Assert.AreEqual(new System.TimeSpan(), dataType.InternalDayToSecond_Column);
+            Assert.AreEqual("1.02:03:04.5000000", dataType.InternalDayToSecond_Column.ToString());
             Assert.AreEqual("Sample LONG data", dataType.Long_Column);
             Assert.IsTrue(dataType.NChar_Column is byte[] && dataType.NChar_Column != null);
             Assert.AreEqual("Sample NCLOB data", dataType.NClob_Column);
