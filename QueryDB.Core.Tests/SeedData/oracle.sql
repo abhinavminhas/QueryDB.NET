@@ -1,5 +1,5 @@
 ALTER SESSION SET CURRENT_SCHEMA = SYS;
-GRANT READ, WRITE ON DIRECTORY 'home' TO SYS;
+GRANT READ, WRITE ON DIRECTORY '/home' TO SYS;
 
 CREATE TABLE Agents 
 (
@@ -161,7 +161,7 @@ INSERT INTO DataTypes
     Varchar_Column, 
     Varchar2_Column 
 ) VALUES (
-    (BFILENAME('home', 'oracle.sql')), -- BFile_Column
+    (BFILENAME('/home', 'oracle.sql')), -- BFile_Column
     HEXTORAW('DEADBEEF'), -- Blob_Column
     'A', -- Char_Column
     'Sample CLOB data', -- Clob_Column
