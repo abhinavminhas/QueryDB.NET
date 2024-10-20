@@ -2,7 +2,7 @@ name: Docker Compose (Caching)
 
 inputs:
   useCache:
-    description: 'Set cache.'
+    description: 'Enable docker compose caching.'
     required: true
     
 runs:
@@ -19,7 +19,7 @@ runs:
       shell: bash
       run: |
           docker system prune -a --force
-          docker volume rm $(docker volume ls -qf dangling=true)
+          docker volume ls -qf dangling=true | xargs docker volume rm
     
     - name: Set Up Docker Cache
       if: ${{ (inputs.useCache == 'true') }}
