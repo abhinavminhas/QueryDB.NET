@@ -18,7 +18,7 @@ runs:
     - name: Docker Compose (Pull)
       uses: ./.github/workflows/docker-compose-pull
       with:
-        useCache: false
+        useCache: true
 
     - name: Docker Compose (Start - DB Containers)
       shell: bash

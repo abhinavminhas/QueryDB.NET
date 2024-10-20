@@ -6,6 +6,7 @@ inputs:
     required: true
     
 runs:
+  runs-on: ubuntu-22.04
   using: 'composite'
   
   steps:
