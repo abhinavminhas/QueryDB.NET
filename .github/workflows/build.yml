@@ -12,7 +12,7 @@ on:
 
 jobs:
   Docker-Compose-Pull:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-22-04-large
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -20,7 +20,7 @@ jobs:
       - name: Docker Compose (Pull)
         uses: ./.github/workflows/docker-compose-pull
         with:
-          useCache: false
+          useCache: true
 
   # Build/Test
   OS-NetCore:
