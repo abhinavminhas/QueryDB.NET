@@ -15,10 +15,10 @@ runs:
         files: '${{ github.workspace }}/docker-compose.yml'
         replacements: '__DB_PASSWORD__=${{ inputs.dbPassword }},__DB_PASSWORD__=${{ inputs.dbPassword }},__DB_PASSWORD__=${{ inputs.dbPassword }},__DB_PASSWORD__=${{ inputs.dbPassword }}'
 
-    # - name: Docker Compose (Pull)
-    #   uses: ./.github/workflows/docker-compose-pull
-    #   with:
-    #     useCache: true
+    - name: Docker Compose (Pull)
+      uses: ./.github/workflows/docker-compose-pull
+      with:
+        useCache: false
 
     - name: Docker Compose (Start - DB Containers)
       shell: bash
