@@ -15,34 +15,10 @@ runs:
         files: '${{ github.workspace }}/docker-compose.yml'
         replacements: '__DB_PASSWORD__=${{ inputs.dbPassword }},__DB_PASSWORD__=${{ inputs.dbPassword }},__DB_PASSWORD__=${{ inputs.dbPassword }},__DB_PASSWORD__=${{ inputs.dbPassword }}'
 
-    - name: Install Docker Compose
-      shell: bash
-      run: sudo apt-get install docker-compose
-    
-    - name: Set Up Docker Cache
-      uses: actions/cache@v3
+    - name: Docker Compose (Caching)
+      uses: ./.github/workflows/docker-compose-cache
       with:
-        path: /tmp/.docker-cache
-        key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile') }}
-        restore-keys: |
-          ${{ runner.os }}-docker-
-
-    - name: Load Docker Cache
-      shell: bash
-      run: |
-        mkdir -p /tmp/.docker-cache
-        if [ -f /tmp/.docker-cache/image.tar ]; then docker load -i /tmp/.docker-cache/image.tar; fi
-
-    # - name: Pull Docker Images
-    #   run: |
-    #     docker-compose pull
-    #     docker save $(docker-compose config | awk '/image:/ {print $2}') -o /tmp/.docker-cache/image.tar
-
-    - name: Docker Compose (Pull)
-      shell: bash
-      run: |
-        docker compose -f docker-compose.yml pull --parallel
-        docker save -o /tmp/.docker-cache/image.tar $(docker-compose config | awk '/image:/ {print $2}')
+        useCache: true
 
     - name: Docker Compose (Start - DB Containers)
       shell: bash
