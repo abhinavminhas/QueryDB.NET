@@ -1,4 +1,4 @@
-name: Docker Compose (Caching)
+name: Docker Compose (Pull)
 
 inputs:
   useCache:
