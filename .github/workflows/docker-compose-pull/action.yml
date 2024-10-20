@@ -6,8 +6,8 @@ inputs:
     required: true
     
 runs:
-  runs-on: ubuntu-22.04
-  using: 'composite'
+  using: 'docker'
+  image: 'ubuntu-22.04'
   
   steps:
     - name: Install Docker Compose
