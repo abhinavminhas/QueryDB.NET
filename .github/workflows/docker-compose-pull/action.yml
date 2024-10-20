@@ -10,6 +10,9 @@ runs:
   image: 'ubuntu-22.04'
   
   steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
     - name: Install Docker Compose
       if: ${{ (inputs.useCache == 'true') }}
       shell: bash
