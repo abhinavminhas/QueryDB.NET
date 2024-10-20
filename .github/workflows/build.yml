@@ -11,18 +11,18 @@ on:
   workflow_dispatch:
 
 jobs:
-  # Build/Test
   Docker-Compose-Pull:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Docker Compose (Pull)
         uses: ./.github/workflows/docker-compose-pull
         with:
-          useCache: true
+          useCache: false
 
+  # Build/Test
   OS-NetCore:
     name: Build/Test (.NET Core)
     needs: Docker-Compose-Pull
@@ -81,6 +81,7 @@ jobs:
   # Code Coverage
   Code-Coverage:
     name: Code Coverage (Codecov)
+    needs: Docker-Compose-Pull
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
