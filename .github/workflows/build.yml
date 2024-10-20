@@ -12,8 +12,17 @@ on:
 
 jobs:
   # Build/Test
+  Docker-Compose-Pull:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Docker Compose (Pull)
+        uses: ./.github/workflows/docker-compose-pull
+        with:
+          useCache: true
+
   OS-NetCore:
     name: Build/Test (.NET Core)
+    needs: Docker-Compose-Pull
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
