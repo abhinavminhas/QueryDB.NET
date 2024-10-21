@@ -46,20 +46,11 @@ namespace QueryDB.MySQL
                     var addRow = new DataDictionary();
                     for (int i = 0; i < reader.FieldCount; i++)
                     {
-                        if (upperCaseKeys)
-                        {
-                            if (reader.GetValue(i) is byte[] value)
-                                addRow.ReferenceData.Add(reader.GetName(i).ToUpper(), Convert.ToBase64String(value));
-                            else
-                                addRow.ReferenceData.Add(reader.GetName(i).ToUpper(), reader.GetValue(i).ToString());
-                        }
+                        string key = upperCaseKeys ? reader.GetName(i).ToUpper() : reader.GetName(i);
+                        if (reader.GetValue(i) is byte[] value)
+                            addRow.ReferenceData.Add(key, Convert.ToBase64String(value));
                         else
-                        {
-                            if (reader.GetValue(i) is byte[] value)
-                                addRow.ReferenceData.Add(reader.GetName(i), Convert.ToBase64String(value));
-                            else
-                                addRow.ReferenceData.Add(reader.GetName(i), reader.GetValue(i).ToString());
-                        }
+                            addRow.ReferenceData.Add(key, reader.GetValue(i).ToString());
                     }
                     dataList.Add(addRow);
                 }
