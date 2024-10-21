@@ -102,8 +102,9 @@ namespace QueryDB
         /// </summary>
         /// <typeparam name="T">Object entity to return data mapped into.</typeparam>
         /// <param name="selectSql">'Select' query.</param>
+        /// <param name="strict">Enables fetch data only for object <T> properties existing in database query result. Default - 'false'.</param>
         /// <returns>List of data rows mapped into object entity into a list for multiple rows of data.</returns>
-        public List<T> FetchData<T>(string selectSql) where T : new()
+        public List<T> FetchData<T>(string selectSql, bool strict = false) where T : new()
         {
             var dataList = new List<T>();
             if (Database.Equals(DB.MSSQL))
@@ -111,7 +112,7 @@ namespace QueryDB
                 using (var msSqlDBConnection = GetSqlServerConnection())
                 {
                     var _systemAdapter = new MSSQL.Adapter();
-                    dataList = _systemAdapter.FetchData<T>(selectSql, msSqlDBConnection.SqlConnection);
+                    dataList = _systemAdapter.FetchData<T>(selectSql, msSqlDBConnection.SqlConnection, strict: false);
     }
             }
             else if (Database.Equals(DB.MySQL))
@@ -119,7 +120,7 @@ namespace QueryDB
                 using (var mySqlDBConnection = GetMySqlConnection())
                 {
                     var _systemAdapter = new MySQL.Adapter();
-                    dataList = _systemAdapter.FetchData<T>(selectSql, mySqlDBConnection.MySqlConnection);
+                    dataList = _systemAdapter.FetchData<T>(selectSql, mySqlDBConnection.MySqlConnection, strict: false);
                 }
             }
             else if (Database.Equals(DB.Oracle))
@@ -127,7 +128,7 @@ namespace QueryDB
                 using (var oracleDBConnection = GetOracleConnection())
                 {
                     var _systemAdapter = new Oracle.Adapter();
-                    dataList = _systemAdapter.FetchData<T>(selectSql, oracleDBConnection.OracleConnection);
+                    dataList = _systemAdapter.FetchData<T>(selectSql, oracleDBConnection.OracleConnection, strict: false);
                 }
             }
             else if (Database.Equals(DB.PostgreSQL))
@@ -135,7 +136,7 @@ namespace QueryDB
                 using (var postgreSqlDBConnection = GetPostgreSqlConnection())
                 {
                     var _systemAdapter = new PostgreSQL.Adapter();
-                    dataList = _systemAdapter.FetchData<T>(selectSql, postgreSqlDBConnection.PostgreSQLConnection);
+                    dataList = _systemAdapter.FetchData<T>(selectSql, postgreSqlDBConnection.PostgreSQLConnection, strict: false);
                 }
             }
             return dataList;

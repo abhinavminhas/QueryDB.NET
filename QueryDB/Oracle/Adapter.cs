@@ -73,8 +73,9 @@ namespace QueryDB.Oracle
         /// <typeparam name="T">Object entity to return data mapped into.</typeparam>
         /// <param name="selectSql">'Select' query.</param>
         /// <param name="connection">'Oracle' Connection.</param>
+        /// <param name="strict">Enables fetch data only for object <T> properties existing in database query result. Default - 'false'.</param>
         /// <returns>List of data rows mapped into object entity into a list for multiple rows of data.</returns>
-        internal List<T> FetchData<T>(string selectSql, OracleConnection connection) where T : new()
+        internal List<T> FetchData<T>(string selectSql, OracleConnection connection, bool strict) where T : new()
         {
             var dataList = new List<T>();
             using (var reader = GetOracleReader(selectSql, connection, CommandType.Text))
@@ -82,10 +83,21 @@ namespace QueryDB.Oracle
                 while (reader.Read())
                 {
                     var addObjectRow = new T();
-                    foreach (var prop in typeof(T).GetProperties())
+                    if (strict)
                     {
-                        if (Utils.ColumnExists(reader, prop.Name) && !reader.IsDBNull(reader.GetOrdinal(prop.Name)))
-                            prop.SetValue(addObjectRow, reader[prop.Name]);
+                        foreach (var prop in typeof(T).GetProperties())
+                        {
+                            if (!reader.IsDBNull(reader.GetOrdinal(prop.Name)))
+                                prop.SetValue(addObjectRow, reader[prop.Name]);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var prop in typeof(T).GetProperties())
+                        {
+                            if (Utils.ColumnExists(reader, prop.Name) && !reader.IsDBNull(reader.GetOrdinal(prop.Name)))
+                                prop.SetValue(addObjectRow, reader[prop.Name]);
+                        }
                     }
                     dataList.Add(addObjectRow);
                 }
