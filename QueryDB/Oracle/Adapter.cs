@@ -83,19 +83,11 @@ namespace QueryDB.Oracle
                 while (reader.Read())
                 {
                     var addObjectRow = new T();
-                    if (strict)
+                    foreach (var prop in typeof(T).GetProperties())
                     {
-                        foreach (var prop in typeof(T).GetProperties())
+                        if (strict || Utils.ColumnExists(reader, prop.Name))
                         {
                             if (!reader.IsDBNull(reader.GetOrdinal(prop.Name)))
-                                prop.SetValue(addObjectRow, reader[prop.Name]);
-                        }
-                    }
-                    else
-                    {
-                        foreach (var prop in typeof(T).GetProperties())
-                        {
-                            if (Utils.ColumnExists(reader, prop.Name) && !reader.IsDBNull(reader.GetOrdinal(prop.Name)))
                                 prop.SetValue(addObjectRow, reader[prop.Name]);
                         }
                     }

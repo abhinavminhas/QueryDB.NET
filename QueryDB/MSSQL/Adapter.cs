@@ -44,16 +44,19 @@ namespace QueryDB.MSSQL
                 while (reader.Read())
                 {
                     var addRow = new DataDictionary();
-                    for (int i = 0; i < reader.FieldCount; i++)
+                    if (upperCaseKeys)
                     {
-                        if (upperCaseKeys)
+                        for (int i = 0; i < reader.FieldCount; i++)
                         {
                             if (reader.GetValue(i) is byte[] value)
                                 addRow.ReferenceData.Add(reader.GetName(i).ToUpper(), Convert.ToBase64String(value));
                             else
                                 addRow.ReferenceData.Add(reader.GetName(i).ToUpper(), reader.GetValue(i).ToString());
                         }
-                        else
+                    }
+                    else
+                    {
+                        for (int i = 0; i < reader.FieldCount; i++)
                         {
                             if (reader.GetValue(i) is byte[] value)
                                 addRow.ReferenceData.Add(reader.GetName(i), Convert.ToBase64String(value));
@@ -61,6 +64,7 @@ namespace QueryDB.MSSQL
                                 addRow.ReferenceData.Add(reader.GetName(i), reader.GetValue(i).ToString());
                         }
                     }
+                    
                     dataList.Add(addRow);
                 }
             }
@@ -83,19 +87,11 @@ namespace QueryDB.MSSQL
                 while (reader.Read())
                 {
                     var addObjectRow = new T();
-                    if (strict)
+                    foreach (var prop in typeof(T).GetProperties())
                     {
-                        foreach (var prop in typeof(T).GetProperties())
+                        if (strict || Utils.ColumnExists(reader, prop.Name))
                         {
                             if (!reader.IsDBNull(reader.GetOrdinal(prop.Name)))
-                                prop.SetValue(addObjectRow, reader[prop.Name]);
-                        }
-                    }
-                    else
-                    {
-                        foreach (var prop in typeof(T).GetProperties())
-                        {
-                            if (Utils.ColumnExists(reader, prop.Name) && !reader.IsDBNull(reader.GetOrdinal(prop.Name)))
                                 prop.SetValue(addObjectRow, reader[prop.Name]);
                         }
                     }
