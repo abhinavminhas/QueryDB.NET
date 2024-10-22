@@ -64,7 +64,7 @@ namespace QueryDB.MSSQL
         /// <typeparam name="T">Object entity to return data mapped into.</typeparam>
         /// <param name="selectSql">'Select' query.</param>
         /// <param name="connection">'Sql' Connection.</param>
-        /// <param name="strict">Enables fetch data only for object <T> properties existing in database query result. Default - 'false'.</param>
+        /// <param name="strict">Enables fetch data only for object <T> properties existing in database query result.</param>
         /// <returns>List of data rows mapped into object entity into a list for multiple rows of data.</returns>
         internal List<T> FetchData<T>(string selectSql, SqlConnection connection, bool strict) where T : new()
         {

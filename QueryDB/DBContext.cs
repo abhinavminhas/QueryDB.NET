@@ -112,7 +112,7 @@ namespace QueryDB
                 using (var msSqlDBConnection = GetSqlServerConnection())
                 {
                     var _systemAdapter = new MSSQL.Adapter();
-                    dataList = _systemAdapter.FetchData<T>(selectSql, msSqlDBConnection.SqlConnection, strict: false);
+                    dataList = _systemAdapter.FetchData<T>(selectSql, msSqlDBConnection.SqlConnection, strict);
     }
             }
             else if (Database.Equals(DB.MySQL))
@@ -120,7 +120,7 @@ namespace QueryDB
                 using (var mySqlDBConnection = GetMySqlConnection())
                 {
                     var _systemAdapter = new MySQL.Adapter();
-                    dataList = _systemAdapter.FetchData<T>(selectSql, mySqlDBConnection.MySqlConnection, strict: false);
+                    dataList = _systemAdapter.FetchData<T>(selectSql, mySqlDBConnection.MySqlConnection, strict);
                 }
             }
             else if (Database.Equals(DB.Oracle))
@@ -128,7 +128,7 @@ namespace QueryDB
                 using (var oracleDBConnection = GetOracleConnection())
                 {
                     var _systemAdapter = new Oracle.Adapter();
-                    dataList = _systemAdapter.FetchData<T>(selectSql, oracleDBConnection.OracleConnection, strict: false);
+                    dataList = _systemAdapter.FetchData<T>(selectSql, oracleDBConnection.OracleConnection, strict);
                 }
             }
             else if (Database.Equals(DB.PostgreSQL))
@@ -136,7 +136,7 @@ namespace QueryDB
                 using (var postgreSqlDBConnection = GetPostgreSqlConnection())
                 {
                     var _systemAdapter = new PostgreSQL.Adapter();
-                    dataList = _systemAdapter.FetchData<T>(selectSql, postgreSqlDBConnection.PostgreSQLConnection, strict: false);
+                    dataList = _systemAdapter.FetchData<T>(selectSql, postgreSqlDBConnection.PostgreSQLConnection, strict);
                 }
             }
             return dataList;
