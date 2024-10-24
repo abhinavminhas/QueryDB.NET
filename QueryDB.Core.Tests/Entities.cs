@@ -186,8 +186,8 @@ namespace QueryDB.Core.Tests
                 public string Agent { get; set; }
                 public string Cust_Code { get; set; }
                 public string Customer { get; set; }
-                public decimal Ord_Num { get; set; }
-                public decimal Ord_Amount { get; set; }
+                public int Ord_Num { get; set; }
+                public double Ord_Amount { get; set; }
             }
         }
         public class PostgreSQL

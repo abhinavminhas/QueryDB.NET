@@ -270,7 +270,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("C00013", dataType.Cust_Code);
             Assert.AreEqual("Holmes", dataType.Customer);
             Assert.AreEqual(200100, dataType.Ord_Num);
-            Assert.AreEqual((decimal)1000.00, dataType.Ord_Amount);
+            Assert.AreEqual(1000.00, dataType.Ord_Amount);
         }
 
         [TestMethod]
@@ -284,7 +284,7 @@ namespace QueryDB.Core.Tests
             }
             catch (IndexOutOfRangeException ex)
             {
-                Assert.AreEqual("Agent_Name", ex.Message);
+                Assert.AreEqual("Unable to find specified column in result set", ex.Message);
             }
         }
 
