@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
 
 namespace QueryDB.Core.Tests
@@ -252,6 +253,37 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("This is a tiny text", dataType.TinyText_Column);
             Assert.IsTrue(dataType.VarBinary_Column is byte[] && dataType.VarBinary_Column != null);
             Assert.AreEqual("This is a varchar", dataType.VarChar_Column);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
+        public void Test_MySQL_FetchData_Entity_DataTypes_Strict_Check()
+        {
+            var selectSql = Queries.MySQLQueries.TestDB.SelectSql_Strict;
+            var data = new DBContext(DB.MySQL, MySQLConnectionString).FetchData<Entities.MySQL.Details>(selectSql, strict: true);
+            Assert.IsTrue(data.Count == 34);
+            var dataType = data.FirstOrDefault();
+            Assert.AreEqual("A003", dataType.Agent_Code);
+            Assert.AreEqual("Alex", dataType.Agent);
+            Assert.AreEqual("C00013", dataType.Cust_Code);
+            Assert.AreEqual("Holmes", dataType.Customer);
+            Assert.AreEqual(200100, dataType.Ord_Num);
+            Assert.AreEqual((decimal)1000.00, dataType.Ord_Amount);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
+        public void Test_MySQL_FetchData_Entity_DataTypes_Strict_Error_Check()
+        {
+            var selectSql = Queries.MySQLQueries.TestDB.SelectSql_Strict;
+            try
+            {
+                var data = new DBContext(DB.MySQL, MySQLConnectionString).FetchData<Entities.MySQL.Orders>(selectSql, strict: true);
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                Assert.AreEqual("Could not find specified column in results: Agent_Name", ex.Message);
+            }
         }
 
         #endregion

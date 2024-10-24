@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
 
 namespace QueryDB.Core.Tests
@@ -230,7 +231,7 @@ namespace QueryDB.Core.Tests
         [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
         public void Test_Oracle_FetchData_Entity_DataTypes_Check()
         {
-            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_DataTypes;
+            var selectSql = Queries.OracleQueries.TestDB.SelectSql_DataTypes;
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData<Entities.Oracle.DataTypes>(selectSql);
             Assert.IsTrue(data.Count == 1);
             var dataType = data.FirstOrDefault();
@@ -254,6 +255,37 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("09/21/2024 12:34:56", ConvertToUSFormat(dataType.TimestampWithLocalTimeZone_Column.ToString()));
             Assert.AreEqual("Sample VARCHAR data", dataType.Varchar_Column);
             Assert.AreEqual("Sample VARCHAR2 data", dataType.Varchar2_Column);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public void Test_Oracle_FetchData_Entity_DataTypes_Strict_Check()
+        {
+            var selectSql = Queries.OracleQueries.TestDB.SelectSql_Strict;
+            var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData<Entities.Oracle.Details>(selectSql, strict: true);
+            Assert.IsTrue(data.Count == 34);
+            var dataType = data.FirstOrDefault();
+            Assert.AreEqual("A003", dataType.Agent_Code);
+            Assert.AreEqual("Alex", dataType.Agent);
+            Assert.AreEqual("C00013", dataType.Cust_Code);
+            Assert.AreEqual("Holmes", dataType.Customer);
+            Assert.AreEqual(200100, dataType.Ord_Num);
+            Assert.AreEqual((decimal)1000.00, dataType.Ord_Amount);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public void Test_Oracle_FetchData_Entity_DataTypes_Strict_Error_Check()
+        {
+            var selectSql = Queries.OracleQueries.TestDB.SelectSql_Strict;
+            try
+            {
+                var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData<Entities.Oracle.Orders>(selectSql, strict: true);
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                Assert.AreEqual("Agent_Name", ex.Message);
+            }
         }
 
         #endregion

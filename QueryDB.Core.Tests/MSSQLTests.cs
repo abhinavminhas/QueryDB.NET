@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
 
 namespace QueryDB.Core.Tests
@@ -272,6 +273,37 @@ namespace QueryDB.Core.Tests
             Assert.IsTrue(dataType.VarBinary_Column is byte[] && dataType.Binary_Column != null);
             Assert.AreEqual("VarCharData", dataType.VarChar_Column);
             Assert.AreEqual("<root><element>XmlData</element></root>", dataType.Xml_Column);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_FetchData_Entity_DataTypes_Strict_Check()
+        {
+            var selectSql = Queries.MSSQLQueries.TestDB.SelectSql_Strict;
+            var data = new DBContext(DB.MSSQL, MSSQLConnectionString).FetchData<Entities.MSSQL.Details>(selectSql, strict: true);
+            Assert.IsTrue(data.Count == 34);
+            var dataType = data.FirstOrDefault();
+            Assert.AreEqual("A003", dataType.Agent_Code);
+            Assert.AreEqual("Alex", dataType.Agent);
+            Assert.AreEqual("C00013", dataType.Cust_Code);
+            Assert.AreEqual("Holmes", dataType.Customer);
+            Assert.AreEqual(200100, dataType.Ord_Num);
+            Assert.AreEqual((decimal)1000.00, dataType.Ord_Amount);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_FetchData_Entity_DataTypes_Strict_Error_Check()
+        {
+            var selectSql = Queries.MSSQLQueries.TestDB.SelectSql_Strict;
+            try
+            {
+                var data = new DBContext(DB.MSSQL, MSSQLConnectionString).FetchData<Entities.MSSQL.Orders>(selectSql, strict: true);
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                Assert.AreEqual("Agent_Name", ex.Message);
+            }
         }
 
         #endregion

@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
 
 namespace QueryDB.Core.Tests
@@ -246,6 +247,37 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("12:34:56", dataType.Time_Column.ToString());
             Assert.AreEqual("09/21/2024 14:34:56", ConvertToUSFormat(dataType.Timestamp_Column.ToString()));
             Assert.AreEqual("123e4567-e89b-12d3-a456-426614174000", dataType.Uuid_Column.ToString());
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_FetchData_Entity_DataTypes_Strict_Check()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_Strict;
+            var data = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData<Entities.PostgreSQL.Details>(selectSql, strict: true);
+            Assert.IsTrue(data.Count == 34);
+            var dataType = data.FirstOrDefault();
+            Assert.AreEqual("A003", dataType.Agent_Code);
+            Assert.AreEqual("Alex", dataType.Agent);
+            Assert.AreEqual("C00013", dataType.Cust_Code);
+            Assert.AreEqual("Holmes", dataType.Customer);
+            Assert.AreEqual(200100, dataType.Ord_Num);
+            Assert.AreEqual((decimal)1000.00, dataType.Ord_Amount);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_FetchData_Entity_DataTypes_Strict_Error_Check()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_Strict;
+            try
+            {
+                var data = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData<Entities.PostgreSQL.Orders>(selectSql, strict: true);
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                Assert.AreEqual("Field not found in row: Agent_Name", ex.Message);
+            }
         }
 
         #endregion

@@ -63,7 +63,15 @@ namespace QueryDB.Core.Tests
                 public string VarChar_Column { get; set; }
                 public string Xml_Column { get; set; }
             }
-
+            public class Details
+            {
+                public string Agent_Code { get; set; }
+                public string Agent { get; set; }
+                public string Cust_Code { get; set; }
+                public string Customer { get; set; }
+                public decimal Ord_Num { get; set; }
+                public decimal Ord_Amount { get; set; }
+            }
         }
         public class MySQL
         {
@@ -112,6 +120,15 @@ namespace QueryDB.Core.Tests
                 public string TinyText_Column { get; set; }
                 public byte[] VarBinary_Column { get; set; }
                 public string VarChar_Column { get; set; }
+            }
+            public class Details
+            {
+                public string Agent_Code { get; set; }
+                public string Agent { get; set; }
+                public string Cust_Code { get; set; }
+                public string Customer { get; set; }
+                public decimal Ord_Num { get; set; }
+                public decimal Ord_Amount { get; set; }
             }
         }
         public class Oracle
@@ -163,6 +180,15 @@ namespace QueryDB.Core.Tests
                 public string Varchar_Column { get; set; }
                 public string Varchar2_Column { get; set; }
             }
+            public class Details
+            {
+                public string Agent_Code { get; set; }
+                public string Agent { get; set; }
+                public string Cust_Code { get; set; }
+                public string Customer { get; set; }
+                public decimal Ord_Num { get; set; }
+                public decimal Ord_Amount { get; set; }
+            }
         }
         public class PostgreSQL
         {
@@ -208,6 +234,15 @@ namespace QueryDB.Core.Tests
                 public TimeSpan Time_Column { get; set; }
                 public DateTime Timestamp_Column { get; set; }
                 public Guid Uuid_Column { get; set; }
+            }
+            public class Details
+            {
+                public string Agent_Code { get; set; }
+                public string Agent { get; set; }
+                public string Cust_Code { get; set; }
+                public string Customer { get; set; }
+                public decimal Ord_Num { get; set; }
+                public decimal Ord_Amount { get; set; }
             }
         }
     }

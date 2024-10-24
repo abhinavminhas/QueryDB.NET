@@ -18,6 +18,9 @@
                                                         Customer C ON C.Agent_Code = A.Agent_Code INNER JOIN 
                                                         Orders O ON O.Cust_Code = C.Cust_Code AND O.Agent_Code = A.Agent_Code";
                 public static string SelectSql_DataTypes = @"SELECT * FROM DataTypes";
+                public static string SelectSql_Strict = @"SELECT A.Agent_Code, A.Agent_Name AS Agent, C.Cust_Code, C.Cust_Name AS Customer, O.Ord_Num, O.Ord_Amount FROM Agents A INNER JOIN 
+                                                        Customer C ON C.Agent_Code = A.Agent_Code INNER JOIN 
+                                                        Orders O ON O.Cust_Code = C.Cust_Code AND O.Agent_Code = A.Agent_Code";
             }
         }
 
@@ -37,6 +40,9 @@
                                                         Customer C ON C.Agent_Code = A.Agent_Code INNER JOIN 
                                                         Orders O ON O.Cust_Code = C.Cust_Code AND O.Agent_Code = A.Agent_Code";
                 public static string SelectSql_DataTypes = @"SELECT * FROM DataTypes";
+                public static string SelectSql_Strict = @"SELECT A.Agent_Code, A.Agent_Name AS Agent, C.Cust_Code, C.Cust_Name AS Customer, O.Ord_Num, O.Ord_Amount FROM Agents A INNER JOIN 
+                                                        Customer C ON C.Agent_Code = A.Agent_Code INNER JOIN 
+                                                        Orders O ON O.Cust_Code = C.Cust_Code AND O.Agent_Code = A.Agent_Code";
             }
         }
 
@@ -56,6 +62,9 @@
                                                         Customer C ON C.Agent_Code = A.Agent_Code INNER JOIN 
                                                         Orders O ON O.Cust_Code = C.Cust_Code AND O.Agent_Code = A.Agent_Code";
                 public static string SelectSql_DataTypes = @"SELECT * FROM DataTypes";
+                public static string SelectSql_Strict = @"SELECT A.Agent_Code, A.Agent_Name AS Agent, C.Cust_Code, C.Cust_Name AS Customer, O.Ord_Num, O.Ord_Amount FROM Agents A INNER JOIN 
+                                                        Customer C ON C.Agent_Code = A.Agent_Code INNER JOIN 
+                                                        Orders O ON O.Cust_Code = C.Cust_Code AND O.Agent_Code = A.Agent_Code";
             }
         }
 
@@ -75,6 +84,9 @@
                                                         Customer C ON C.Agent_Code = A.Agent_Code INNER JOIN 
                                                         Orders O ON O.Cust_Code = C.Cust_Code AND O.Agent_Code = A.Agent_Code";
                 public static string SelectSql_DataTypes = @"SELECT * FROM DataTypes";
+                public static string SelectSql_Strict = @"SELECT A.Agent_Code, A.Agent_Name AS Agent, C.Cust_Code, C.Cust_Name AS Customer, O.Ord_Num, O.Ord_Amount FROM Agents A INNER JOIN 
+                                                        Customer C ON C.Agent_Code = A.Agent_Code INNER JOIN 
+                                                        Orders O ON O.Cust_Code = C.Cust_Code AND O.Agent_Code = A.Agent_Code";
             }
         }
     }

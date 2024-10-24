@@ -9,7 +9,7 @@ CREATE TABLE Agents
 );
 
 INSERT INTO Agents VALUES ('A007', 'Ramasundar', 'Bangalore', '0.15', '077-25814763', '');
-INSERT INTO Agents VALUES ('A003', 'Alex ', 'London', '0.13', '075-12458969', '');
+INSERT INTO Agents VALUES ('A003', 'Alex', 'London', '0.13', '075-12458969', '');
 INSERT INTO Agents VALUES ('A008', 'Alford', 'New York', '0.12', '044-25874365', '');
 INSERT INTO Agents VALUES ('A011', 'Ravi Kumar', 'Bangalore', '0.15', '077-45625874', '');
 INSERT INTO Agents VALUES ('A010', 'Santakumar', 'Chennai', '0.14', '007-22388644', '');
