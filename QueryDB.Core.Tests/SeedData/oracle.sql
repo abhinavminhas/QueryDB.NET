@@ -140,8 +140,13 @@ CREATE TABLE DataTypes
     Varchar2_Column VARCHAR2(50) 
 );
 
-INSERT INTO DataTypes 
-(
+DECLARE
+  bfile_loc BFILE;
+BEGIN
+  bfile_loc := BFILENAME('my_directory', 'oracle.sql');
+
+  INSERT INTO DataTypes 
+  (
     Id,
     BFile_Column, 
     Blob_Column, 
@@ -167,7 +172,7 @@ INSERT INTO DataTypes
     ) 
     VALUES (
     1,
-    NULL, -- BFile_Column
+    bfile_loc, -- BFile_Column
     HEXTORAW('DEADBEEF'), -- Blob_Column
     'A', -- Char_Column
     'Sample CLOB data', -- Clob_Column
@@ -188,11 +193,5 @@ INSERT INTO DataTypes
     TO_TIMESTAMP('2024-09-21 12:34:56', 'YYYY-MM-DD HH24:MI:SS'), -- TimestampWithLocalTimeZone_Column
     'Sample VARCHAR data', -- Varchar_Column
     'Sample VARCHAR2 data' -- Varchar2_Column
-);
-
-DECLARE
-  bfile_loc BFILE;
-BEGIN
-  bfile_loc := BFILENAME('my_directory', 'oracle.sql');
-  UPDATE DataTypes SET BFile_Column = bfile_loc WHERE ID = 1;
+  );
 END;
