@@ -116,7 +116,7 @@ INSERT INTO Orders VALUES('200133', '1200.00', '400.00', '29-JUN-2008', 'C00009'
 
 CREATE TABLE DataTypes 
 (
-    Id NUMBER PRIMARY KEY
+    Id NUMBER PRIMARY KEY,
     BFile_Column BFILE, 
     Blob_Column BLOB, 
     Char_Column CHAR(1), 
