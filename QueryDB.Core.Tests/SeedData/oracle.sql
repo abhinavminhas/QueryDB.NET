@@ -1,7 +1,7 @@
 ALTER SESSION SET CURRENT_SCHEMA = SYS;
 
-CREATE OR REPLACE DIRECTORY my_directory AS '/home';
-GRANT READ, WRITE ON DIRECTORY my_directory TO SYS;
+CREATE OR REPLACE DIRECTORY MY_DIRECTORY AS '/home';
+GRANT READ, WRITE ON DIRECTORY MY_DIRECTORY TO SYS;
 
 CREATE TABLE Agents 
 (
@@ -167,7 +167,7 @@ INSERT INTO DataTypes
     ) 
     VALUES (
     1,
-    BFILENAME('my_directory', 'oracle.sql'), -- BFile_Column
+    BFILENAME('MY_DIRECTORY', 'oracle.sql'), -- BFile_Column
     HEXTORAW('DEADBEEF'), -- Blob_Column
     'A', -- Char_Column
     'Sample CLOB data', -- Clob_Column
