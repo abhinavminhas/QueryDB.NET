@@ -168,9 +168,8 @@ BEGIN
     TimestampWithLocalTimeZone_Column, 
     Varchar_Column, 
     Varchar2_Column 
-   ) 
-   VALUES 
-   (
+    ) 
+    VALUES (
      1,
      bfile_loc, -- BFile_Column
      HEXTORAW('DEADBEEF'), -- Blob_Column
