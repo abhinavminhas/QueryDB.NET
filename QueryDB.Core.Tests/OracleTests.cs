@@ -235,7 +235,8 @@ namespace QueryDB.Core.Tests
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData<Entities.Oracle.DataTypes>(selectSql);
             Assert.IsTrue(data.Count == 1);
             var dataType = data.FirstOrDefault();
-            //Assert.IsTrue(dataType.BFile_Column is byte[] && dataType.BFile_Column == null);
+            Console.WriteLine(dataType.BFile_Column);
+            Assert.IsTrue(dataType.BFile_Column is byte[] && dataType.BFile_Column == null);
             Assert.IsTrue(dataType.Blob_Column is byte[] && dataType.Blob_Column != null);
             Assert.AreEqual("A", dataType.Char_Column);
             Assert.AreEqual("Sample CLOB data", dataType.Clob_Column);
