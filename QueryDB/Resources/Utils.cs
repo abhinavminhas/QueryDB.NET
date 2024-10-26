@@ -33,7 +33,7 @@ namespace QueryDB.Resources
             Console.WriteLine("START BFILE READ");
             Console.WriteLine("BFILE: " + bfile);
             Console.WriteLine("BFILE  EXISTS: " + bfile.FileExists);
-            if (bfile != null && bfile.FileExists)
+            if (bfile != null)
             {
                 bfile.OpenFile();
                 byte[] buffer = new byte[bfile.Length];
