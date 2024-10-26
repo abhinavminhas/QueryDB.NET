@@ -143,7 +143,6 @@ DECLARE
   bfile_loc BFILE;
 BEGIN
   bfile_loc := BFILENAME(my_directory, 'oracle.sql');
-
   INSERT INTO DataTypes 
   (
     BFile_Column, 
@@ -167,7 +166,8 @@ BEGIN
     TimestampWithLocalTimeZone_Column, 
     Varchar_Column, 
     Varchar2_Column 
-    ) VALUES (
+    ) 
+    VALUES (
      bfile_loc, -- BFile_Column
      HEXTORAW('DEADBEEF'), -- Blob_Column
      'A', -- Char_Column
@@ -190,5 +190,4 @@ BEGIN
      'Sample VARCHAR data', -- Varchar_Column
      'Sample VARCHAR2 data' -- Varchar2_Column
   );
-
 END;
