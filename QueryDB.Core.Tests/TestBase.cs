@@ -92,7 +92,7 @@ namespace QueryDB.Core.Tests
         protected string GetBase64Content(string filePath)
         {
             if (!File.Exists(filePath))
-                throw new FileNotFoundException("File not found - '", filePath + "'.");
+                throw new FileNotFoundException("File not found - '" + filePath + "'.");
             byte[] fileBytes = File.ReadAllBytes(filePath);
             string base64Content = Convert.ToBase64String(fileBytes);
             return base64Content;

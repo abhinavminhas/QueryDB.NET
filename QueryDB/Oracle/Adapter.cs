@@ -35,7 +35,7 @@ namespace QueryDB.Oracle
         /// <param name="connection">'Oracle' Connection.</param>
         /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase.</param>
         /// <returns>List of data Dictionary with column names as keys holding values into a list for multiple rows of data.
-        /// Note: Byte[] is returned as Base64 string.</returns>
+        /// Note: Byte[]/BFile is returned as Base64 string.</returns>
         internal List<DataDictionary> FetchData(string selectSql, OracleConnection connection, bool upperCaseKeys)
         {
             var dataList = new List<DataDictionary>();

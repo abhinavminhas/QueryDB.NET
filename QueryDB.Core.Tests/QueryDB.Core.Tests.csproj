@@ -21,6 +21,12 @@
     <ProjectReference Include="..\QueryDB\QueryDB.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="SeedData\oracle.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <!-- Creates and copies required App.config to output folder.  -->
   <Target Name="CopyAppConfig" AfterTargets="Build" DependsOnTargets="Build">
     <CreateItem Include="$(OutputPath)$(AssemblyName).dll.config">

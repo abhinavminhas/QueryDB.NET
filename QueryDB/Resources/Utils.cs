@@ -43,7 +43,6 @@ namespace QueryDB.Resources
                     bytesReadTotal += bytesRead;
                 }
                 content = Convert.ToBase64String(buffer);
-                Console.WriteLine(content);
                 bFile.Close();
             }
             return content;

@@ -139,7 +139,7 @@ namespace QueryDB.Core.Tests
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData(selectSql);
             Assert.IsTrue(data.Count == 1);
             var dataType = data.FirstOrDefault();
-            Assert.AreEqual(GetBase64Content("/home/oracle.sql"), dataType.ReferenceData["BFILE_COLUMN"]);
+            Assert.AreEqual(GetBase64Content(Environment.CurrentDirectory + "/SeedData/oracle.sql"), dataType.ReferenceData["BFILE_COLUMN"]);
             Assert.AreEqual("3q2+7w==", dataType.ReferenceData["BLOB_COLUMN"]);
             Assert.AreEqual("A", dataType.ReferenceData["CHAR_COLUMN"]);
             Assert.AreEqual("Sample CLOB data", dataType.ReferenceData["CLOB_COLUMN"]);
