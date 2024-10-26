@@ -144,8 +144,8 @@ DECLARE
 BEGIN
   bfile_loc := BFILENAME(my_directory, 'oracle.sql');
 
-INSERT INTO DataTypes 
-(
+  INSERT INTO DataTypes 
+  (
     BFile_Column, 
     Blob_Column, 
     Char_Column, 
@@ -167,28 +167,28 @@ INSERT INTO DataTypes
     TimestampWithLocalTimeZone_Column, 
     Varchar_Column, 
     Varchar2_Column 
-) VALUES (
-    bfile_loc, -- BFile_Column
-    HEXTORAW('DEADBEEF'), -- Blob_Column
-    'A', -- Char_Column
-    'Sample CLOB data', -- Clob_Column
-    TO_DATE('2024-09-21', 'YYYY-MM-DD'), -- Date_Column
-    123.45, -- Float_Column
-    123, -- Integer_Column
-    INTERVAL '1-2' YEAR TO MONTH, -- IntervalYearToMonth_Column
-    INTERVAL '1 2:3:4.5' DAY TO SECOND, -- InternalDayToSecond_Column
-    'Sample LONG data', -- Long_Column
-    'A', -- NChar_Column
-    'Sample NCLOB data', -- NClob_Column
-    123.45, -- Number_Column
-    'Sample NVARCHAR2 data', -- NVarchar2_Column
-    HEXTORAW('DEADBEEF'), -- Raw_Column
-    '', -- RowId_Column
-    TO_TIMESTAMP('2024-09-21 12:34:56', 'YYYY-MM-DD HH24:MI:SS'), -- Timestamp_Column
-    TO_TIMESTAMP_TZ('2024-09-21 12:34:56 +00:00', 'YYYY-MM-DD HH24:MI:SS TZH:TZM'), -- TimestampWithTimeZone_Column
-    TO_TIMESTAMP('2024-09-21 12:34:56', 'YYYY-MM-DD HH24:MI:SS'), -- TimestampWithLocalTimeZone_Column
-    'Sample VARCHAR data', -- Varchar_Column
-    'Sample VARCHAR2 data' -- Varchar2_Column
-);
+    ) VALUES (
+     bfile_loc, -- BFile_Column
+     HEXTORAW('DEADBEEF'), -- Blob_Column
+     'A', -- Char_Column
+     'Sample CLOB data', -- Clob_Column
+     TO_DATE('2024-09-21', 'YYYY-MM-DD'), -- Date_Column
+     123.45, -- Float_Column
+     123, -- Integer_Column
+     INTERVAL '1-2' YEAR TO MONTH, -- IntervalYearToMonth_Column
+     INTERVAL '1 2:3:4.5' DAY TO SECOND, -- InternalDayToSecond_Column
+     'Sample LONG data', -- Long_Column
+     'A', -- NChar_Column
+     'Sample NCLOB data', -- NClob_Column
+     123.45, -- Number_Column
+     'Sample NVARCHAR2 data', -- NVarchar2_Column
+     HEXTORAW('DEADBEEF'), -- Raw_Column
+     '', -- RowId_Column
+     TO_TIMESTAMP('2024-09-21 12:34:56', 'YYYY-MM-DD HH24:MI:SS'), -- Timestamp_Column
+     TO_TIMESTAMP_TZ('2024-09-21 12:34:56 +00:00', 'YYYY-MM-DD HH24:MI:SS TZH:TZM'), -- TimestampWithTimeZone_Column
+     TO_TIMESTAMP('2024-09-21 12:34:56', 'YYYY-MM-DD HH24:MI:SS'), -- TimestampWithLocalTimeZone_Column
+     'Sample VARCHAR data', -- Varchar_Column
+     'Sample VARCHAR2 data' -- Varchar2_Column
+  );
 
 END;
