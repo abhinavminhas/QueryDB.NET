@@ -150,7 +150,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("123", dataType.ReferenceData["INTEGER_COLUMN"]);
             Assert.AreEqual("14", dataType.ReferenceData["INTERVALYEARTOMONTH_COLUMN"]);
             Assert.AreEqual("1.02:03:04.5000000", dataType.ReferenceData["INTERNALDAYTOSECOND_COLUMN"]);
-            Assert.AreEqual("", dataType.ReferenceData["LONG_COLUMN"]);
+            Assert.AreEqual("Sample LONG data", dataType.ReferenceData["LONG_COLUMN"]);
             Assert.AreEqual("A", dataType.ReferenceData["NCHAR_COLUMN"]);
             Assert.AreEqual("Sample NCLOB data", dataType.ReferenceData["NCLOB_COLUMN"]);
             Assert.AreEqual("123.45", dataType.ReferenceData["NUMBER_COLUMN"]);
@@ -247,7 +247,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual(123, (int)dataType.Integer_Column);
             Assert.AreEqual(14, dataType.IntervalYearToMonth_Column);
             Assert.AreEqual("1.02:03:04.5000000", dataType.InternalDayToSecond_Column.ToString());
-            Assert.AreEqual("", dataType.Long_Column);
+            Assert.AreEqual("Sample LONG data", dataType.Long_Column);
             Assert.AreEqual("A", dataType.NChar_Column);
             Assert.AreEqual("Sample NCLOB data", dataType.NClob_Column);
             Assert.AreEqual((decimal)123.45, dataType.Number_Column);
