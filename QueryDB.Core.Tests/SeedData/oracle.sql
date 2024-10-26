@@ -167,7 +167,7 @@ INSERT INTO DataTypes
     ) 
     VALUES (
     1,
-    bfile_loc, -- BFile_Column
+    NULL, -- BFile_Column
     HEXTORAW('DEADBEEF'), -- Blob_Column
     'A', -- Char_Column
     'Sample CLOB data', -- Clob_Column
