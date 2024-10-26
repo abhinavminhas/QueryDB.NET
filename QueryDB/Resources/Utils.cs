@@ -30,7 +30,7 @@ namespace QueryDB.Resources
         {
             string content = string.Empty;
             var bFile = reader.GetOracleBFile(columnIndex);
-            if (bFile != null  && bFile.FileExists)
+            if (bFile != null)
             {
                 bFile.OpenFile();
                 byte[] buffer = new byte[bFile.Length];
