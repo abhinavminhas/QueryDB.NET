@@ -139,6 +139,11 @@ CREATE TABLE DataTypes
     Varchar2_Column VARCHAR2(50) 
 );
 
+DECLARE
+  bfile_loc BFILE;
+BEGIN
+  bfile_loc := BFILENAME(my_directory, 'oracle.sql');
+
 INSERT INTO DataTypes 
 (
     BFile_Column, 
@@ -163,7 +168,7 @@ INSERT INTO DataTypes
     Varchar_Column, 
     Varchar2_Column 
 ) VALUES (
-    NULL, -- BFile_Column
+    bfile_loc, -- BFile_Column
     HEXTORAW('DEADBEEF'), -- Blob_Column
     'A', -- Char_Column
     'Sample CLOB data', -- Clob_Column
@@ -186,11 +191,4 @@ INSERT INTO DataTypes
     'Sample VARCHAR2 data' -- Varchar2_Column
 );
 
-DECLARE
-  bfile_loc BFILE;
-BEGIN
-  bfile_loc := BFILENAME(my_directory, 'oracle.sql');
-  
-  INSERT INTO DataTypes (id, BFile_Column)
-  VALUES (1, bfile_loc);
 END
