@@ -29,17 +29,14 @@ namespace QueryDB.Resources
         internal static string GetBFileContent(OracleDataReader reader, int columnIndex)
         {
             string content = string.Empty;
-            if (reader.Read())
+            var bfile = reader.GetOracleBFile(columnIndex);
+            if (bfile != null && bfile.FileExists)
             {
-                var bfile = reader.GetOracleBFile(columnIndex);
-                if (bfile != null && bfile.FileExists)
-                {
-                    bfile.OpenFile();
-                    byte[] buffer = new byte[bfile.Length];
-                    bfile.Read(buffer, 0, buffer.Length);
-                    content = Convert.ToBase64String(buffer);
-                    bfile.Close();
-                }
+                bfile.OpenFile();
+                byte[] buffer = new byte[bfile.Length];
+                bfile.Read(buffer, 0, buffer.Length);
+                content = Convert.ToBase64String(buffer);
+                bfile.Close();
             }
             return content;
 
