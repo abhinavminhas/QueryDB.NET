@@ -29,7 +29,7 @@ runs:
         docker exec oracle-db bash -c "sqlplus -s sys/$ORACLE_PWD@localhost:1521/XE as sysdba @/home/oracle.sql"
         docker exec oracle-db bash -c "echo \"SELECT BFILE_COLUMN FROM DataTypes;\" | sqlplus -s sys/$ORACLE_PWD@localhost:1521/XE as sysdba"
         docker exec oracle-db bash -c "echo \"SELECT DIRECTORY_NAME, DIRECTORY_PATH FROM ALL_DIRECTORIES WHERE DIRECTORY_NAME = 'MY_DIRECTORY';\" | sqlplus -s sys/$ORACLE_PWD@localhost:1521/XE as sysdba"
-        docker exec oracle-db bash -c "echo \"SELECT DIRECTORY_NAME, DIRECTORY_PATH FROM ALL_DIRECTORIES;\" | sqlplus -s sys/$ORACLE_PWD@localhost:1521/XE as sysdba"
+        docker exec oracle-db bash -c "echo \"SELECT DIRECTORY_NAME, DIRECTORY_PATH FROM ALL_DIRECTORIES WHERE DIRECTORY_NAME = 'my_directory';\" | sqlplus -s sys/$ORACLE_PWD@localhost:1521/XE as sysdba"
         docker exec oracle-db bash -c "ls -l /home"
         docker exec oracle-db bash -c "ls /home/oracle.sql"
       env:
