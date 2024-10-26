@@ -27,8 +27,8 @@ runs:
       shell: bash
       run: |
         docker exec oracle-db bash -c "sqlplus -s sys/$ORACLE_PWD@localhost:1521/XE as sysdba @/home/oracle.sql"
-        docker exec oracle-db /bin/bash ls -l /home
         docker exec oracle-db bash -c "echo \"SELECT * FROM DataTypes;\" | sqlplus -s sys/$ORACLE_PWD@localhost:1521/XE as sysdba"
+        docker exec oracle-db bash -c "ls -l /home"
       env:
         ORACLE_PWD: ${{ inputs.dbPassword }}
 
