@@ -47,10 +47,10 @@ namespace QueryDB.Oracle
                     for (int i = 0; i < reader.FieldCount; i++)
                     {
                         string key = upperCaseKeys ? reader.GetName(i).ToUpper() : reader.GetName(i);
-                        if (reader.GetValue(i) is byte[] value)
-                            addRow.ReferenceData.Add(key, Convert.ToBase64String(value));
-                        else if (Utils.IsBFileColumn(reader, i))
+                        if (Utils.IsBFileColumn(reader, i))
                             addRow.ReferenceData.Add(key, Utils.GetBFileContent(reader, i));
+                        else if (reader.GetValue(i) is byte[] value)
+                            addRow.ReferenceData.Add(key, Convert.ToBase64String(value));
                         else
                             addRow.ReferenceData.Add(key, reader.GetValue(i).ToString());
                     }
