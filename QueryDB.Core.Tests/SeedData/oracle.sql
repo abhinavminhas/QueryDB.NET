@@ -116,6 +116,7 @@ INSERT INTO Orders VALUES('200133', '1200.00', '400.00', '29-JUN-2008', 'C00009'
 
 CREATE TABLE DataTypes 
 (
+    Id NUMBER PRIMARY KEY
     BFile_Column BFILE, 
     Blob_Column BLOB, 
     Char_Column CHAR(1), 
@@ -145,6 +146,7 @@ BEGIN
   bfile_loc := BFILENAME(my_directory, 'oracle.sql');
   INSERT INTO DataTypes 
   (
+    Id,
     BFile_Column, 
     Blob_Column, 
     Char_Column, 
@@ -166,8 +168,10 @@ BEGIN
     TimestampWithLocalTimeZone_Column, 
     Varchar_Column, 
     Varchar2_Column 
-    ) 
-    VALUES (
+   ) 
+   VALUES 
+   (
+     1,
      bfile_loc, -- BFile_Column
      HEXTORAW('DEADBEEF'), -- Blob_Column
      'A', -- Char_Column
