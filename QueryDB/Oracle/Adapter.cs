@@ -46,7 +46,6 @@ namespace QueryDB.Oracle
                     var addRow = new DataDictionary();
                     for (int i = 0; i < reader.FieldCount; i++)
                     {
-                        Console.WriteLine("START: " + reader.GetName(i));
                         string key = upperCaseKeys ? reader.GetName(i).ToUpper() : reader.GetName(i);
                         if (reader.GetValue(i) is byte[] value)
                             addRow.ReferenceData.Add(key, Convert.ToBase64String(value));
@@ -54,7 +53,6 @@ namespace QueryDB.Oracle
                             addRow.ReferenceData.Add(key, Utils.GetBFileContent(reader, i));
                         else
                             addRow.ReferenceData.Add(key, reader.GetValue(i).ToString());
-                        Console.WriteLine("END: " + reader.GetName(i));
                     }
                     dataList.Add(addRow);
                 }
