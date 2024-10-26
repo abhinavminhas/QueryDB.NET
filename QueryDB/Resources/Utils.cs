@@ -30,16 +30,18 @@ namespace QueryDB.Resources
         {
             string content = string.Empty;
             var bfile = reader.GetOracleBFile(columnIndex);
+            Console.WriteLine("START BFILE READ");
             if (bfile != null && bfile.FileExists)
             {
                 bfile.OpenFile();
                 byte[] buffer = new byte[bfile.Length];
                 bfile.Read(buffer, 0, buffer.Length);
                 content = Convert.ToBase64String(buffer);
+                Console.WriteLine(content);
                 bfile.Close();
             }
+            Console.WriteLine("END BFILE READ");
             return content;
-
         }
     }
 }

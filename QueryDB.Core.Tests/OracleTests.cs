@@ -137,6 +137,7 @@ namespace QueryDB.Core.Tests
         {
             var selectSql = Queries.OracleQueries.TestDB.SelectSql_DataTypes;
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData(selectSql);
+            Console.WriteLine(data.Count);
             Assert.IsTrue(data.Count == 1);
             var dataType = data.FirstOrDefault();
             Console.WriteLine(dataType.ReferenceData["BFILE_COLUMN"]);
