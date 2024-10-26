@@ -49,6 +49,8 @@ namespace QueryDB.Oracle
                         string key = upperCaseKeys ? reader.GetName(i).ToUpper() : reader.GetName(i);
                         if (reader.GetValue(i) is byte[] value)
                             addRow.ReferenceData.Add(key, Convert.ToBase64String(value));
+                        else if (Utils.IsBFileColumn(reader, i))
+                            addRow.ReferenceData.Add(key, Utils.GetBFileContent(reader, i));
                         else
                             addRow.ReferenceData.Add(key, reader.GetValue(i).ToString());
                     }
