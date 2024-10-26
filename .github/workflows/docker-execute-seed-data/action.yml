@@ -29,8 +29,8 @@ runs:
         docker exec oracle-db bash -c "sqlplus -s sys/$ORACLE_PWD@localhost:1521/XE as sysdba @/home/oracle.sql"
         docker exec oracle-db bash -c "echo \"SELECT BFILE_COLUMN FROM DataTypes;\" | sqlplus -s sys/$ORACLE_PWD@localhost:1521/XE as sysdba"
         docker exec oracle-db bash -c "ls -l /home"
-        docker exec oracle-db bash -c "chown oracle:oracle /home/oracle.sql"
-        docker exec oracle-db bash -c "chown oracle:oracle /home" 
+        docker exec oracle-db bash -c "chown sys:sys /home/oracle.sql"
+        docker exec oracle-db bash -c "chown sys:sys /home" 
       env:
         ORACLE_PWD: ${{ inputs.dbPassword }}
 
