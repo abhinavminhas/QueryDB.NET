@@ -163,7 +163,7 @@ INSERT INTO DataTypes
     Varchar_Column, 
     Varchar2_Column 
 ) VALUES (
-    NULL, -- BFile_Column
+    BFILENAME('home', 'oracle.sql'), -- BFile_Column
     HEXTORAW('DEADBEEF'), -- Blob_Column
     'A', -- Char_Column
     'Sample CLOB data', -- Clob_Column
