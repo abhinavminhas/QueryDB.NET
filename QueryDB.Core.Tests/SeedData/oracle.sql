@@ -193,7 +193,7 @@ INSERT INTO DataTypes
 DECLARE
   bfile_loc BFILE;
 BEGIN
-  bfile_loc := BFILENAME(my_directory, 'oracle.sql');
+  bfile_loc := BFILENAME('my_directory', 'oracle.sql');
 
   UPDATE DataTypes
   SET BFile_Column = bfile_loc,
