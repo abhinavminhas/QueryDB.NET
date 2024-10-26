@@ -29,20 +29,23 @@ namespace QueryDB.Resources
         internal static string GetBFileContent(OracleDataReader reader, int columnIndex)
         {
             string content = string.Empty;
-            var bfile = reader.GetOracleBFile(columnIndex);
-            Console.WriteLine("START BFILE READ");
-            Console.WriteLine("BFILE: " + bfile);
-            //Console.WriteLine("BFILE  EXISTS: " + bfile.FileExists);
-            if (bfile != null)
+            var bFile = reader.GetOracleBFile(columnIndex);
+            if (bFile != null  && bFile.FileExists)
             {
-                bfile.OpenFile();
-                byte[] buffer = new byte[bfile.Length];
-                bfile.Read(buffer, 0, buffer.Length);
+                bFile.OpenFile();
+                byte[] buffer = new byte[bFile.Length];
+                int bytesReadTotal = 0;
+                while (bytesReadTotal < buffer.Length)
+                {
+                    int bytesRead = bFile.Read(buffer, bytesReadTotal, buffer.Length - bytesReadTotal);
+                    if (bytesRead == 0)
+                        break;
+                    bytesReadTotal += bytesRead;
+                }
                 content = Convert.ToBase64String(buffer);
                 Console.WriteLine(content);
-                bfile.Close();
+                bFile.Close();
             }
-            Console.WriteLine("END BFILE READ");
             return content;
         }
     }
