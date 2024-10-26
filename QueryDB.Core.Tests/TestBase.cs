@@ -2,6 +2,7 @@
 using System;
 using System.Configuration;
 using System.Globalization;
+using System.IO;
 
 namespace QueryDB.Core.Tests
 {
@@ -86,6 +87,15 @@ namespace QueryDB.Core.Tests
             {
                 throw new ArgumentException("The date string is not in a recognized format.");
             }
+        }
+
+        protected string GetBase64Content(string filePath)
+        {
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException("File not found - '", filePath + "'.");
+            byte[] fileBytes = File.ReadAllBytes(filePath);
+            string base64Content = Convert.ToBase64String(fileBytes);
+            return base64Content;
         }
     }
 }
