@@ -31,6 +31,8 @@ namespace QueryDB.Resources
             string content = string.Empty;
             var bfile = reader.GetOracleBFile(columnIndex);
             Console.WriteLine("START BFILE READ");
+            Console.WriteLine("BFILE: " + bfile);
+            Console.WriteLine("BFILE  EXISTS: " + bfile.FileExists);
             if (bfile != null && bfile.FileExists)
             {
                 bfile.OpenFile();
