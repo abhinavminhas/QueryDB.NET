@@ -191,4 +191,4 @@ INSERT INTO DataTypes
     'Sample VARCHAR2 data' -- Varchar2_Column
 );
 
-END
+END;
