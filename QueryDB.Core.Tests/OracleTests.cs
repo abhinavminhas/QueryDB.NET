@@ -137,7 +137,7 @@ namespace QueryDB.Core.Tests
         {
             var selectSql = Queries.OracleQueries.TestDB.SelectSql_DataTypes;
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData(selectSql);
-            Assert.IsTrue(data.Count == 1);
+            Assert.IsTrue(data.Count == 2);
             var dataType = data.FirstOrDefault();
             Assert.AreEqual(GetBase64Content(Environment.CurrentDirectory + "/SeedData/oracle.sql"), dataType.ReferenceData["BFILE_COLUMN"]);
             Assert.AreEqual("3q2+7w==", dataType.ReferenceData["BLOB_COLUMN"]);
@@ -233,7 +233,7 @@ namespace QueryDB.Core.Tests
         {
             var selectSql = Queries.OracleQueries.TestDB.SelectSql_DataTypes;
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData<Entities.Oracle.DataTypes>(selectSql);
-            Assert.IsTrue(data.Count == 1);
+            Assert.IsTrue(data.Count == 2);
             var dataType = data.FirstOrDefault();
             Console.WriteLine(dataType.BFile_Column);
             Assert.AreEqual(GetBase64Content(Environment.CurrentDirectory + "/SeedData/oracle.sql"), dataType.BFile_Column);
