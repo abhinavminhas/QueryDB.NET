@@ -46,7 +46,7 @@ namespace QueryDB.Resources
         /// </summary>
         /// <param name="reader">The Oracle data reader containing the column.</param>
         /// <param name="columnName">The name of the column to check.</param>
-        /// <returns>Returns <c>true</c> if the column is of type "BFILE"; otherwise, <c>false</c>. Returns <c>false</c> if the column does not exist.</returns>
+        /// <returns>Returns <c>true</c> if the column is of type "BFILE"; otherwise, <c>false</c>.</returns>
         internal static bool IsBFileColumn(OracleDataReader reader, string columnName)
         {
             const string BFILE_COLUMN = "BFILE";
@@ -88,32 +88,25 @@ namespace QueryDB.Resources
         /// </summary>
         /// <param name="reader">The Oracle data reader containing the BFILE column.</param>
         /// <param name="columnName">The name of the BFILE column to read.</param>
-        /// <returns>Returns the BFILE content as a byte array, or <c>null</c> if the BFILE is null or the column does not exist.</returns>
+        /// <returns>Returns the BFILE content as a byte array, or <c>null</c> if the BFILE is null or the column value is null.</returns>
         internal static byte[] GetBFileByteContent(OracleDataReader reader, string columnName)
         {
             byte[] buffer = null;
-            try
+            int columnIndex = reader.GetOrdinal(columnName);
+            var bFile = reader.GetOracleBFile(columnIndex);
+            if (bFile != null && !reader.IsDBNull(columnIndex))
             {
-                int columnIndex = reader.GetOrdinal(columnName);
-                var bFile = reader.GetOracleBFile(columnIndex);
-                if (bFile != null && !reader.IsDBNull(columnIndex))
+                bFile.OpenFile();
+                buffer = new byte[bFile.Length];
+                int bytesReadTotal = 0;
+                while (bytesReadTotal < buffer.Length)
                 {
-                    bFile.OpenFile();
-                    buffer = new byte[bFile.Length];
-                    int bytesReadTotal = 0;
-                    while (bytesReadTotal < buffer.Length)
-                    {
-                        int bytesRead = bFile.Read(buffer, bytesReadTotal, buffer.Length - bytesReadTotal);
-                        if (bytesRead == 0)
-                            break;
-                        bytesReadTotal += bytesRead;
-                    }
-                    bFile.Close();
+                    int bytesRead = bFile.Read(buffer, bytesReadTotal, buffer.Length - bytesReadTotal);
+                    if (bytesRead == 0)
+                        break;
+                    bytesReadTotal += bytesRead;
                 }
-            }
-            catch (IndexOutOfRangeException)
-            {
-                return buffer;
+                bFile.Close();
             }
             return buffer;
         }
