@@ -188,7 +188,33 @@ INSERT INTO DataTypes
     TO_TIMESTAMP('2024-09-21 12:34:56', 'YYYY-MM-DD HH24:MI:SS'), -- TimestampWithLocalTimeZone_Column
     'Sample VARCHAR data', -- Varchar_Column
     'Sample VARCHAR2 data' -- Varchar2_Column
-    )
+);
+
+INSERT INTO DataTypes 
+(
+    Id,
+    BFile_Column, 
+    Blob_Column, 
+    Char_Column, 
+    Clob_Column, 
+    Date_Column, 
+    Float_Column, 
+    Integer_Column, 
+    IntervalYearToMonth_Column, 
+    InternalDayToSecond_Column, 
+    Long_Column, 
+    NChar_Column, 
+    NClob_Column, 
+    Number_Column, 
+    NVarchar2_Column, 
+    Raw_Column, 
+    RowId_Column, 
+    Timestamp_Column, 
+    TimestampWithTimeZone_Column, 
+    TimestampWithLocalTimeZone_Column, 
+    Varchar_Column, 
+    Varchar2_Column 
+    ) 
     VALUES (
     2,
     NULL, -- BFile_Column
