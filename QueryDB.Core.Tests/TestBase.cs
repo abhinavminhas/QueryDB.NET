@@ -97,5 +97,10 @@ namespace QueryDB.Core.Tests
             string base64Content = Convert.ToBase64String(fileBytes);
             return base64Content;
         }
+
+        internal static string ConvertByteArrayToBase64(byte[] data)
+        {
+            return Convert.ToBase64String(data);
+        }
     }
 }

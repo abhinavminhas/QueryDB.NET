@@ -68,7 +68,7 @@ namespace QueryDB.Resources
         /// <param name="reader">The Oracle data reader containing the BFILE column.</param>
         /// <param name="columnIndex">The index of the BFILE column to read.</param>
         /// <returns>Returns the BFILE content as a Base64-encoded string, or an empty string if the BFILE is null.</returns>
-        internal static string GetBFileContent(OracleDataReader reader, int columnIndex)
+        internal static string GetBFileBase64Content(OracleDataReader reader, int columnIndex)
         {
             string content = string.Empty;
             var bFile = reader.GetOracleBFile(columnIndex);
@@ -96,7 +96,7 @@ namespace QueryDB.Resources
         /// <param name="reader">The Oracle data reader containing the BFILE column.</param>
         /// <param name="columnName">The name of the BFILE column to read.</param>
         /// <returns>Returns the BFILE content as a Base64-encoded string, or an empty string if the BFILE is null or the column does not exist.</returns>
-        internal static string GetBFileContent(OracleDataReader reader, string columnName)
+        internal static string GetBFileBase64Content(OracleDataReader reader, string columnName)
         {
             string content = string.Empty;
             try
@@ -124,6 +124,41 @@ namespace QueryDB.Resources
                 return content;
             }
             return content;
+        }
+
+        /// <summary>
+        /// Retrieves the content of a BFILE column from an Oracle data reader as a byte array, using the column name.
+        /// </summary>
+        /// <param name="reader">The Oracle data reader containing the BFILE column.</param>
+        /// <param name="columnName">The name of the BFILE column to read.</param>
+        /// <returns>Returns the BFILE content as a byte array, or <c>null</c> if the BFILE is null or the column does not exist.</returns>
+        internal static byte[] GetBFileByteContent(OracleDataReader reader, string columnName)
+        {
+            byte[] buffer = null;
+            try
+            {
+                int columnIndex = reader.GetOrdinal(columnName);
+                var bFile = reader.GetOracleBFile(columnIndex);
+                if (bFile != null && !reader.IsDBNull(columnIndex))
+                {
+                    bFile.OpenFile();
+                    buffer = new byte[bFile.Length];
+                    int bytesReadTotal = 0;
+                    while (bytesReadTotal < buffer.Length)
+                    {
+                        int bytesRead = bFile.Read(buffer, bytesReadTotal, buffer.Length - bytesReadTotal);
+                        if (bytesRead == 0)
+                            break;
+                        bytesReadTotal += bytesRead;
+                    }
+                    bFile.Close();
+                }
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return buffer;
+            }
+            return buffer;
         }
 
     }

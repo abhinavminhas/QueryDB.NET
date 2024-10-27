@@ -48,7 +48,7 @@ namespace QueryDB.Oracle
                     {
                         string key = upperCaseKeys ? reader.GetName(i).ToUpper() : reader.GetName(i);
                         if (Utils.IsBFileColumn(reader, i))
-                            addRow.ReferenceData.Add(key, Utils.GetBFileContent(reader, i));
+                            addRow.ReferenceData.Add(key, Utils.GetBFileBase64Content(reader, i));
                         else if (reader.GetValue(i) is byte[] value)
                             addRow.ReferenceData.Add(key, Convert.ToBase64String(value));
                         else
@@ -81,7 +81,7 @@ namespace QueryDB.Oracle
                         if ((strict || Utils.ColumnExists(reader, prop.Name)) && !reader.IsDBNull(reader.GetOrdinal(prop.Name)))
                         {
                             if (Utils.IsBFileColumn(reader, prop.Name))
-                                prop.SetValue(addObjectRow, Utils.GetBFileContent(reader, prop.Name));
+                                prop.SetValue(addObjectRow, Utils.GetBFileByteContent(reader, prop.Name));
                             else
                                 prop.SetValue(addObjectRow, reader[prop.Name]);
                         }   
