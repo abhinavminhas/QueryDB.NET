@@ -251,7 +251,7 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
-        public void Test_PostgreSQL_FetchData_Entity_DataTypes_Strict_Check()
+        public void Test_PostgreSQL_FetchData_Entity_Strict_Check()
         {
             var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_Strict;
             var data = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData<Entities.PostgreSQL.Details>(selectSql, strict: true);
@@ -267,7 +267,7 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
-        public void Test_PostgreSQL_FetchData_Entity_DataTypes_Strict_Error_Check()
+        public void Test_PostgreSQL_FetchData_Entity_Strict_Error_Check()
         {
             var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_Strict;
             try

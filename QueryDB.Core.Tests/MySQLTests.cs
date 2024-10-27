@@ -257,7 +257,7 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
-        public void Test_MySQL_FetchData_Entity_DataTypes_Strict_Check()
+        public void Test_MySQL_FetchData_Entity_Strict_Check()
         {
             var selectSql = Queries.MySQLQueries.TestDB.SelectSql_Strict;
             var data = new DBContext(DB.MySQL, MySQLConnectionString).FetchData<Entities.MySQL.Details>(selectSql, strict: true);
@@ -273,7 +273,7 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
-        public void Test_MySQL_FetchData_Entity_DataTypes_Strict_Error_Check()
+        public void Test_MySQL_FetchData_Entity_Strict_Error_Check()
         {
             var selectSql = Queries.MySQLQueries.TestDB.SelectSql_Strict;
             try

@@ -277,7 +277,7 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
-        public void Test_MSSQL_FetchData_Entity_DataTypes_Strict_Check()
+        public void Test_MSSQL_FetchData_Entity_Strict_Check()
         {
             var selectSql = Queries.MSSQLQueries.TestDB.SelectSql_Strict;
             var data = new DBContext(DB.MSSQL, MSSQLConnectionString).FetchData<Entities.MSSQL.Details>(selectSql, strict: true);
@@ -293,7 +293,7 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
-        public void Test_MSSQL_FetchData_Entity_DataTypes_Strict_Error_Check()
+        public void Test_MSSQL_FetchData_Entity_Strict_Error_Check()
         {
             var selectSql = Queries.MSSQLQueries.TestDB.SelectSql_Strict;
             try

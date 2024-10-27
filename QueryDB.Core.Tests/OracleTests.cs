@@ -235,7 +235,6 @@ namespace QueryDB.Core.Tests
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData<Entities.Oracle.DataTypes>(selectSql);
             Assert.IsTrue(data.Count == 2);
             var dataType = data.FirstOrDefault();
-            Console.WriteLine(dataType.BFile_Column);
             Assert.AreEqual(GetBase64Content(Environment.CurrentDirectory + "/SeedData/oracle.sql"), dataType.BFile_Column);
             Assert.IsTrue(dataType.Blob_Column is byte[] && dataType.Blob_Column != null);
             Assert.AreEqual("A", dataType.Char_Column);
@@ -260,7 +259,7 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
-        public void Test_Oracle_FetchData_Entity_DataTypes_Strict_Check()
+        public void Test_Oracle_FetchData_Entity_Strict_Check()
         {
             var selectSql = Queries.OracleQueries.TestDB.SelectSql_Strict;
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData<Entities.Oracle.Details>(selectSql, strict: true);
@@ -276,7 +275,7 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
-        public void Test_Oracle_FetchData_Entity_DataTypes_Strict_Error_Check()
+        public void Test_Oracle_FetchData_Entity_Strict_Error_Check()
         {
             var selectSql = Queries.OracleQueries.TestDB.SelectSql_Strict;
             try
