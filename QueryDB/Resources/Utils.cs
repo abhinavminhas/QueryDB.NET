@@ -91,42 +91,6 @@ namespace QueryDB.Resources
         }
 
         /// <summary>
-        /// Retrieves the content of a BFILE column from an Oracle data reader as a Base64-encoded string, using the column name.
-        /// </summary>
-        /// <param name="reader">The Oracle data reader containing the BFILE column.</param>
-        /// <param name="columnName">The name of the BFILE column to read.</param>
-        /// <returns>Returns the BFILE content as a Base64-encoded string, or an empty string if the BFILE is null or the column does not exist.</returns>
-        internal static string GetBFileBase64Content(OracleDataReader reader, string columnName)
-        {
-            string content = string.Empty;
-            try
-            {
-                int columnIndex = reader.GetOrdinal(columnName);
-                var bFile = reader.GetOracleBFile(columnIndex);
-                if (bFile != null && !reader.IsDBNull(columnIndex))
-                {
-                    bFile.OpenFile();
-                    byte[] buffer = new byte[bFile.Length];
-                    int bytesReadTotal = 0;
-                    while (bytesReadTotal < buffer.Length)
-                    {
-                        int bytesRead = bFile.Read(buffer, bytesReadTotal, buffer.Length - bytesReadTotal);
-                        if (bytesRead == 0)
-                            break;
-                        bytesReadTotal += bytesRead;
-                    }
-                    content = Convert.ToBase64String(buffer);
-                    bFile.Close();
-                }
-            }
-            catch (IndexOutOfRangeException)
-            {
-                return content;
-            }
-            return content;
-        }
-
-        /// <summary>
         /// Retrieves the content of a BFILE column from an Oracle data reader as a byte array, using the column name.
         /// </summary>
         /// <param name="reader">The Oracle data reader containing the BFILE column.</param>
