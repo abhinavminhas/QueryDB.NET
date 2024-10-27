@@ -50,16 +50,9 @@ namespace QueryDB.Resources
         internal static bool IsBFileColumn(OracleDataReader reader, string columnName)
         {
             const string BFILE_COLUMN = "BFILE";
-            try
-            {
-                int columnIndex = reader.GetOrdinal(columnName);
-                string columnType = reader.GetDataTypeName(columnIndex);
-                return columnType.Equals(BFILE_COLUMN, StringComparison.OrdinalIgnoreCase);
-            }
-            catch (IndexOutOfRangeException)
-            {
-                return false;
-            }
+            int columnIndex = reader.GetOrdinal(columnName);
+            string columnType = reader.GetDataTypeName(columnIndex);
+            return columnType.Equals(BFILE_COLUMN, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
