@@ -159,7 +159,7 @@ namespace QueryDB.Core.Tests
             }
             public class DataTypes
             {
-                public byte[] BFile_Column { get; set; }
+                public string BFile_Column { get; set; }
                 public byte[] Blob_Column { get; set; }
                 public string Char_Column { get; set; }
                 public string Clob_Column { get; set; }

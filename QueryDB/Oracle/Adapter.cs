@@ -79,7 +79,12 @@ namespace QueryDB.Oracle
                     foreach (var prop in typeof(T).GetProperties())
                     {
                         if ((strict || Utils.ColumnExists(reader, prop.Name)) && !reader.IsDBNull(reader.GetOrdinal(prop.Name)))
-                            prop.SetValue(addObjectRow, reader[prop.Name]);
+                        {
+                            if (Utils.IsBFileColumn(reader, prop.Name))
+                                prop.SetValue(addObjectRow, Utils.GetBFileContent(reader, prop.Name));
+                            else
+                                prop.SetValue(addObjectRow, reader[prop.Name]);
+                        }   
                     }
                     dataList.Add(addObjectRow);
                 }

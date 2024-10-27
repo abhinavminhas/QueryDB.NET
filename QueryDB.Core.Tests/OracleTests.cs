@@ -236,7 +236,7 @@ namespace QueryDB.Core.Tests
             Assert.IsTrue(data.Count == 1);
             var dataType = data.FirstOrDefault();
             Console.WriteLine(dataType.BFile_Column);
-            Assert.IsTrue(dataType.BFile_Column is byte[] && dataType.BFile_Column == null);
+            Assert.AreEqual(GetBase64Content(Environment.CurrentDirectory + "/SeedData/oracle.sql"), dataType.BFile_Column);
             Assert.IsTrue(dataType.Blob_Column is byte[] && dataType.Blob_Column != null);
             Assert.AreEqual("A", dataType.Char_Column);
             Assert.AreEqual("Sample CLOB data", dataType.Clob_Column);
@@ -257,7 +257,8 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("Sample VARCHAR data", dataType.Varchar_Column);
             Assert.AreEqual("Sample VARCHAR2 data", dataType.Varchar2_Column);
         }
-         [TestMethod]
+
+        [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
         public void Test_Oracle_FetchData_Entity_DataTypes_Strict_Check()
         {
