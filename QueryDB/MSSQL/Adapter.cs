@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using QueryDB.Resources;
+using System;
 using System.Collections.Generic;
 using System.Data;
 
@@ -31,9 +32,10 @@ namespace QueryDB.MSSQL
         /// Converts column names to keys holding values, with multiple database rows returned into a list.
         /// </summary>
         /// <param name="selectSql">'Select' query.</param>
-        /// <param name="connection">Sql Connection.</param>
+        /// <param name="connection">'Sql' Connection.</param>
         /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase.</param>
-        /// <returns>List of data Dictionary with column names as keys holding values into a list for multiple rows of data.</returns>
+        /// <returns>List of data Dictionary with column names as keys holding values into a list for multiple rows of data.
+        /// Note: Byte[] is returned as Base64 string.</returns>
         internal List<DataDictionary> FetchData(string selectSql, SqlConnection connection, bool upperCaseKeys)
         {
             var dataList = new List<DataDictionary>();
@@ -41,18 +43,47 @@ namespace QueryDB.MSSQL
             {
                 while (reader.Read())
                 {
-                    var addedRow = new DataDictionary();
+                    var addRow = new DataDictionary();
                     for (int i = 0; i < reader.FieldCount; i++)
                     {
-                        if (upperCaseKeys)
-                            addedRow.ReferenceData.Add(reader.GetName(i).ToUpper(), reader.GetValue(i).ToString());
+                        string key = upperCaseKeys ? reader.GetName(i).ToUpper() : reader.GetName(i);
+                        if (reader.GetValue(i) is byte[] value)
+                            addRow.ReferenceData.Add(key, Convert.ToBase64String(value));
                         else
-                            addedRow.ReferenceData.Add(reader.GetName(i), reader.GetValue(i).ToString());
+                            addRow.ReferenceData.Add(key, reader.GetValue(i).ToString());
                     }
-                    dataList.Add(addedRow);
+                    dataList.Add(addRow);
                 }
             }
             return dataList;
         }
+
+        /// <summary>
+        ///  Retrieves records for 'Select' queries from the database.
+        /// </summary>
+        /// <typeparam name="T">Object entity to return data mapped into.</typeparam>
+        /// <param name="selectSql">'Select' query.</param>
+        /// <param name="connection">'Sql' Connection.</param>
+        /// <param name="strict">Enables fetch data only for object <T> properties existing in database query result.</param>
+        /// <returns>List of data rows mapped into object entity into a list for multiple rows of data.</returns>
+        internal List<T> FetchData<T>(string selectSql, SqlConnection connection, bool strict) where T : new()
+        {
+            var dataList = new List<T>();
+            using (var reader = GetSqlReader(selectSql, connection, CommandType.Text))
+            {
+                while (reader.Read())
+                {
+                    var addObjectRow = new T();
+                    foreach (var prop in typeof(T).GetProperties())
+                    {
+                        if ((strict || Utils.ColumnExists(reader, prop.Name)) && !reader.IsDBNull(reader.GetOrdinal(prop.Name)))
+                            prop.SetValue(addObjectRow, reader[prop.Name]);
+                    }
+                    dataList.Add(addObjectRow);
+                }
+            }
+            return dataList;
+        }
+        
     }
 }

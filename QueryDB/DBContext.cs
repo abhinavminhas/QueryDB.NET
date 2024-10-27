@@ -98,6 +98,51 @@ namespace QueryDB
         }
 
         /// <summary>
+        ///  Retrieves records for 'Select' queries from the database.
+        /// </summary>
+        /// <typeparam name="T">Object entity to return data mapped into.</typeparam>
+        /// <param name="selectSql">'Select' query.</param>
+        /// <param name="strict">Enables fetch data only for object <T> properties existing in database query result. Default - 'false'.</param>
+        /// <returns>List of data rows mapped into object entity into a list for multiple rows of data.</returns>
+        public List<T> FetchData<T>(string selectSql, bool strict = false) where T : new()
+        {
+            var dataList = new List<T>();
+            if (Database.Equals(DB.MSSQL))
+            {
+                using (var msSqlDBConnection = GetSqlServerConnection())
+                {
+                    var _systemAdapter = new MSSQL.Adapter();
+                    dataList = _systemAdapter.FetchData<T>(selectSql, msSqlDBConnection.SqlConnection, strict);
+    }
+            }
+            else if (Database.Equals(DB.MySQL))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    var _systemAdapter = new MySQL.Adapter();
+                    dataList = _systemAdapter.FetchData<T>(selectSql, mySqlDBConnection.MySqlConnection, strict);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    var _systemAdapter = new Oracle.Adapter();
+                    dataList = _systemAdapter.FetchData<T>(selectSql, oracleDBConnection.OracleConnection, strict);
+                }
+            }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    var _systemAdapter = new PostgreSQL.Adapter();
+                    dataList = _systemAdapter.FetchData<T>(selectSql, postgreSqlDBConnection.PostgreSQLConnection, strict);
+                }
+            }
+            return dataList;
+        }
+
+        /// <summary>
         /// Gets 'SQL Server' connection.
         /// </summary>
         /// <returns>'SQL Server' Connection.</returns>

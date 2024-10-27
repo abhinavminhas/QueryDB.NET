@@ -9,7 +9,7 @@ CREATE TABLE Agents
 );
 
 INSERT INTO Agents VALUES ('A007', 'Ramasundar', 'Bangalore', '0.15', '077-25814763', '');
-INSERT INTO Agents VALUES ('A003', 'Alex ', 'London', '0.13', '075-12458969', '');
+INSERT INTO Agents VALUES ('A003', 'Alex', 'London', '0.13', '075-12458969', '');
 INSERT INTO Agents VALUES ('A008', 'Alford', 'New York', '0.12', '044-25874365', '');
 INSERT INTO Agents VALUES ('A011', 'Ravi Kumar', 'Bangalore', '0.15', '077-45625874', '');
 INSERT INTO Agents VALUES ('A010', 'Santakumar', 'Chennai', '0.14', '007-22388644', '');
@@ -108,3 +108,61 @@ INSERT INTO Orders VALUES('200128', '3500.00', '1500.00', '07/20/2008', 'C00009'
 INSERT INTO Orders VALUES('200135', '2000.00', '800.00', '09/16/2008', 'C00007', 'A010', 'SOD');
 INSERT INTO Orders VALUES('200131', '900.00', '150.00', '08/26/2008', 'C00012', 'A012', 'SOD');
 INSERT INTO Orders VALUES('200133', '1200.00', '400.00', '06/29/2008', 'C00009', 'A002', 'SOD');
+
+CREATE TABLE DataTypes 
+(
+    BigInt_Column BIGINT,
+    Boolean_Column BOOLEAN,
+    Bytea_Column BYTEA,
+    Char_Column CHARACTER(6),
+    Varchar_Column CHARACTER VARYING(50),
+    Date_Column DATE,
+    Double_Column DOUBLE PRECISION,
+    Int_Column INTEGER,
+    Money_Column MONEY,
+    Numeric_Column NUMERIC,
+    Real_Column REAL,
+    SmallInt_Column SMALLINT,
+    Text_Column TEXT,
+    Time_Column TIME,
+    Timestamp_Column TIMESTAMP DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC'),
+    Uuid_Column UUID
+);
+
+INSERT INTO DataTypes 
+(
+    BigInt_Column, 
+    Boolean_Column, 
+    Bytea_Column, 
+    Char_Column, 
+    Varchar_Column, 
+    Date_Column, 
+    Double_Column, 
+    Int_Column, 
+    Money_Column, 
+    Numeric_Column, 
+    Real_Column, 
+    SmallInt_Column, 
+    Text_Column, 
+    Time_Column, 
+    Timestamp_Column, 
+    Uuid_Column
+) VALUES 
+(
+    9223372036854775807, -- BigInt_Column
+    true, -- Boolean_Column
+    E'\\xDEADBEEF', -- Bytea_Column
+    'char10', -- Char_Column
+    'varchar50', -- Varchar_Column
+    '2024-09-21', -- Date_Column
+    123456.789, -- Double_Column
+    2147483647, -- Int_Column
+    12345.67, -- Money_Column
+    123456.789, -- Numeric_Column
+    12345.67, -- Real_Column
+    32767, -- SmallInt_Column
+    'some text', -- Text_Column
+    '12:34:56', -- Time_Column
+    '2024-09-21 14:34:56', -- Timestamp_Column
+    '123e4567-e89b-12d3-a456-426614174000' -- Uuid_Column
+);

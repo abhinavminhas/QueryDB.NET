@@ -1,0 +1,47 @@
+name: Docker Compose (Pull)
+
+inputs:
+  useCache:
+    description: 'Enable docker compose caching.'
+    required: true
+    
+runs:
+  using: 'composite'
+  
+  steps:
+    - name: Install Docker Compose
+      if: ${{ (inputs.useCache == 'true') }}
+      shell: bash
+      run: sudo apt-get install docker-compose
+
+    - name: Clean Up Docker System
+      if: ${{ (inputs.useCache == 'true') }}
+      shell: bash
+      run: |
+          docker system prune -a --force
+    
+    - name: Set Up Docker Cache
+      if: ${{ (inputs.useCache == 'true') }}
+      uses: actions/cache@v4
+      with:
+        path: /tmp/.docker-cache
+        key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile') }}
+        restore-keys: |
+          ${{ runner.os }}-docker-
+
+    - name: Load Docker Cache
+      if: ${{ (inputs.useCache == 'true') }}
+      shell: bash
+      run: |
+        mkdir -p /tmp/.docker-cache
+        if [ -f /tmp/.docker-cache/image.tar ]; then docker load -i /tmp/.docker-cache/image.tar; fi
+
+    - name: Docker Compose (Pull)
+      shell: bash
+      run: docker compose -f docker-compose.yml pull --parallel
+    
+    - name: Docker Compose Save Images
+      if: ${{ (inputs.useCache == 'true') }}
+      shell: bash
+      run: docker save -o /tmp/.docker-cache/image.tar $(docker-compose config | awk '/image:/ {print $2}')
+      

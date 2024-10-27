@@ -16,8 +16,9 @@ runs:
         replacements: '__DB_PASSWORD__=${{ inputs.dbPassword }},__DB_PASSWORD__=${{ inputs.dbPassword }},__DB_PASSWORD__=${{ inputs.dbPassword }},__DB_PASSWORD__=${{ inputs.dbPassword }}'
 
     - name: Docker Compose (Pull)
-      shell: bash
-      run: docker compose -f docker-compose.yml pull --parallel
+      uses: ./.github/workflows/docker-compose-pull
+      with:
+        useCache: false
 
     - name: Docker Compose (Start - DB Containers)
       shell: bash
