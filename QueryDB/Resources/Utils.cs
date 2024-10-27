@@ -124,6 +124,5 @@ namespace QueryDB.Resources
             }
             return buffer;
         }
-
     }
 }
