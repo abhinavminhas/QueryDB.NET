@@ -236,7 +236,7 @@ namespace QueryDB.Core.Tests
             Assert.IsTrue(data.Count == 2);
             var dataType = data.FirstOrDefault();
             Assert.AreEqual(GetBase64Content(Environment.CurrentDirectory + "/SeedData/oracle.sql"), ConvertByteArrayToBase64(dataType.BFile_Column));
-            Assert.IsTrue(dataType.Blob_Column is byte[] && dataType.Blob_Column != null);
+            Assert.AreEqual("3q2+7w==", ConvertByteArrayToBase64(dataType.Blob_Column));
             Assert.AreEqual("A", dataType.Char_Column);
             Assert.AreEqual("Sample CLOB data", dataType.Clob_Column);
             Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.Date_Column.ToString()));
@@ -249,7 +249,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("Sample NCLOB data", dataType.NClob_Column);
             Assert.AreEqual((decimal)123.45, dataType.Number_Column);
             Assert.AreEqual("Sample NVARCHAR2 data", dataType.NVarchar2_Column);
-            Assert.IsTrue(dataType.Raw_Column is byte[] && dataType.Raw_Column != null);
+            Assert.AreEqual("3q2+7w==", ConvertByteArrayToBase64(dataType.Raw_Column));
             Assert.AreEqual("09/21/2024 12:34:56", ConvertToUSFormat(dataType.Timestamp_Column.ToString()));
             Assert.AreEqual("09/21/2024 12:34:56", ConvertToUSFormat(dataType.TimestampWithTimeZone_Column.ToString()));
             Assert.AreEqual("09/21/2024 12:34:56", ConvertToUSFormat(dataType.TimestampWithLocalTimeZone_Column.ToString()));

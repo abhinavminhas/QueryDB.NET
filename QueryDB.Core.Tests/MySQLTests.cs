@@ -251,7 +251,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("09/21/2024 13:24:10", ConvertToUSFormat(dataType.Timestamp_Column.ToString()));
             Assert.AreEqual((sbyte?)127, dataType.TinyInt_Column);
             Assert.AreEqual("This is a tiny text", dataType.TinyText_Column);
-            Assert.IsTrue(dataType.VarBinary_Column is byte[] && dataType.VarBinary_Column != null);
+            Assert.AreEqual("3q2+7w==", ConvertByteArrayToBase64(dataType.VarBinary_Column));
             Assert.AreEqual("This is a varchar", dataType.VarChar_Column);
         }
 

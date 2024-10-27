@@ -245,7 +245,7 @@ namespace QueryDB.Core.Tests
             Assert.IsTrue(data.Count == 1);
             var dataType = data.FirstOrDefault();
             Assert.AreEqual(9223372036854775807, dataType.BigInt_Column);
-            Assert.IsTrue(dataType.Binary_Column is byte[] && dataType.Binary_Column != null);
+            Assert.AreEqual("EjRWeJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=", ConvertByteArrayToBase64(dataType.Binary_Column));
             Assert.IsTrue(dataType.Bit_Column);
             Assert.AreEqual("CharData", dataType.Char_Column);
             Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.Date_Column.ToString()));
@@ -254,7 +254,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("09/20/2024 22:34:51", ConvertToUTCInUSFormat(dataType.DateTimeOffset_Column.ToString()));
             Assert.AreEqual((decimal)123456.78, dataType.Decimal_Column);
             Assert.AreEqual((double)123456.78, dataType.Float_Column);
-            Assert.IsTrue(dataType.VarBinary_Column is byte[] && dataType.Image_Column != null);
+            Assert.AreEqual("EjRWeJA=", ConvertByteArrayToBase64(dataType.Image_Column));
             Assert.AreEqual(2147483647, dataType.Int_Column);
             Assert.AreEqual((decimal)123456.7800, dataType.Money_Column);
             Assert.AreEqual("NCharData", dataType.NChar_Column);
@@ -270,7 +270,7 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("08:34:51", dataType.Time_Column.ToString());
             Assert.AreEqual(255, dataType.TinyInt_Column);
             Assert.AreEqual("12345678-1234-1234-1234-123456789012", dataType.UniqueIdentifier_Column.ToString());
-            Assert.IsTrue(dataType.VarBinary_Column is byte[] && dataType.Binary_Column != null);
+            Assert.AreEqual("EjRWeJA=", ConvertByteArrayToBase64(dataType.VarBinary_Column));
             Assert.AreEqual("VarCharData", dataType.VarChar_Column);
             Assert.AreEqual("<root><element>XmlData</element></root>", dataType.Xml_Column);
         }
