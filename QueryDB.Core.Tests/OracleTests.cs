@@ -235,7 +235,7 @@ namespace QueryDB.Core.Tests
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData<Entities.Oracle.DataTypes>(selectSql);
             Assert.IsTrue(data.Count == 2);
             var dataType = data.FirstOrDefault();
-            Assert.AreEqual(GetBase64Content(Environment.CurrentDirectory + "/SeedData/oracle.sql"), dataType.BFile_Column);
+            Assert.AreEqual(GetBase64Content(Environment.CurrentDirectory + "/SeedData/oracle.sql"), ConvertByteArrayToBase64(dataType.BFile_Column));
             Assert.IsTrue(dataType.Blob_Column is byte[] && dataType.Blob_Column != null);
             Assert.AreEqual("A", dataType.Char_Column);
             Assert.AreEqual("Sample CLOB data", dataType.Clob_Column);
