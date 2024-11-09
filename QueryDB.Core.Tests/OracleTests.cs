@@ -290,6 +290,46 @@ namespace QueryDB.Core.Tests
 
         #endregion
 
+        #region Execute DDL Tests - << void ExecuteDDL(string ddlStatement) >>
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public void Test_PostgreSQL_ExecuteDDL_Queries()
+        {
+            var createTableSql = Queries.OracleQueries.TestDB.DDL.Create_Table;
+            var alterTableSql = Queries.OracleQueries.TestDB.DDL.Alter_Table;
+            var truncateTableSql = Queries.OracleQueries.TestDB.DDL.Truncate_Table;
+            var renameTableSql = Queries.OracleQueries.TestDB.DDL.Rename_Table;
+            var dropTableSql = Queries.OracleQueries.TestDB.DDL.Drop_Table;
+            var dDLExecutionCheckSql = Queries.OracleQueries.TestDB.DDL.DDL_Execute_check;
+
+            var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
+            dbContext.ExecuteDDL(createTableSql);
+            dbContext.ExecuteDDL(alterTableSql);
+            dbContext.ExecuteDDL(truncateTableSql);
+
+            var tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "Employee"));
+            Assert.AreEqual("1", tableCount[0].ReferenceData["TABLE_COUNT"]);
+
+            dbContext.ExecuteDDL(renameTableSql);
+
+            tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "Employee"));
+            Assert.AreEqual("0", tableCount[0].ReferenceData["TABLE_COUNT"]);
+            tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "Employees"));
+            Assert.AreEqual("1", tableCount[0].ReferenceData["TABLE_COUNT"]);
+
+            dbContext.ExecuteDDL(dropTableSql);
+
+            tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "Employees"));
+            Assert.AreEqual("0", tableCount[0].ReferenceData["TABLE_COUNT"]);
+        }
+
+        #endregion
+
         #endregion
 
     }

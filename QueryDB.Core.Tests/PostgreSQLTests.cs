@@ -282,6 +282,46 @@ namespace QueryDB.Core.Tests
 
         #endregion
 
+        #region Execute DDL Tests - << void ExecuteDDL(string ddlStatement) >>
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_ExecuteDDL_Queries()
+        {
+            var createTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Create_Table;
+            var alterTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Alter_Table;
+            var truncateTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Truncate_Table;
+            var renameTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Rename_Table;
+            var dropTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Drop_Table;
+            var dDLExecutionCheckSql = Queries.PostgreSQLQueries.TestDB.DDL.DDL_Execute_check;
+
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+            dbContext.ExecuteDDL(createTableSql);
+            dbContext.ExecuteDDL(alterTableSql);
+            dbContext.ExecuteDDL(truncateTableSql);
+
+            var tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "public", "Employee"));
+            Assert.AreEqual("1", tableCount[0].ReferenceData["table_count"]);
+
+            dbContext.ExecuteDDL(renameTableSql);
+
+            tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "public", "Employee"));
+            Assert.AreEqual("0", tableCount[0].ReferenceData["table_count"]);
+            tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "public", "Employees"));
+            Assert.AreEqual("1", tableCount[0].ReferenceData["table_count"]);
+
+            dbContext.ExecuteDDL(dropTableSql);
+
+            tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "public", "Employees"));
+            Assert.AreEqual("0", tableCount[0].ReferenceData["table_count"]);
+        }
+
+        #endregion
+
         #endregion
 
     }

@@ -27,6 +27,13 @@ namespace QueryDB.MSSQL
             }
         }
 
+        internal SqlCommand GetSqlCommand(string cmdText, SqlConnection connection, CommandType commandType)
+        {
+            connection.Open();
+            var sqlCommand = new SqlCommand(cmdText, connection) { CommandType = commandType };
+            return sqlCommand;
+        }
+
         /// <summary>
         /// Retrieves records for 'Select' queries from the database.
         /// Converts column names to keys holding values, with multiple database rows returned into a list.
@@ -84,6 +91,13 @@ namespace QueryDB.MSSQL
             }
             return dataList;
         }
-        
+
+        internal void ExecuteDDL(string ddlStatement, SqlConnection connection)
+        {
+            using(var sqlCommand = GetSqlCommand(ddlStatement, connection, CommandType.Text))
+            {
+                sqlCommand.ExecuteNonQuery();
+            }
+        }
     }
 }

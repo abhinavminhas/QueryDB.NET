@@ -142,6 +142,42 @@ namespace QueryDB
             return dataList;
         }
 
+        public void ExecuteDDL(string ddlStatement)
+        {
+            if (Database.Equals(DB.MSSQL))
+            {
+                using (var msSqlDBConnection = GetSqlServerConnection())
+                {
+                    var _systemAdapter = new MSSQL.Adapter();
+                    _systemAdapter.ExecuteDDL(ddlStatement, msSqlDBConnection.SqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.MySQL))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    var _systemAdapter = new MySQL.Adapter();
+                    _systemAdapter.ExecuteDDL(ddlStatement, mySqlDBConnection.MySqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    var _systemAdapter = new Oracle.Adapter();
+                    _systemAdapter.ExecuteDDL(ddlStatement, oracleDBConnection.OracleConnection);
+                }
+            }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    var _systemAdapter = new PostgreSQL.Adapter();
+                    _systemAdapter.ExecuteDDL(ddlStatement, postgreSqlDBConnection.PostgreSQLConnection);
+                }
+            }
+        }
+
         /// <summary>
         /// Gets 'SQL Server' connection.
         /// </summary>

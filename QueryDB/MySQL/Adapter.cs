@@ -27,6 +27,13 @@ namespace QueryDB.MySQL
             }
         }
 
+        internal MySqlCommand GetMySqlCommand(string cmdText, MySqlConnection connection, CommandType commandType)
+        {
+            connection.Open();
+            var sqlCommand = new MySqlCommand(cmdText, connection) { CommandType = commandType };
+            return sqlCommand;
+        }
+
         /// <summary>
         /// Retrieves records for 'Select' queries from the database.
         /// Converts column names to keys holding values, with multiple database rows returned into a list.
@@ -83,6 +90,14 @@ namespace QueryDB.MySQL
                 }
             }
             return dataList;
+        }
+
+        internal void ExecuteDDL(string ddlStatement, MySqlConnection connection)
+        {
+            using (var sqlCommand = GetMySqlCommand(ddlStatement, connection, CommandType.Text))
+            {
+                sqlCommand.ExecuteNonQuery();
+            }
         }
     }
 }

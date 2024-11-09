@@ -308,6 +308,46 @@ namespace QueryDB.Core.Tests
 
         #endregion
 
+        #region Execute DDL Tests - << void ExecuteDDL(string ddlStatement) >>
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_ExecuteDDL_Queries()
+        {
+            var createTableSql = Queries.MSSQLQueries.TestDB.DDL.Create_Table;
+            var alterTableSql = Queries.MSSQLQueries.TestDB.DDL.Alter_Table;
+            var truncateTableSql = Queries.MSSQLQueries.TestDB.DDL.Truncate_Table;
+            var renameTableSql = Queries.MSSQLQueries.TestDB.DDL.Rename_Table;
+            var dropTableSql = Queries.MSSQLQueries.TestDB.DDL.Drop_Table;
+            var dDLExecutionCheckSql = Queries.MSSQLQueries.TestDB.DDL.DDL_Execute_check;
+
+            var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+            dbContext.ExecuteDDL(createTableSql);
+            dbContext.ExecuteDDL(alterTableSql);
+            dbContext.ExecuteDDL(truncateTableSql);
+
+            var tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "dbo", "Employee"));
+            Assert.AreEqual("1", tableCount[0].ReferenceData["Table_Count"]);
+
+            dbContext.ExecuteDDL(renameTableSql);
+
+            tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "dbo", "Employee"));
+            Assert.AreEqual("0", tableCount[0].ReferenceData["Table_Count"]);
+            tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "dbo", "Employees"));
+            Assert.AreEqual("1", tableCount[0].ReferenceData["Table_Count"]);
+
+            dbContext.ExecuteDDL(dropTableSql);
+
+            tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "dbo", "Employees"));
+            Assert.AreEqual("0", tableCount[0].ReferenceData["Table_Count"]);
+        }
+
+        #endregion
+
         #endregion
 
     }

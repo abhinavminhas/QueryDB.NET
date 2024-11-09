@@ -27,6 +27,13 @@ namespace QueryDB.Oracle
             }
         }
 
+        internal OracleCommand GetOracleCommand(string cmdText, OracleConnection connection, CommandType commandType)
+        {
+            connection.Open();
+            var sqlCommand = new OracleCommand(cmdText, connection) { CommandType = commandType };
+            return sqlCommand;
+        }
+
         /// <summary>
         /// Retrieves records for 'Select' queries from the database.
         /// Converts column names to keys holding values, with multiple database rows returned into a list.
@@ -90,6 +97,14 @@ namespace QueryDB.Oracle
                 }
             }
             return dataList;
+        }
+
+        internal void ExecuteDDL(string ddlStatement, OracleConnection connection)
+        {
+            using (var sqlCommand = GetOracleCommand(ddlStatement, connection, CommandType.Text))
+            {
+                sqlCommand.ExecuteNonQuery();
+            }
         }
     }
 }
