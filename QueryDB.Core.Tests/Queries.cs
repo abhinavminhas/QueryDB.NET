@@ -90,7 +90,7 @@
                     public static string Truncate_Table = @"TRUNCATE TABLE Employee";
                     public static string Rename_Table = @"RENAME Employee TO Employees";
                     public static string Drop_Table = @"DROP TABLE Employees";
-                    public static string DDL_Execute_check = @"SELECT COUNT(*) FROM user_tables WHERE LOWER(table_Name) = LOWER('{0}')";
+                    public static string DDL_Execute_check = @"SELECT COUNT(*) AS Table_Count FROM user_tables WHERE LOWER(table_Name) = LOWER('{0}')";
                 }
             }
         }
