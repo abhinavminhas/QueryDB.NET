@@ -25,10 +25,14 @@
                 {
                     internal static string Create_Table = @"CREATE TABLE Employee (EmployeeID INT PRIMARY KEY, FirstName NVARCHAR(50), LastName NVARCHAR(50))";
                     internal static string Alter_Table = @"ALTER TABLE Employee ADD MiddleName VARCHAR(50)";
+                    internal static string Comment_Table = @"EXEC sp_addextendedproperty @name = N'MS_Description',  @value = N'This table stores employee records', @level0type = N'SCHEMA', @level0name = 'dbo', @level1type = N'TABLE', @level1name = 'Employee'";
+                    internal static string Comment_Table_Column = @"EXEC sp_addextendedproperty @name = N'MS_Description', @value = N'This column stores employee middle name', @level0type = N'SCHEMA', @level0name = 'dbo', @level1type = N'TABLE', @level1name = 'Employee', @level2type = N'COLUMN', @level2name = 'MiddleName'";
                     internal static string Truncate_Table = @"TRUNCATE TABLE Employee";
                     internal static string Rename_Table = @"EXEC SP_RENAME Employee, Employees";
                     internal static string Drop_Table = @"DROP TABLE Employees";
                     internal static string DDL_Execute_check = @"SELECT COUNT(*) AS Table_Count FROM Information_Schema.Tables WHERE LOWER(Table_Schema) = LOWER('{0}') AND LOWER(Table_Name) = LOWER('{1}')";
+                    internal static string DDL_Table_Comment_check = @"SELECT value AS Table_Comment FROM fn_listextendedproperty(NULL, 'SCHEMA', '{0}', 'TABLE', '{1}', NULL, NULL)";
+                    internal static string DDL_Table_Column_Comment_check = @"SELECT value AS Table_Column_Comment FROM fn_listextendedproperty(NULL, 'SCHEMA', '{0}', 'TABLE', '{1}', 'COLUMN', 'MiddleName')";
                 }
             }
         }

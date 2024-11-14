@@ -316,19 +316,31 @@ namespace QueryDB.Core.Tests
         {
             var createTableSql = Queries.MSSQLQueries.TestDB.DDL.Create_Table;
             var alterTableSql = Queries.MSSQLQueries.TestDB.DDL.Alter_Table;
+            var commentTableSql = Queries.MSSQLQueries.TestDB.DDL.Comment_Table;
+            var commentTableColumnSql = Queries.MSSQLQueries.TestDB.DDL.Comment_Table_Column;
             var truncateTableSql = Queries.MSSQLQueries.TestDB.DDL.Truncate_Table;
             var renameTableSql = Queries.MSSQLQueries.TestDB.DDL.Rename_Table;
             var dropTableSql = Queries.MSSQLQueries.TestDB.DDL.Drop_Table;
             var dDLExecutionCheckSql = Queries.MSSQLQueries.TestDB.DDL.DDL_Execute_check;
+            var dDLTableCommentCheckSql = Queries.MSSQLQueries.TestDB.DDL.DDL_Table_Comment_check;
+            var dDLTableColumnCommentCheckSql = Queries.MSSQLQueries.TestDB.DDL.DDL_Table_Column_Comment_check;
 
             var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
             dbContext.ExecuteDDL(createTableSql);
             dbContext.ExecuteDDL(alterTableSql);
+            dbContext.ExecuteDDL(commentTableSql);
+            dbContext.ExecuteDDL(commentTableColumnSql);
             dbContext.ExecuteDDL(truncateTableSql);
 
             var tableCount = dbContext
                 .FetchData(string.Format(dDLExecutionCheckSql, "dbo", "Employee"));
             Assert.AreEqual("1", tableCount[0].ReferenceData["Table_Count"]);
+            var tableComment = dbContext
+                .FetchData(string.Format(dDLTableCommentCheckSql, "dbo", "Employee"));
+            Assert.AreEqual("This table stores employee records", tableComment[0].ReferenceData["Table_Comment"]);
+            var tableColumnComment = dbContext
+                .FetchData(string.Format(dDLTableColumnCommentCheckSql, "dbo", "Employee"));
+            Assert.AreEqual("This column stores employee middle name", tableColumnComment[0].ReferenceData["Table_Column_Comment"]);
 
             dbContext.ExecuteDDL(renameTableSql);
 
