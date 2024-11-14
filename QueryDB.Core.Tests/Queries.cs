@@ -98,7 +98,7 @@
                     internal static string Drop_Table = @"DROP TABLE Employees";
                     internal static string DDL_Execute_check = @"SELECT COUNT(*) AS Table_Count FROM User_Tables WHERE LOWER(Table_Name) = LOWER('{0}')";
                     internal static string DDL_Table_Comment_check = @"SELECT Table_Name, Comments AS Table_Comment FROM All_Tab_Comments WHERE LOWER(Table_Name) = LOWER('{0}')";
-                    internal static string DDL_Table_Column_Comment_check = @"SELECT Column_Name, Comments AS Table_Column_Comment FROM All_Col_Comments WHERE LOWER(Table_Name = LOWER('{0}')";
+                    internal static string DDL_Table_Column_Comment_check = @"SELECT Column_Name, Comments AS Table_Column_Comment FROM All_Col_Comments WHERE LOWER(Table_Name) = LOWER('{0}')";
                 }
             }
         }
