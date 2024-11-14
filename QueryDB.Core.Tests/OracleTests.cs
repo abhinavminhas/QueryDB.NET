@@ -294,23 +294,35 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
-        public void Test_PostgreSQL_ExecuteDDL_Queries()
+        public void Test_Oracle_ExecuteDDL_Queries()
         {
             var createTableSql = Queries.OracleQueries.TestDB.DDL.Create_Table;
             var alterTableSql = Queries.OracleQueries.TestDB.DDL.Alter_Table;
+            var commentTableSql = Queries.OracleQueries.TestDB.DDL.Comment_Table;
+            var commentTableColumnSql = Queries.OracleQueries.TestDB.DDL.Comment_Table_Column;
             var truncateTableSql = Queries.OracleQueries.TestDB.DDL.Truncate_Table;
             var renameTableSql = Queries.OracleQueries.TestDB.DDL.Rename_Table;
             var dropTableSql = Queries.OracleQueries.TestDB.DDL.Drop_Table;
             var dDLExecutionCheckSql = Queries.OracleQueries.TestDB.DDL.DDL_Execute_check;
+            var dDLTableCommentCheckSql = Queries.OracleQueries.TestDB.DDL.DDL_Table_Comment_check;
+            var dDLTableColumnCommentCheckSql = Queries.OracleQueries.TestDB.DDL.DDL_Table_Column_Comment_check;
 
             var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
             dbContext.ExecuteDDL(createTableSql);
             dbContext.ExecuteDDL(alterTableSql);
+            dbContext.ExecuteDDL(commentTableSql);
+            dbContext.ExecuteDDL(commentTableColumnSql);
             dbContext.ExecuteDDL(truncateTableSql);
 
             var tableCount = dbContext
                 .FetchData(string.Format(dDLExecutionCheckSql, "Employee"));
             Assert.AreEqual("1", tableCount[0].ReferenceData["TABLE_COUNT"]);
+            var tableComment = dbContext
+                .FetchData(string.Format(dDLTableCommentCheckSql, "Employee"));
+            Assert.AreEqual("This table stores employee records", tableComment[0].ReferenceData["TABLE_COMMENT"]);
+            var tableColumnComment = dbContext
+                .FetchData(string.Format(dDLTableColumnCommentCheckSql, "Employee"));
+            Assert.AreEqual("This column stores employee middle name", tableColumnComment[3].ReferenceData["TABLE_COLUMN_COMMENT"]);
 
             dbContext.ExecuteDDL(renameTableSql);
 

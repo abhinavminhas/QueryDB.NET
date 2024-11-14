@@ -296,19 +296,31 @@ namespace QueryDB.Core.Tests
         {
             var createTableSql = Queries.MySQLQueries.TestDB.DDL.Create_Table;
             var alterTableSql = Queries.MySQLQueries.TestDB.DDL.Alter_Table;
+            var commentTableSql = Queries.MySQLQueries.TestDB.DDL.Comment_Table;
+            var commentTableColumnSql = Queries.MySQLQueries.TestDB.DDL.Comment_Table_Column;
             var truncateTableSql = Queries.MySQLQueries.TestDB.DDL.Truncate_Table;
             var renameTableSql = Queries.MySQLQueries.TestDB.DDL.Rename_Table;
             var dropTableSql = Queries.MySQLQueries.TestDB.DDL.Drop_Table;
             var dDLExecutionCheckSql = Queries.MySQLQueries.TestDB.DDL.DDL_Execute_check;
+            var dDLTableCommentCheckSql = Queries.MySQLQueries.TestDB.DDL.DDL_Table_Comment_check;
+            var dDLTableColumnCommentCheckSql = Queries.MySQLQueries.TestDB.DDL.DDL_Table_Column_Comment_check;
 
             var dbContext = new DBContext(DB.MySQL, MySQLConnectionString);
             dbContext.ExecuteDDL(createTableSql);
             dbContext.ExecuteDDL(alterTableSql);
+            dbContext.ExecuteDDL(commentTableSql);
+            dbContext.ExecuteDDL(commentTableColumnSql);
             dbContext.ExecuteDDL(truncateTableSql);
-
+            
             var tableCount = dbContext
                 .FetchData(string.Format(dDLExecutionCheckSql, "mysql", "Employee"));
             Assert.AreEqual("1", tableCount[0].ReferenceData["Table_Count"]);
+            var tableComment = dbContext
+                .FetchData(string.Format(dDLTableCommentCheckSql, "mysql", "Employee"));
+            Assert.AreEqual("This table stores employee records", tableComment[0].ReferenceData["Table_Comment"]);
+            var tableColumnComment = dbContext
+                .FetchData(string.Format(dDLTableColumnCommentCheckSql, "mysql", "Employee"));
+            Assert.AreEqual("This column stores employee middle name", tableColumnComment[3].ReferenceData["Table_Column_Comment"]);
 
             dbContext.ExecuteDDL(renameTableSql);
 
