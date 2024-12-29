@@ -36,7 +36,7 @@
                 }
             }
         }
-
+         
         internal static class MySQLQueries
         {
             internal static class Smoke

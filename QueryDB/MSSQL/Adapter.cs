@@ -92,11 +92,17 @@ namespace QueryDB.MSSQL
             return dataList;
         }
 
-        internal void ExecuteDDL(string ddlStatement, SqlConnection connection)
+        /// <summary>
+        /// Executes SQL commands.
+        /// </summary>
+        /// <param name="sqlStatement">SQL statement as command.</param>
+        /// <param name="connection">'Sql' Connection.</param>
+        /// <returns>The number of rows affected.</returns>
+        internal int ExecuteCommand(string sqlStatement, SqlConnection connection)
         {
-            using(var sqlCommand = GetSqlCommand(ddlStatement, connection, CommandType.Text))
+            using(var sqlCommand = GetSqlCommand(sqlStatement, connection, CommandType.Text))
             {
-                sqlCommand.ExecuteNonQuery();
+                return sqlCommand.ExecuteNonQuery();
             }
         }
     }

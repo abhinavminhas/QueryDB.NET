@@ -92,11 +92,17 @@ namespace QueryDB.PostgreSQL
             return dataList;
         }
 
-        internal void ExecuteDDL(string ddlStatement, NpgsqlConnection connection)
+        /// <summary>
+        /// Executes SQL commands.
+        /// </summary>
+        /// <param name="sqlStatement">SQL statement as command.</param>
+        /// <param name="connection">'PostgreSQL' Connection.</param>
+        /// <returns>The number of rows affected</returns>
+        internal int ExecuteCommand(string sqlStatement, NpgsqlConnection connection)
         {
-            using (var sqlCommand = GetPostgreSqlCommand(ddlStatement, connection, CommandType.Text))
+            using (var sqlCommand = GetPostgreSqlCommand(sqlStatement, connection, CommandType.Text))
             {
-                sqlCommand.ExecuteNonQuery();
+                return sqlCommand.ExecuteNonQuery();
             }
         }
     }

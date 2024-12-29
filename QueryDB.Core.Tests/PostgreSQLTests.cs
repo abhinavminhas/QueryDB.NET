@@ -282,11 +282,11 @@ namespace QueryDB.Core.Tests
 
         #endregion
 
-        #region Execute DDL Tests - << void ExecuteDDL(string ddlStatement) >>
+        #region Execute Command Tests - << void ExecuteCommand(string sqlStatement) >>
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
-        public void Test_PostgreSQL_ExecuteDDL_Queries()
+        public void Test_PostgreSQL_ExecuteCommand_DDL_Queries()
         {
             var createTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Create_Table;
             var alterTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Alter_Table;
@@ -300,11 +300,11 @@ namespace QueryDB.Core.Tests
             var dDLTableColumnCommentCheckSql = Queries.PostgreSQLQueries.TestDB.DDL.DDL_Table_Column_Comment_check;
 
             var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
-            dbContext.ExecuteDDL(createTableSql);
-            dbContext.ExecuteDDL(alterTableSql);
-            dbContext.ExecuteDDL(commentTableSql);
-            dbContext.ExecuteDDL(commentTableColumnSql);
-            dbContext.ExecuteDDL(truncateTableSql);
+            dbContext.ExecuteCommand(createTableSql);
+            dbContext.ExecuteCommand(alterTableSql);
+            dbContext.ExecuteCommand(commentTableSql);
+            dbContext.ExecuteCommand(commentTableColumnSql);
+            dbContext.ExecuteCommand(truncateTableSql);
 
             var tableCount = dbContext
                 .FetchData(string.Format(dDLExecutionCheckSql, "public", "Employee"));
@@ -316,7 +316,7 @@ namespace QueryDB.Core.Tests
                 .FetchData(string.Format(dDLTableColumnCommentCheckSql, "public", "Employee"));
             Assert.AreEqual("This column stores employee middle name", tableColumnComment[3].ReferenceData["table_column_comment"]);
 
-            dbContext.ExecuteDDL(renameTableSql);
+            dbContext.ExecuteCommand(renameTableSql);
 
             tableCount = dbContext
                 .FetchData(string.Format(dDLExecutionCheckSql, "public", "Employee"));
@@ -325,7 +325,7 @@ namespace QueryDB.Core.Tests
                 .FetchData(string.Format(dDLExecutionCheckSql, "public", "Employees"));
             Assert.AreEqual("1", tableCount[0].ReferenceData["table_count"]);
 
-            dbContext.ExecuteDDL(dropTableSql);
+            dbContext.ExecuteCommand(dropTableSql);
 
             tableCount = dbContext
                 .FetchData(string.Format(dDLExecutionCheckSql, "public", "Employees"));

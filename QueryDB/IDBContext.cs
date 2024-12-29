@@ -26,9 +26,9 @@ namespace QueryDB
         List<T> FetchData<T>(string selectSql, bool strict = false) where T : new();
 
         /// <summary>
-        /// Executes 'Data Definition Language' commands.
+        /// Executes SQL commands.
         /// </summary>
-        /// <param name="ddlStatement">DDL statement as command.</param>
-        void ExecuteDDL(string ddlStatement);
+        /// <param name="sqlStatement">SQL statement as command.</param>
+        void ExecuteCommand(string sqlStatement);
     }
 }
