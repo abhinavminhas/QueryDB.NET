@@ -142,14 +142,19 @@ namespace QueryDB
             return dataList;
         }
 
-        public void ExecuteDDL(string ddlStatement)
+        /// <summary>
+        /// Executes SQL commands.
+        /// </summary>
+        /// <param name="sqlStatement">SQL statement as command.</param>
+        /// <returns>The number of rows affected.</returns>
+        public int ExecuteCommand(string sqlStatement)
         {
             if (Database.Equals(DB.MSSQL))
             {
                 using (var msSqlDBConnection = GetSqlServerConnection())
                 {
                     var _systemAdapter = new MSSQL.Adapter();
-                    _systemAdapter.ExecuteDDL(ddlStatement, msSqlDBConnection.SqlConnection);
+                    return _systemAdapter.ExecuteCommand(sqlStatement, msSqlDBConnection.SqlConnection);
                 }
             }
             else if (Database.Equals(DB.MySQL))
@@ -157,7 +162,7 @@ namespace QueryDB
                 using (var mySqlDBConnection = GetMySqlConnection())
                 {
                     var _systemAdapter = new MySQL.Adapter();
-                    _systemAdapter.ExecuteDDL(ddlStatement, mySqlDBConnection.MySqlConnection);
+                    return _systemAdapter.ExecuteCommand(sqlStatement, mySqlDBConnection.MySqlConnection);
                 }
             }
             else if (Database.Equals(DB.Oracle))
@@ -165,7 +170,7 @@ namespace QueryDB
                 using (var oracleDBConnection = GetOracleConnection())
                 {
                     var _systemAdapter = new Oracle.Adapter();
-                    _systemAdapter.ExecuteDDL(ddlStatement, oracleDBConnection.OracleConnection);
+                    return _systemAdapter.ExecuteCommand(sqlStatement, oracleDBConnection.OracleConnection);
                 }
             }
             else if (Database.Equals(DB.PostgreSQL))
@@ -173,9 +178,10 @@ namespace QueryDB
                 using (var postgreSqlDBConnection = GetPostgreSqlConnection())
                 {
                     var _systemAdapter = new PostgreSQL.Adapter();
-                    _systemAdapter.ExecuteDDL(ddlStatement, postgreSqlDBConnection.PostgreSQLConnection);
+                    return _systemAdapter.ExecuteCommand(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
                 }
             }
+            return -1;
         }
 
         /// <summary>

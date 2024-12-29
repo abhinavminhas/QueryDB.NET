@@ -34,9 +34,15 @@
                     internal static string DDL_Table_Comment_check = @"SELECT value AS Table_Comment FROM fn_listextendedproperty(NULL, 'SCHEMA', '{0}', 'TABLE', '{1}', NULL, NULL)";
                     internal static string DDL_Table_Column_Comment_check = @"SELECT value AS Table_Column_Comment FROM fn_listextendedproperty(NULL, 'SCHEMA', '{0}', 'TABLE', '{1}', 'COLUMN', 'MiddleName')";
                 }
+                internal static class DML
+                {
+                    internal static string InsertSql = @"INSERT INTO Agents VALUES ('A020', 'John', 'Wick', '0.11', '010-44536178', '')";
+                    internal static string UpdateSql = @"UPDATE Agents SET Commission = '0.15' WHERE Agent_Code = 'A020'";
+                    internal static string DeleteSql = @"DELETE FROM Agents WHERE Agent_Code = 'A020'";
+                }
             }
         }
-
+         
         internal static class MySQLQueries
         {
             internal static class Smoke
@@ -68,6 +74,12 @@
                     internal static string DDL_Execute_check = @"SELECT COUNT(*) AS Table_Count FROM Information_Schema.Tables WHERE LOWER(Table_Schema) = LOWER('{0}') AND LOWER(Table_Name) = LOWER('{1}')";
                     internal static string DDL_Table_Comment_check = @"SELECT Table_Name, Table_Comment AS Table_Comment FROM Information_Schema.Tables WHERE LOWER(Table_Schema) = LOWER('{0}') AND LOWER(Table_Name) = LOWER('{1}')";
                     internal static string DDL_Table_Column_Comment_check = @"SELECT Column_Name, Column_Comment AS Table_Column_Comment FROM Information_Schema.Columns WHERE LOWER(Table_Schema) = LOWER('{0}') AND LOWER(Table_Name) = LOWER('{1}')";
+                }
+                internal static class DML
+                {
+                    internal static string InsertSql = @"INSERT INTO Agents VALUES ('A020', 'John', 'Wick', '0.11', '010-44536178', '')";
+                    internal static string UpdateSql = @"UPDATE Agents SET Commission = '0.15' WHERE Agent_Code = 'A020'";
+                    internal static string DeleteSql = @"DELETE FROM Agents WHERE Agent_Code = 'A020'";
                 }
             }
         }
@@ -104,6 +116,12 @@
                     internal static string DDL_Table_Comment_check = @"SELECT Table_Name, Comments AS Table_Comment FROM All_Tab_Comments WHERE LOWER(Table_Name) = LOWER('{0}')";
                     internal static string DDL_Table_Column_Comment_check = @"SELECT Column_Name, Comments AS Table_Column_Comment FROM All_Col_Comments WHERE LOWER(Table_Name) = LOWER('{0}')";
                 }
+                internal static class DML
+                {
+                    internal static string InsertSql = @"INSERT INTO Agents VALUES ('A020', 'John', 'Wick', '0.11', '010-44536178', '')";
+                    internal static string UpdateSql = @"UPDATE Agents SET Commission = '0.15' WHERE Agent_Code = 'A020'";
+                    internal static string DeleteSql = @"DELETE FROM Agents WHERE Agent_Code = 'A020'";
+                }
             }
         }
 
@@ -138,6 +156,12 @@
                     internal static string DDL_Execute_check = @"SELECT COUNT(*) AS Table_Count FROM Information_Schema.Tables WHERE LOWER(Table_Schema) = LOWER('{0}') AND LOWER(Table_Name) = LOWER('{1}')";
                     internal static string DDL_Table_Comment_check = @"SELECT Table_Name, Obj_Description(Table_Name::Regclass) AS Table_Comment FROM Information_Schema.Tables WHERE LOWER(Table_Schema) = LOWER('{0}') AND LOWER(Table_Name) = LOWER('{1}')";
                     internal static string DDL_Table_Column_Comment_check = @"SELECT Column_Name, Col_Description(Table_Name::Regclass, Ordinal_Position) AS Table_Column_Comment FROM Information_Schema.Columns WHERE LOWER(Table_Schema) = LOWER('{0}') AND LOWER(Table_Name) = LOWER('{1}')";
+                }
+                internal static class DML
+                {
+                    internal static string InsertSql = @"INSERT INTO Agents VALUES ('A020', 'John', 'Wick', '0.11', '010-44536178', '')";
+                    internal static string UpdateSql = @"UPDATE Agents SET Commission = '0.15' WHERE Agent_Code = 'A020'";
+                    internal static string DeleteSql = @"DELETE FROM Agents WHERE Agent_Code = 'A020'";
                 }
             }
         }

@@ -99,11 +99,17 @@ namespace QueryDB.Oracle
             return dataList;
         }
 
-        internal void ExecuteDDL(string ddlStatement, OracleConnection connection)
+        /// <summary>
+        /// Executes SQL commands.
+        /// </summary>
+        /// <param name="sqlStatement">SQL statement as command.</param>
+        /// <param name="connection">'Oracle' Connection.</param>
+        /// <returns>The number of rows affected.</returns>
+        internal int ExecuteCommand(string sqlStatement, OracleConnection connection)
         {
-            using (var sqlCommand = GetOracleCommand(ddlStatement, connection, CommandType.Text))
+            using (var sqlCommand = GetOracleCommand(sqlStatement, connection, CommandType.Text))
             {
-                sqlCommand.ExecuteNonQuery();
+                return sqlCommand.ExecuteNonQuery();
             }
         }
     }

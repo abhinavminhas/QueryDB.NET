@@ -92,11 +92,17 @@ namespace QueryDB.MySQL
             return dataList;
         }
 
-        internal void ExecuteDDL(string ddlStatement, MySqlConnection connection)
+        /// <summary>
+        /// Executes SQL commands.
+        /// </summary>
+        /// <param name="sqlStatement">SQL statement as command.</param>
+        /// <param name="connection">'MySQL' Connection.</param>
+        /// <returns>The number of rows affected.</returns>
+        internal int ExecuteCommand(string sqlStatement, MySqlConnection connection)
         {
-            using (var sqlCommand = GetMySqlCommand(ddlStatement, connection, CommandType.Text))
+            using (var sqlCommand = GetMySqlCommand(sqlStatement, connection, CommandType.Text))
             {
-                sqlCommand.ExecuteNonQuery();
+                return sqlCommand.ExecuteNonQuery();
             }
         }
     }
