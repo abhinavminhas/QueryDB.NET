@@ -39,6 +39,7 @@
                     internal static string InsertSql = @"INSERT INTO Agents VALUES ('A020', 'John', 'Wick', '0.11', '010-44536178', '')";
                     internal static string UpdateSql = @"UPDATE Agents SET Commission = '0.15' WHERE Agent_Code = 'A020'";
                     internal static string DeleteSql = @"DELETE FROM Agents WHERE Agent_Code = 'A020'";
+                    internal static string VerifyDMLExecution = @"SELECT * FROM Agents WHERE Agent_Code = 'A020'";
                 }
             }
         }
@@ -80,6 +81,7 @@
                     internal static string InsertSql = @"INSERT INTO Agents VALUES ('A020', 'John', 'Wick', '0.11', '010-44536178', '')";
                     internal static string UpdateSql = @"UPDATE Agents SET Commission = '0.15' WHERE Agent_Code = 'A020'";
                     internal static string DeleteSql = @"DELETE FROM Agents WHERE Agent_Code = 'A020'";
+                    internal static string VerifyDMLExecution = @"SELECT * FROM Agents WHERE Agent_Code = 'A020'";
                 }
             }
         }
@@ -121,6 +123,7 @@
                     internal static string InsertSql = @"INSERT INTO Agents VALUES ('A020', 'John', 'Wick', '0.11', '010-44536178', '')";
                     internal static string UpdateSql = @"UPDATE Agents SET Commission = '0.15' WHERE Agent_Code = 'A020'";
                     internal static string DeleteSql = @"DELETE FROM Agents WHERE Agent_Code = 'A020'";
+                    internal static string VerifyDMLExecution = @"SELECT * FROM Agents WHERE Agent_Code = 'A020'";
                 }
             }
         }
@@ -162,6 +165,7 @@
                     internal static string InsertSql = @"INSERT INTO Agents VALUES ('A020', 'John', 'Wick', '0.11', '010-44536178', '')";
                     internal static string UpdateSql = @"UPDATE Agents SET Commission = '0.15' WHERE Agent_Code = 'A020'";
                     internal static string DeleteSql = @"DELETE FROM Agents WHERE Agent_Code = 'A020'";
+                    internal static string VerifyDMLExecution = @"SELECT * FROM Agents WHERE Agent_Code = 'A020'";
                 }
             }
         }

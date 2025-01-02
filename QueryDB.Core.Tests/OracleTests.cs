@@ -290,7 +290,7 @@ namespace QueryDB.Core.Tests
 
         #endregion
 
-        #region Execute Command Tests - << void ExecuteCommand(string sqlStatement) >>
+        #region Execute Command Tests - << int ExecuteCommand(string sqlStatement) >>
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
@@ -347,14 +347,41 @@ namespace QueryDB.Core.Tests
             var insertSql = Queries.OracleQueries.TestDB.DML.InsertSql;
             var updateSql = Queries.OracleQueries.TestDB.DML.UpdateSql;
             var deleteSql = Queries.OracleQueries.TestDB.DML.DeleteSql;
+            var verifyDMLExecution = Queries.MSSQLQueries.TestDB.DML.VerifyDMLExecution;
 
             var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
+
+            // Insert
             var rows = dbContext.ExecuteCommand(insertSql);
             Assert.AreEqual(1, rows);
+            var data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 1);
+            var agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["AGENT_CODE"]);
+            Assert.AreEqual("John", agent.ReferenceData["AGENT_NAME"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["WORKING_AREA"]);
+            Assert.AreEqual("0.11", agent.ReferenceData["COMMISSION"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["PHONE_NO"]);
+            Assert.AreEqual("", agent.ReferenceData["COUNTRY"]);
+
+            // Update
             rows = dbContext.ExecuteCommand(updateSql);
             Assert.AreEqual(1, rows);
+            data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 1);
+            agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["AGENT_CODE"]);
+            Assert.AreEqual("John", agent.ReferenceData["AGENT_NAME"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["WORKING_AREA"]);
+            Assert.AreEqual("0.15", agent.ReferenceData["COMMISSION"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["PHONE_NO"]);
+            Assert.AreEqual("", agent.ReferenceData["COUNTRY"]);
+
+            // Delete
             rows = dbContext.ExecuteCommand(deleteSql);
             Assert.AreEqual(1, rows);
+            data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 0);
         }
 
         #endregion
