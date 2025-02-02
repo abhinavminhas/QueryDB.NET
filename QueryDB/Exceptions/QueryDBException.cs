@@ -53,7 +53,7 @@ namespace QueryDB.Exceptions
             /// <summary>
             /// Error type indicating an unsupported command.
             /// </summary>
-            internal static string UnsupportedCommand = "UnsupportedCommand";
+            internal static readonly string UnsupportedCommand = "UnsupportedCommand";
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace QueryDB.Exceptions
             /// <summary>
             /// Error message indicating that SELECT queries are not supported.
             /// </summary>
-            internal static string UnsupportedSelectExecuteCommand = "SELECT queries are not supported here.";
+            internal static readonly string UnsupportedSelectExecuteCommand = "SELECT queries are not supported here.";
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace QueryDB.Exceptions
             /// <summary>
             /// Additional information about unsupported SELECT queries in 'ExecuteCommand'.
             /// </summary>
-            internal static string UnsupportedSelectExecuteCommand = "'ExecuteCommand' doesn't support SELECT queries.";
+            internal static readonly string UnsupportedSelectExecuteCommand = "'ExecuteCommand' doesn't support SELECT queries.";
         }
     }
 }
