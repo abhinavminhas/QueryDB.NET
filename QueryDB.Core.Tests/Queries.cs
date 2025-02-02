@@ -151,7 +151,7 @@
                 }
                 internal static class DCL
                 {
-                    internal static string CreateUserSql_User_Password = @"CREATE USER {0} IDENTIFIED BY '{1}' DEFAULT TABLESPACE USERS TEMPORARY TABLESPACE TEMP";
+                    internal static string CreateUserSql_User_Password = @"CREATE USER {0} IDENTIFIED BY {1} DEFAULT TABLESPACE USERS TEMPORARY TABLESPACE TEMP";
                     internal static string GrantConnectSql_User = @"GRANT CONNECT TO {0}";
                     internal static string GrantSql_Command_Table_User = @"GRANT {0} ON {1} TO {2}";
                     internal static string RevokeSql_Command_Table_User = @"REVOKE {0} ON {1} FROM {2}";
