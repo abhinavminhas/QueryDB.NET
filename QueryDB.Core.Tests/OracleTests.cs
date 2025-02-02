@@ -407,7 +407,7 @@ namespace QueryDB.Core.Tests
         }
 
         [TestMethod]
-        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        [TestCategory(ORACLE_TESTS), TestCategory(ORACLE_TESTS)]
         public void Test_Oracle_ExecuteCommand_DCL_Queries()
         {
             var user = "C##TEST_USER";
