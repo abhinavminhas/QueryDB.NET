@@ -404,6 +404,52 @@ namespace QueryDB.Core.Tests
             }
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
+        public void Test_MySQL_ExecuteCommand_DCL_Queries()
+        {
+            var user = "test_user";
+            var password = "Test@1234";
+            var table = "Agents";
+            var commands = "SELECT, UPDATE";
+            var checkCommand = "SELECT";
+
+            var createUser = string.Format(Queries.MySQLQueries.TestDB.DCL.CreateUserSql_User_Password, user, password);
+            var grantSql = string.Format(Queries.MySQLQueries.TestDB.DCL.GrantSql_Command_Table_User, commands, table, user);
+            var revokeSql = string.Format(Queries.MySQLQueries.TestDB.DCL.RevokeSql_Command_Table_User, commands, table, user);
+            var verifyPermissions = string.Format(Queries.MySQLQueries.TestDB.DCL.VerifyPermission_User, user);
+            var removeUser = string.Format(Queries.MySQLQueries.TestDB.DCL.RemoveUserSql_User, user);
+
+            var dbContext = new DBContext(DB.MySQL, MySQLConnectionString);
+
+            // Create User
+            var result = dbContext.ExecuteCommand(createUser);
+            Assert.AreEqual(0, result);
+
+            // Existing Permissions
+            var data = dbContext.FetchData(verifyPermissions);
+            Assert.AreEqual(1, data.Count);
+            Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+
+            // Grant
+            result = dbContext.ExecuteCommand(grantSql);
+            Assert.AreEqual(0, result);
+            data = dbContext.FetchData(verifyPermissions);
+            Assert.AreEqual(2, data.Count);
+            Assert.IsTrue(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+
+            // Revoke
+            result = dbContext.ExecuteCommand(revokeSql);
+            Assert.AreEqual(0, result);
+            data = dbContext.FetchData(verifyPermissions);
+            Assert.AreEqual(1, data.Count);
+            Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+
+            //Remove User
+            result = dbContext.ExecuteCommand(removeUser);
+            Assert.AreEqual(0, result);
+        }
+
         #endregion
 
         #endregion

@@ -42,6 +42,19 @@
                     internal static string VerifyDMLExecution = @"SELECT * FROM Agents WHERE Agent_Code = 'A020'";
                     internal static string SelectSql = @"SELECT * FROM Agents";
                 }
+                internal static class DCL
+                {
+                    internal static string CreateLoginSql_Login_Password = @"CREATE LOGIN {0} WITH PASSWORD = '{1}'";
+                    internal static string CreateUserSql_User_Login = @"CREATE USER {0} FOR LOGIN {1}";
+                    internal static string GrantSql_Command_Table_User = @"GRANT {0} ON {1} TO {2}";
+                    internal static string RevokeSql_Command_Table_User = @"REVOKE {0} ON {1} TO {2}";
+                    internal static string VerifyPermission_User_Table_Command = @"SELECT COUNT(*) AS HasPermission FROM sys.database_permissions dp 
+                                                                                 JOIN sys.database_principals pr ON dp.grantee_principal_id = pr.principal_id 
+                                                                                 JOIN sys.objects obj ON dp.major_id = obj.object_id 
+                                                                                 WHERE pr.name = '{0}' AND obj.name = '{1}' AND dp.permission_name = '{2}'";
+                    internal static string RemoveUserSql_User = @"DROP USER {0}";
+                    internal static string RemoveLoginSql_Login = @"DROP LOGIN {0}";
+                }
             }
         }
          
@@ -84,6 +97,14 @@
                     internal static string DeleteSql = @"DELETE FROM Agents WHERE Agent_Code = 'A020'";
                     internal static string VerifyDMLExecution = @"SELECT * FROM Agents WHERE Agent_Code = 'A020'";
                     internal static string SelectSql = @"SELECT * FROM Agents";
+                }
+                internal static class DCL
+                {
+                    internal static string CreateUserSql_User_Password = @"CREATE USER '{0}' IDENTIFIED BY '{1}'";
+                    internal static string GrantSql_Command_Table_User = @"GRANT {0} ON {1} TO '{2}'";
+                    internal static string RevokeSql_Command_Table_User = @"REVOKE {0} ON {1} FROM '{2}'";
+                    internal static string VerifyPermission_User = @"SHOW GRANTS FOR '{0}'";
+                    internal static string RemoveUserSql_User = "DROP USER '{0}'";
                 }
             }
         }
@@ -170,6 +191,16 @@
                     internal static string DeleteSql = @"DELETE FROM Agents WHERE Agent_Code = 'A020'";
                     internal static string VerifyDMLExecution = @"SELECT * FROM Agents WHERE Agent_Code = 'A020'";
                     internal static string SelectSql = @"SELECT * FROM Agents";
+                }
+                internal static class DCL
+                {
+                    internal static string CreateUserSql_User_Password = @"CREATE USER {0} WITH PASSWORD '{1}'";
+                    internal static string GrantSql_Command_Table_User = @"GRANT {0} ON {1} TO {2}";
+                    internal static string RevokeSql_Command_Table_User = @"REVOKE {0} ON {1} FROM {2}";
+                    internal static string VerifyPermission_User = @"SELECT grantee, privilege_type 
+                                                                   FROM information_schema.role_table_grants 
+                                                                   WHERE grantee = '{0}'";
+                    internal static string RemoveUserSql_User = @"DROP USER {0}";
                 }
             }
         }

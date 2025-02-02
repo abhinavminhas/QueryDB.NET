@@ -424,6 +424,60 @@ namespace QueryDB.Core.Tests
             }
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_ExecuteCommand_DCL_Queries()
+        {
+            var login = "test_user";
+            var user = "test_user";
+            var password = "Test@1234";
+            var table = "agents";
+            var commands = "SELECT, UPDATE";
+            var checkCommand = "SELECT";
+
+            var createLogin = string.Format(Queries.MSSQLQueries.TestDB.DCL.CreateLoginSql_Login_Password, login, password);
+            var createUser = string.Format(Queries.MSSQLQueries.TestDB.DCL.CreateUserSql_User_Login, user, login);
+            var grantSql = string.Format(Queries.MSSQLQueries.TestDB.DCL.GrantSql_Command_Table_User, commands, table, user);
+            var revokeSql = string.Format(Queries.MSSQLQueries.TestDB.DCL.RevokeSql_Command_Table_User, commands, table, user);
+            var verifyPermissions = string.Format(Queries.MSSQLQueries.TestDB.DCL.VerifyPermission_User_Table_Command, user, table, checkCommand);
+            var removeUser = string.Format(Queries.MSSQLQueries.TestDB.DCL.RemoveUserSql_User, user);
+            var removeLogin = string.Format(Queries.MSSQLQueries.TestDB.DCL.RemoveLoginSql_Login, login);
+
+            var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+
+            // Create Login
+            var result = dbContext.ExecuteCommand(createLogin);
+            Assert.AreEqual(-1, result);
+
+            // Create User
+            result = dbContext.ExecuteCommand(createUser);
+            Assert.AreEqual(-1, result);
+
+            // Existing Permissions
+            var data = dbContext.FetchData(verifyPermissions).FirstOrDefault();
+            Assert.AreEqual("0", data.ReferenceData["HasPermission"]);
+
+            // Grant
+            result = dbContext.ExecuteCommand(grantSql);
+            Assert.AreEqual(-1, result);
+            data = dbContext.FetchData(verifyPermissions).FirstOrDefault();
+            Assert.AreEqual("1", data.ReferenceData["HasPermission"]);
+
+            // Revoke
+            result = dbContext.ExecuteCommand(revokeSql);
+            Assert.AreEqual(-1, result);
+            data = dbContext.FetchData(verifyPermissions).FirstOrDefault();
+            Assert.AreEqual("0", data.ReferenceData["HasPermission"]);
+
+            // Remove User
+            result = dbContext.ExecuteCommand(removeUser);
+            Assert.AreEqual(-1, result);
+
+            // Remove Login
+            result = dbContext.ExecuteCommand(removeLogin);
+            Assert.AreEqual(-1, result);
+        }
+
         #endregion
 
         #endregion
