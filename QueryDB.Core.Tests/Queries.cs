@@ -155,7 +155,7 @@
                     internal static string GrantConnectSql_User = @"GRANT CONNECT TO {0}";
                     internal static string GrantSql_Command_Table_User = @"GRANT {0} ON {1} TO {2}";
                     internal static string RevokeSql_Command_Table_User = @"REVOKE {0} ON {1} FROM {2}";
-                    internal static string VerifyPermission_User = @"SELECT PRIVILEGE FROM USER_TAB_PRIVS WHERE GRANTEE = '{0}'";
+                    internal static string VerifyPermission_User = @"SELECT * FROM DBA_TAB_PRIVS WHERE GRANTEE = UPPER('{0}')";
                     internal static string RemoveUserSql_User = @"DROP USER {0} CASCADE";
                 }
             }
