@@ -27,6 +27,14 @@ namespace QueryDB.MSSQL
             }
         }
 
+        /// <summary>
+        /// Creates and returns a new <see cref="SqlCommand"/> with the specified command text, 
+        /// connection, and command type. Opens the connection before creating the command.
+        /// </summary>
+        /// <param name="cmdText">The SQL command text to execute.</param>
+        /// <param name="connection">The <see cref="SqlConnection"/> to use.</param>
+        /// <param name="commandType">The type of the command (e.g., Text, StoredProcedure).</param>
+        /// <returns>A configured <see cref="SqlCommand"/> instance.</returns>
         internal SqlCommand GetSqlCommand(string cmdText, SqlConnection connection, CommandType commandType)
         {
             connection.Open();
