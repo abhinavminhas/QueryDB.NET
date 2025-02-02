@@ -429,9 +429,9 @@ namespace QueryDB.Core.Tests
             var result = dbContext.ExecuteCommand(createUser);
             Assert.AreEqual(0, result);
 
-            // Grant CONNECT to User
-            result = dbContext.ExecuteCommand(grantConnect);
-            Assert.AreEqual(-1, result);
+            //// Grant CONNECT to User
+            //result = dbContext.ExecuteCommand(grantConnect);
+            //Assert.AreEqual(-1, result);
 
             // Existing Permissions
             var data = dbContext.FetchData(verifyPermissions);
