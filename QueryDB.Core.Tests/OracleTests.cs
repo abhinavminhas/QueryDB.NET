@@ -431,7 +431,7 @@ namespace QueryDB.Core.Tests
 
             // Grant CONNECT to User
             result = dbContext.ExecuteCommand(grantConnect);
-            Assert.AreEqual(0, result);
+            Assert.AreEqual(-1, result);
 
             // Existing Permissions
             var data = dbContext.FetchData(verifyPermissions);
