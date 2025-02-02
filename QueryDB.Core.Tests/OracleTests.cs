@@ -429,9 +429,13 @@ namespace QueryDB.Core.Tests
             var result = dbContext.ExecuteCommand(createUser);
             Assert.AreEqual(0, result);
 
-            //// Grant CONNECT to User
-            //result = dbContext.ExecuteCommand(grantConnect);
-            //Assert.AreEqual(-1, result);
+            // Grant CONNECT to User
+            result = dbContext.ExecuteCommand($"GRANT CREATE TABLE TO {user}");
+            result = dbContext.ExecuteCommand($"GRANT CREATE VIEW TO {user}");
+            result = dbContext.ExecuteCommand($"GRANT CREATE SEQUENCE TO {user}");
+            result = dbContext.ExecuteCommand($"GRANT CREATE SYNONYM TO {user}");
+            result = dbContext.ExecuteCommand($"GRANT UNLIMITED TABLESPACE TO {user}");
+            Assert.AreEqual(0, result);
 
             // Existing Permissions
             var data = dbContext.FetchData(verifyPermissions);
