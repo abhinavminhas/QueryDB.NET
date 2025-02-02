@@ -392,9 +392,9 @@ namespace QueryDB.Core.Tests
             }
             catch (QueryDBException ex)
             {
-                Assert.AreEqual(ex.Message, "SELECT queries are not supported here.");
-                Assert.AreEqual(ex.ErrorType, "UnsupportedCommand");
-                Assert.AreEqual(ex.AdditionalInfo, "'ExecuteCommand' doesn't support SELECT queries.");
+                Assert.AreEqual("SELECT queries are not supported here.", ex.Message);
+                Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                Assert.AreEqual("'ExecuteCommand' doesn't support SELECT queries.", ex.AdditionalInfo);
             }
         }
 
