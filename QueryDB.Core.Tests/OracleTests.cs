@@ -410,7 +410,7 @@ namespace QueryDB.Core.Tests
         [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
         public void Test_Oracle_ExecuteCommand_DCL_Queries()
         {
-            var user = "TEST_USER";
+            var user = "C##TEST_USER";
             var password = "Test123456";
             var table = "AGENTS";
             var commands = "SELECT, UPDATE";
