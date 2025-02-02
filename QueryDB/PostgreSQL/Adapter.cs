@@ -28,13 +28,13 @@ namespace QueryDB.PostgreSQL
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="SqlCommand"/> with the specified command text, 
+        /// Creates and returns a new <see cref="NpgsqlCommand"/> with the specified command text, 
         /// connection, and command type. Opens the connection before creating the command.
         /// </summary>
         /// <param name="cmdText">The SQL command text to execute.</param>
-        /// <param name="connection">The <see cref="SqlConnection"/> to use.</param>
+        /// <param name="connection">The <see cref="NpgsqlConnection"/> to use.</param>
         /// <param name="commandType">The type of the command (e.g., Text, StoredProcedure).</param>
-        /// <returns>A configured <see cref="SqlCommand"/> instance.</returns>
+        /// <returns>A configured <see cref="NpgsqlCommand"/> instance.</returns>
         internal NpgsqlCommand GetPostgreSqlCommand(string cmdText, NpgsqlConnection connection, CommandType commandType)
         {
             connection.Open();

@@ -28,13 +28,13 @@ namespace QueryDB.MySQL
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="SqlCommand"/> with the specified command text, 
+        /// Creates and returns a new <see cref="MySqlCommand"/> with the specified command text, 
         /// connection, and command type. Opens the connection before creating the command.
         /// </summary>
         /// <param name="cmdText">The SQL command text to execute.</param>
-        /// <param name="connection">The <see cref="SqlConnection"/> to use.</param>
+        /// <param name="connection">The <see cref="MySqlConnection"/> to use.</param>
         /// <param name="commandType">The type of the command (e.g., Text, StoredProcedure).</param>
-        /// <returns>A configured <see cref="SqlCommand"/> instance.</returns>
+        /// <returns>A configured <see cref="MySqlCommand"/> instance.</returns>
         internal MySqlCommand GetMySqlCommand(string cmdText, MySqlConnection connection, CommandType commandType)
         {
             connection.Open();

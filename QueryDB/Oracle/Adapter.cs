@@ -28,13 +28,13 @@ namespace QueryDB.Oracle
         }
 
         /// <summary>
-        /// Creates and returns a new <see cref="SqlCommand"/> with the specified command text, 
+        /// Creates and returns a new <see cref="OracleCommand"/> with the specified command text, 
         /// connection, and command type. Opens the connection before creating the command.
         /// </summary>
         /// <param name="cmdText">The SQL command text to execute.</param>
-        /// <param name="connection">The <see cref="SqlConnection"/> to use.</param>
+        /// <param name="connection">The <see cref="OracleConnection"/> to use.</param>
         /// <param name="commandType">The type of the command (e.g., Text, StoredProcedure).</param>
-        /// <returns>A configured <see cref="SqlCommand"/> instance.</returns>
+        /// <returns>A configured <see cref="OracleCommand"/> instance.</returns>
         internal OracleCommand GetOracleCommand(string cmdText, OracleConnection connection, CommandType commandType)
         {
             connection.Open();
