@@ -411,7 +411,7 @@ namespace QueryDB.Core.Tests
         public void Test_Oracle_ExecuteCommand_DCL_Queries()
         {
             var user = "TEST_USER";
-            var password = "Test@1234";
+            var password = "Test123456";
             var table = "AGENTS";
             var commands = "SELECT, UPDATE";
             var checkCommand = "SELECT";
