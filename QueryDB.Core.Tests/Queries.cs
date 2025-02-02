@@ -149,6 +149,15 @@
                     internal static string VerifyDMLExecution = @"SELECT * FROM Agents WHERE Agent_Code = 'A020'";
                     internal static string SelectSql = @"SELECT * FROM Agents";
                 }
+                internal static class DCL
+                {
+                    internal static string CreateUserSql_User_Password = @"CREATE USER {0} IDENTIFIED BY {1}";
+                    internal static string GrantConnectSql_User = @"GRANT CONNECT TO {0}";
+                    internal static string GrantSql_Command_Table_User = @"GRANT {0} ON {1} TO {2}";
+                    internal static string RevokeSql_Command_Table_User = @"REVOKE {0} ON {1} FROM {2}";
+                    internal static string VerifyPermission_User = @"SELECT PRIVILEGE FROM USER_TAB_PRIVS WHERE GRANTEE = '{0}'";
+                    internal static string RemoveUserSql_User = @"DROP USER {0} CASCADE";
+                }
             }
         }
 
