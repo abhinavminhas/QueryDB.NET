@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QueryDB.Exceptions;
 using System;
 using System.Linq;
 
@@ -374,6 +375,27 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual(1, rows);
             data = dbContext.FetchData(verifyDMLExecution);
             Assert.IsTrue(data.Count == 0);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_ExecuteCommand_DML_Unsupported_SELECT_Queries()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.DML.SelectSql;
+
+            // Select
+            try
+            {
+                var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+                var rows = dbContext.ExecuteCommand(selectSql);
+                Assert.Fail("No Exception");
+            }
+            catch (QueryDBException ex)
+            {
+                Assert.AreEqual(ex.Message, "SELECT queries are not supported here.");
+                Assert.AreEqual(ex.ErrorType, "UnsupportedCommand");
+                Assert.AreEqual(ex.AdditionalInfo, "'ExecuteCommand' doesn't support SELECT queries.");
+            }
         }
 
         #endregion

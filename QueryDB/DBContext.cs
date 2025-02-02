@@ -1,5 +1,8 @@
-﻿using QueryDB.Resources;
+﻿using QueryDB.Exceptions;
+using QueryDB.Resources;
+using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace QueryDB
 {
@@ -113,7 +116,7 @@ namespace QueryDB
                 {
                     var _systemAdapter = new MSSQL.Adapter();
                     dataList = _systemAdapter.FetchData<T>(selectSql, msSqlDBConnection.SqlConnection, strict);
-    }
+                }
             }
             else if (Database.Equals(DB.MySQL))
             {
@@ -149,6 +152,9 @@ namespace QueryDB
         /// <returns>The number of rows affected.</returns>
         public int ExecuteCommand(string sqlStatement)
         {
+            if (Regex.IsMatch(sqlStatement, "^\\s*SELECT\\s+.*", RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteCommand, 
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedSelectExecuteCommand);
             if (Database.Equals(DB.MSSQL))
             {
                 using (var msSqlDBConnection = GetSqlServerConnection())
