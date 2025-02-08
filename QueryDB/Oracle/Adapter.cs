@@ -37,6 +37,7 @@ namespace QueryDB.Oracle
         /// <returns>A configured <see cref="OracleCommand"/> instance.</returns>
         internal OracleCommand GetOracleCommand(string cmdText, OracleConnection connection, CommandType commandType)
         {
+            connection.Open();
             var sqlCommand = new OracleCommand(cmdText, connection) { CommandType = commandType };
             return sqlCommand;
         }
