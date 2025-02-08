@@ -62,9 +62,14 @@ namespace QueryDB.Exceptions
         internal static class ErrorMessage
         {
             /// <summary>
-            /// Error message indicating that SELECT queries are not supported.
+            /// Error message indicating that SELECT queries are not supported in 'ExecuteCommand'.
             /// </summary>
             internal static readonly string UnsupportedSelectExecuteCommand = "SELECT queries are not supported here.";
+
+            /// <summary>
+            /// Error message indicating that SELECT queries are not supported in 'ExecuteTransaction'.
+            /// </summary>
+            internal static readonly string UnsupportedSelectExecuteTransaction = "SELECT queries are not supported here.";
         }
 
         /// <summary>
@@ -76,6 +81,11 @@ namespace QueryDB.Exceptions
             /// Additional information about unsupported SELECT queries in 'ExecuteCommand'.
             /// </summary>
             internal static readonly string UnsupportedSelectExecuteCommand = "'ExecuteCommand' doesn't support SELECT queries.";
+
+            /// <summary>
+            /// Additional information about unsupported SELECT queries in 'ExecuteTransaction'.
+            /// </summary>
+            internal static readonly string UnsupportedSelectExecuteTransaction = "'ExecuteTransaction' doesn't support SELECT queries.";
         }
     }
 }

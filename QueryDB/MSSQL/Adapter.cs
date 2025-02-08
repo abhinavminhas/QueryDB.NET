@@ -43,6 +43,33 @@ namespace QueryDB.MSSQL
         }
 
         /// <summary>
+        /// Creates and returns a new SQL command associated with the specified connection and transaction.
+        /// </summary>
+        /// <param name="cmdText">The SQL command text to execute.</param>
+        /// <param name="connection">The SQL database connection.</param>
+        /// <param name="transaction">The SQL transaction within which the command should be executed.</param>
+        /// <returns>A new <see cref="SqlCommand"/> instance configured with the provided connection and transaction.</returns>
+        internal SqlCommand GetSqlCommand(string cmdText, SqlConnection connection, SqlTransaction transaction)
+        {
+            if (connection.State != ConnectionState.Open)
+                connection.Open();
+            var sqlCommand = new SqlCommand(cmdText, connection, transaction);
+            return sqlCommand;
+        }
+
+        /// <summary>
+        /// Initiates and returns a new SQL transaction for the specified database connection.
+        /// </summary>
+        /// <param name="connection">The SQL database connection.</param>
+        /// <returns>A new <see cref="SqlTransaction"/> associated with the provided connection.</returns>
+        internal SqlTransaction GetSqlTransaction(SqlConnection connection)
+        {
+            connection.Open();
+            var sqlTransaction = connection.BeginTransaction();
+            return sqlTransaction;
+        }
+
+        /// <summary>
         /// Retrieves records for 'Select' queries from the database.
         /// Converts column names to keys holding values, with multiple database rows returned into a list.
         /// </summary>
@@ -111,6 +138,44 @@ namespace QueryDB.MSSQL
             using(var sqlCommand = GetSqlCommand(sqlStatement, connection, CommandType.Text))
             {
                 return sqlCommand.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Executes multiple SQL statements within a transaction to ensure atomicity.
+        /// </summary>
+        /// <param name="sqlStatements">A list of SQL statements to execute.</param>
+        /// <param name="connection">The SQL database connection.</param>
+        /// <returns>
+        /// Returns <c>true</c> if the transaction is committed successfully; 
+        /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
+        /// </returns>
+        /// <exception cref="Exception">
+        /// Logs and handles exceptions if any SQL command execution fails.
+        /// </exception>
+        
+        internal bool ExecuteTransaction(List<string> sqlStatements, SqlConnection connection)
+        {
+            using (SqlTransaction transaction = GetSqlTransaction(connection))
+            {
+                try
+                {
+                    foreach (var sqlStatement in sqlStatements)
+                    {
+                        using (var sqlCommand = GetSqlCommand(sqlStatement, connection, transaction))
+                        {
+                            sqlCommand.ExecuteNonQuery();
+                        }
+                    }
+                    transaction.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
+                    return false;
+                }
             }
         }
     }

@@ -191,6 +191,57 @@ namespace QueryDB
         }
 
         /// <summary>
+        /// Executes multiple SQL statements within a transaction, ensuring that all statements are executed together.
+        /// </summary>
+        /// <param name="sqlStatements">A list of SQL statements to execute.</param>
+        /// <returns>
+        /// Returns <c>true</c> if all statements are executed successfully and the transaction is committed;
+        /// <c>false</c> if any statement fails and the transaction is rolled back.
+        /// </returns>
+        public bool ExecuteTransaction(List<string> sqlStatements)
+        {
+            foreach(var sqlStatement in sqlStatements)
+            {
+                if (Regex.IsMatch(sqlStatement, "^\\s*SELECT\\s+.*", RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+                    throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteTransaction,
+                        QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedSelectExecuteTransaction);
+            }
+            if (Database.Equals(DB.MSSQL))
+            {
+                using (var msSqlDBConnection = GetSqlServerConnection())
+                {
+                    var _systemAdapter = new MSSQL.Adapter();
+                    return _systemAdapter.ExecuteTransaction(sqlStatements, msSqlDBConnection.SqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.MySQL))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    var _systemAdapter = new MySQL.Adapter();
+                    return _systemAdapter.ExecuteTransaction(sqlStatements, mySqlDBConnection.MySqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    var _systemAdapter = new Oracle.Adapter();
+                    return _systemAdapter.ExecuteTransaction(sqlStatements, oracleDBConnection.OracleConnection);
+                }
+            }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    var _systemAdapter = new PostgreSQL.Adapter();
+                    return _systemAdapter.ExecuteTransaction(sqlStatements, postgreSqlDBConnection.PostgreSQLConnection);
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Gets 'SQL Server' connection.
         /// </summary>
         /// <returns>'SQL Server' Connection.</returns>
