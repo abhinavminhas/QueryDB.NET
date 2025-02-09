@@ -51,8 +51,6 @@ namespace QueryDB.PostgreSQL
         /// <returns>A new <see cref="NpgsqlCommand"/> instance configured with the provided connection and transaction.</returns>
         internal NpgsqlCommand GetPostgreSqlCommand(string cmdText, NpgsqlConnection connection, NpgsqlTransaction transaction)
         {
-            if (connection.State != ConnectionState.Open)
-                connection.Open();
             var sqlCommand = new NpgsqlCommand(cmdText, connection, transaction);
             return sqlCommand;
         }

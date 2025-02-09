@@ -51,8 +51,6 @@ namespace QueryDB.MSSQL
         /// <returns>A new <see cref="SqlCommand"/> instance configured with the provided connection and transaction.</returns>
         internal SqlCommand GetSqlCommand(string cmdText, SqlConnection connection, SqlTransaction transaction)
         {
-            if (connection.State != ConnectionState.Open)
-                connection.Open();
             var sqlCommand = new SqlCommand(cmdText, connection, transaction);
             return sqlCommand;
         }

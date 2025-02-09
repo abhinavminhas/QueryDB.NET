@@ -51,8 +51,6 @@ namespace QueryDB.MySQL
         /// <returns>A new <see cref="MySqlCommand"/> instance configured with the provided connection and transaction.</returns>
         internal MySqlCommand GetMySqlCommand(string cmdText, MySqlConnection connection, MySqlTransaction transaction)
         {
-            if (connection.State != ConnectionState.Open)
-                connection.Open();
             var sqlCommand = new MySqlCommand(cmdText, connection, transaction);
             return sqlCommand;
         }

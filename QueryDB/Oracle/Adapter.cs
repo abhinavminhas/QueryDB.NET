@@ -50,8 +50,6 @@ namespace QueryDB.Oracle
         /// <returns>A new <see cref="OracleCommand"/> instance configured with the provided connection.</returns>
         internal OracleCommand GetOracleCommand(string cmdText, OracleConnection connection)
         {
-            if (connection.State != ConnectionState.Open)
-                connection.Open();
             var sqlCommand = new OracleCommand(cmdText, connection);
             return sqlCommand;
         }
