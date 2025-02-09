@@ -152,7 +152,7 @@ namespace QueryDB.MSSQL
         /// Logs and handles exceptions if any SQL command execution fails.
         /// </exception>
         
-        internal bool ExecuteTransaction(List<string> sqlStatements, SqlConnection connection)
+        internal static bool ExecuteTransaction(List<string> sqlStatements, SqlConnection connection)
         {
             using (SqlTransaction transaction = GetSqlTransaction(connection))
             {

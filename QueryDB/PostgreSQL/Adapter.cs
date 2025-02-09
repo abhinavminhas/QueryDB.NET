@@ -151,7 +151,7 @@ namespace QueryDB.PostgreSQL
         /// <exception cref="Exception">
         /// Logs and handles exceptions if any SQL command execution fails.
         /// </exception>
-        internal bool ExecuteTransaction(List<string> sqlStatements, NpgsqlConnection connection)
+        internal static bool ExecuteTransaction(List<string> sqlStatements, NpgsqlConnection connection)
         {
             using (NpgsqlTransaction transaction = GetPostgreSqlTransaction(connection))
             {

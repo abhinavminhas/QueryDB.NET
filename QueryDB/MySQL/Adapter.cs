@@ -151,7 +151,7 @@ namespace QueryDB.MySQL
         /// <exception cref="Exception">
         /// Logs and handles exceptions if any SQL command execution fails.
         /// </exception>
-        internal bool ExecuteTransaction(List<string> sqlStatements, MySqlConnection connection)
+        internal static bool ExecuteTransaction(List<string> sqlStatements, MySqlConnection connection)
         {
             using (MySqlTransaction transaction = GetMySqlTransaction(connection))
             {

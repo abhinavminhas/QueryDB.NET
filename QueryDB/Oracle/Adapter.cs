@@ -157,7 +157,7 @@ namespace QueryDB.Oracle
         /// <exception cref="Exception">
         /// Logs and handles exceptions if any SQL command execution fails.
         /// </exception>
-        internal bool ExecuteTransaction(List<string> sqlStatements, OracleConnection connection)
+        internal static bool ExecuteTransaction(List<string> sqlStatements, OracleConnection connection)
         {
             using (OracleTransaction transaction = GetOracleTransaction(connection))
             {

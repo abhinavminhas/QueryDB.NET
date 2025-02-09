@@ -210,32 +210,28 @@ namespace QueryDB
             {
                 using (var msSqlDBConnection = GetSqlServerConnection())
                 {
-                    var _systemAdapter = new MSSQL.Adapter();
-                    return _systemAdapter.ExecuteTransaction(sqlStatements, msSqlDBConnection.SqlConnection);
+                    return MSSQL.Adapter.ExecuteTransaction(sqlStatements, msSqlDBConnection.SqlConnection);
                 }
             }
             else if (Database.Equals(DB.MySQL))
             {
                 using (var mySqlDBConnection = GetMySqlConnection())
                 {
-                    var _systemAdapter = new MySQL.Adapter();
-                    return _systemAdapter.ExecuteTransaction(sqlStatements, mySqlDBConnection.MySqlConnection);
+                    return MySQL.Adapter.ExecuteTransaction(sqlStatements, mySqlDBConnection.MySqlConnection);
                 }
             }
             else if (Database.Equals(DB.Oracle))
             {
                 using (var oracleDBConnection = GetOracleConnection())
                 {
-                    var _systemAdapter = new Oracle.Adapter();
-                    return _systemAdapter.ExecuteTransaction(sqlStatements, oracleDBConnection.OracleConnection);
+                    return Oracle.Adapter.ExecuteTransaction(sqlStatements, oracleDBConnection.OracleConnection);
                 }
             }
             else if (Database.Equals(DB.PostgreSQL))
             {
                 using (var postgreSqlDBConnection = GetPostgreSqlConnection())
                 {
-                    var _systemAdapter = new PostgreSQL.Adapter();
-                    return _systemAdapter.ExecuteTransaction(sqlStatements, postgreSqlDBConnection.PostgreSQLConnection);
+                    return PostgreSQL.Adapter.ExecuteTransaction(sqlStatements, postgreSqlDBConnection.PostgreSQLConnection);
                 }
             }
             return false;
