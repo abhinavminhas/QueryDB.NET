@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QueryDB.Exceptions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace QueryDB.Core.Tests
@@ -348,7 +349,7 @@ namespace QueryDB.Core.Tests
             var insertSql = Queries.OracleQueries.TestDB.DML.InsertSql;
             var updateSql = Queries.OracleQueries.TestDB.DML.UpdateSql;
             var deleteSql = Queries.OracleQueries.TestDB.DML.DeleteSql;
-            var verifyDMLExecution = Queries.MSSQLQueries.TestDB.DML.VerifyDMLExecution;
+            var verifyDMLExecution = Queries.OracleQueries.TestDB.DML.VerifyDMLExecution;
 
             var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
 
@@ -459,6 +460,139 @@ namespace QueryDB.Core.Tests
             // Remove User
             result = dbContext.ExecuteCommand(removeUser);
             Assert.AreEqual(0, result);
+        }
+
+        #endregion
+
+        #region Execute Transaction Tests - << bool ExecuteTransaction(List<string> sqlStatements) >>
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public void Test_Oracle_ExecuteTransaction_DDL_Multiple_Queries()
+        {
+            var createTableSql = Queries.OracleQueries.TestDB.DDL.Create_Table;
+            var alterTableSql = Queries.OracleQueries.TestDB.DDL.Alter_Table;
+            var truncateTableSql = Queries.OracleQueries.TestDB.DDL.Truncate_Table;
+            var renameTableSql = Queries.OracleQueries.TestDB.DDL.Rename_Table;
+            var dropTableSql = Queries.OracleQueries.TestDB.DDL.Drop_Table;
+            var dDLExecutionCheckSql = Queries.OracleQueries.TestDB.DDL.DDL_Execute_check;
+
+            // Create, Alter & Truncate
+            var statements = new List<string>
+            {
+                createTableSql,
+                alterTableSql,
+                truncateTableSql
+            };
+            var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
+            var result = dbContext.ExecuteTransaction(statements);
+            Assert.AreEqual(true, result);
+
+            var tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "Employee"));
+            Assert.AreEqual("1", tableCount[0].ReferenceData["TABLE_COUNT"]);
+
+            // Rename & Drop
+            statements = new List<string>
+            {
+                renameTableSql,
+                dropTableSql
+            };
+            result = dbContext.ExecuteTransaction(statements);
+            Assert.AreEqual(true, result);
+
+            tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "Employees"));
+            Assert.AreEqual("0", tableCount[0].ReferenceData["TABLE_COUNT"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public void Test_Oracle_ExecuteTransaction_DML_Multiple_Queries()
+        {
+            var insertSql = Queries.OracleQueries.TestDB.DML.InsertSql;
+            var updateSql = Queries.OracleQueries.TestDB.DML.UpdateSql;
+            var deleteSql = Queries.OracleQueries.TestDB.DML.DeleteSql;
+            var verifyDMLExecution = Queries.OracleQueries.TestDB.DML.VerifyDMLExecution;
+
+            var statements = new List<string>
+            {
+                insertSql,
+                updateSql
+            };
+            var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
+
+            // Insert & Update
+            var result = dbContext.ExecuteTransaction(statements);
+            Assert.AreEqual(true, result);
+            var data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 1);
+            var agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["AGENT_CODE"]);
+            Assert.AreEqual("John", agent.ReferenceData["AGENT_NAME"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["WORKING_AREA"]);
+            Assert.AreEqual("0.15", agent.ReferenceData["COMMISSION"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["PHONE_NO"]);
+            Assert.AreEqual("", agent.ReferenceData["COUNTRY"]);
+
+            // Delete
+            statements = new List<string>
+            {
+                deleteSql
+            };
+            result = dbContext.ExecuteTransaction(statements);
+            Assert.AreEqual(true, result);
+            data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 0);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public void Test_Oracle_ExecuteTransaction_Incomplete_Transaction_Rollback_On_Error()
+        {
+            var insertSql = Queries.OracleQueries.TestDB.DML.InsertSql;
+            var updateSql = Queries.OracleQueries.TestDB.DML.UpdateSql;
+            var updateErrorSql = "UPDATE";
+            var verifyDMLExecution = Queries.OracleQueries.TestDB.DML.VerifyDMLExecution;
+
+            var statements = new List<string>
+            {
+                insertSql,
+                updateSql,
+                updateErrorSql
+            };
+            var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
+
+            // Insert & Update
+            var result = dbContext.ExecuteTransaction(statements);
+            Assert.AreEqual(false, result);
+            var data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 0);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public void Test_Oracle_ExecuteTransaction_DML_Unsupported_SELECT_Queries()
+        {
+            var selectSql = Queries.OracleQueries.TestDB.DML.SelectSql;
+
+            // Select
+            try
+            {
+                var statements = new List<string>
+                {
+                    selectSql
+                };
+                var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
+                var result = dbContext.ExecuteTransaction(statements);
+                Assert.Fail("No Exception");
+            }
+            catch (QueryDBException ex)
+            {
+                Assert.AreEqual("SELECT queries are not supported here.", ex.Message);
+                Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                Assert.AreEqual("'ExecuteTransaction' doesn't support SELECT queries.", ex.AdditionalInfo);
+            }
         }
 
         #endregion
