@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QueryDB.Exceptions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace QueryDB.Core.Tests
@@ -448,6 +449,139 @@ namespace QueryDB.Core.Tests
             //Remove User
             result = dbContext.ExecuteCommand(removeUser);
             Assert.AreEqual(0, result);
+        }
+
+        #endregion
+
+        #region Execute Transaction Tests - << bool ExecuteTransaction(List<string> sqlStatements) >>
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
+        public void Test_MySQL_ExecuteTransaction_DDL_Multiple_Queries()
+        {
+            var createTableSql = Queries.MySQLQueries.TestDB.DDL.Create_Table;
+            var alterTableSql = Queries.MySQLQueries.TestDB.DDL.Alter_Table;
+            var truncateTableSql = Queries.MySQLQueries.TestDB.DDL.Truncate_Table;
+            var renameTableSql = Queries.MySQLQueries.TestDB.DDL.Rename_Table;
+            var dropTableSql = Queries.MySQLQueries.TestDB.DDL.Drop_Table;
+            var dDLExecutionCheckSql = Queries.MySQLQueries.TestDB.DDL.DDL_Execute_check;
+
+            // Create, Alter & Truncate
+            var statements = new List<string>
+            {
+                createTableSql,
+                alterTableSql,
+                truncateTableSql
+            };
+            var dbContext = new DBContext(DB.MySQL, MySQLConnectionString);
+            var result = dbContext.ExecuteTransaction(statements);
+            Assert.AreEqual(true, result);
+
+            var tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "mysql", "Employee"));
+            Assert.AreEqual("1", tableCount[0].ReferenceData["Table_Count"]);
+
+            // Rename & Drop
+            statements = new List<string>
+            {
+                renameTableSql,
+                dropTableSql
+            };
+            result = dbContext.ExecuteTransaction(statements);
+            Assert.AreEqual(true, result);
+
+            tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "mysql", "Employees"));
+            Assert.AreEqual("0", tableCount[0].ReferenceData["Table_Count"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
+        public void Test_MySQL_ExecuteTransaction_DML_Multiple_Queries()
+        {
+            var insertSql = Queries.MySQLQueries.TestDB.DML.InsertSql;
+            var updateSql = Queries.MySQLQueries.TestDB.DML.UpdateSql;
+            var deleteSql = Queries.MySQLQueries.TestDB.DML.DeleteSql;
+            var verifyDMLExecution = Queries.MySQLQueries.TestDB.DML.VerifyDMLExecution;
+
+            var statements = new List<string>
+            {
+                insertSql,
+                updateSql
+            };
+            var dbContext = new DBContext(DB.MySQL, MySQLConnectionString);
+
+            // Insert & Update
+            var result = dbContext.ExecuteTransaction(statements);
+            Assert.AreEqual(true, result);
+            var data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 1);
+            var agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["Agent_Code"]);
+            Assert.AreEqual("John", agent.ReferenceData["Agent_Name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["Working_Area"]);
+            Assert.AreEqual("0.15", agent.ReferenceData["Commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["Phone_No"]);
+            Assert.AreEqual("", agent.ReferenceData["Country"]);
+
+            // Delete
+            statements = new List<string>
+            {
+                deleteSql
+            };
+            result = dbContext.ExecuteTransaction(statements);
+            Assert.AreEqual(true, result);
+            data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 0);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
+        public void Test_MySQL_ExecuteTransaction_Incomplete_Transaction_Rollback_On_Error()
+        {
+            var insertSql = Queries.MySQLQueries.TestDB.DML.InsertSql;
+            var updateSql = Queries.MySQLQueries.TestDB.DML.UpdateSql;
+            var updateErrorSql = "UPDATE";
+            var verifyDMLExecution = Queries.MySQLQueries.TestDB.DML.VerifyDMLExecution;
+
+            var statements = new List<string>
+            {
+                insertSql,
+                updateSql,
+                updateErrorSql
+            };
+            var dbContext = new DBContext(DB.MySQL, MySQLConnectionString);
+
+            // Insert & Update
+            var result = dbContext.ExecuteTransaction(statements);
+            Assert.AreEqual(false, result);
+            var data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 0);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
+        public void Test_MySQL_ExecuteTransaction_DML_Unsupported_SELECT_Queries()
+        {
+            var selectSql = Queries.MySQLQueries.TestDB.DML.SelectSql;
+
+            // Select
+            try
+            {
+                var statements = new List<string>
+                {
+                    selectSql
+                };
+                var dbContext = new DBContext(DB.MySQL, MySQLConnectionString);
+                var result = dbContext.ExecuteTransaction(statements);
+                Assert.Fail("No Exception");
+            }
+            catch (QueryDBException ex)
+            {
+                Assert.AreEqual("SELECT queries are not supported here.", ex.Message);
+                Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                Assert.AreEqual("'ExecuteTransaction' doesn't support SELECT queries.", ex.AdditionalInfo);
+            }
         }
 
         #endregion

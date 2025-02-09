@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QueryDB.Exceptions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace QueryDB.Core.Tests
@@ -442,6 +443,139 @@ namespace QueryDB.Core.Tests
             // Remove User
             result = dbContext.ExecuteCommand(removeUser);
             Assert.AreEqual(-1, result);
+        }
+
+        #endregion
+
+        #region Execute Transaction Tests - << bool ExecuteTransaction(List<string> sqlStatements) >>
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_ExecuteTransaction_DDL_Multiple_Queries()
+        {
+            var createTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Create_Table;
+            var alterTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Alter_Table;
+            var truncateTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Truncate_Table;
+            var renameTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Rename_Table;
+            var dropTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Drop_Table;
+            var dDLExecutionCheckSql = Queries.PostgreSQLQueries.TestDB.DDL.DDL_Execute_check;
+
+            // Create, Alter & Truncate
+            var statements = new List<string>
+            {
+                createTableSql,
+                alterTableSql,
+                truncateTableSql
+            };
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+            var result = dbContext.ExecuteTransaction(statements);
+            Assert.AreEqual(true, result);
+
+            var tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "public", "Employee"));
+            Assert.AreEqual("1", tableCount[0].ReferenceData["table_count"]);
+
+            // Rename & Drop
+            statements = new List<string>
+            {
+                renameTableSql,
+                dropTableSql
+            };
+            result = dbContext.ExecuteTransaction(statements);
+            Assert.AreEqual(true, result);
+
+            tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "public", "Employees"));
+            Assert.AreEqual("0", tableCount[0].ReferenceData["table_count"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_ExecuteTransaction_DML_Multiple_Queries()
+        {
+            var insertSql = Queries.PostgreSQLQueries.TestDB.DML.InsertSql;
+            var updateSql = Queries.PostgreSQLQueries.TestDB.DML.UpdateSql;
+            var deleteSql = Queries.PostgreSQLQueries.TestDB.DML.DeleteSql;
+            var verifyDMLExecution = Queries.PostgreSQLQueries.TestDB.DML.VerifyDMLExecution;
+
+            var statements = new List<string>
+            {
+                insertSql,
+                updateSql
+            };
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+
+            // Insert & Update
+            var result = dbContext.ExecuteTransaction(statements);
+            Assert.AreEqual(true, result);
+            var data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 1);
+            var agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["agent_code"]);
+            Assert.AreEqual("John", agent.ReferenceData["agent_name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["working_area"]);
+            Assert.AreEqual("0.15", agent.ReferenceData["commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["phone_no"]);
+            Assert.AreEqual("", agent.ReferenceData["country"]);
+
+            // Delete
+            statements = new List<string>
+            {
+                deleteSql
+            };
+            result = dbContext.ExecuteTransaction(statements);
+            Assert.AreEqual(true, result);
+            data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 0);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_ExecuteTransaction_Incomplete_Transaction_Rollback_On_Error()
+        {
+            var insertSql = Queries.PostgreSQLQueries.TestDB.DML.InsertSql;
+            var updateSql = Queries.PostgreSQLQueries.TestDB.DML.UpdateSql;
+            var updateErrorSql = "UPDATE";
+            var verifyDMLExecution = Queries.PostgreSQLQueries.TestDB.DML.VerifyDMLExecution;
+
+            var statements = new List<string>
+            {
+                insertSql,
+                updateSql,
+                updateErrorSql
+            };
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+
+            // Insert & Update
+            var result = dbContext.ExecuteTransaction(statements);
+            Assert.AreEqual(false, result);
+            var data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 0);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_ExecuteTransaction_DML_Unsupported_SELECT_Queries()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.DML.SelectSql;
+
+            // Select
+            try
+            {
+                var statements = new List<string>
+                {
+                    selectSql
+                };
+                var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+                var result = dbContext.ExecuteTransaction(statements);
+                Assert.Fail("No Exception");
+            }
+            catch (QueryDBException ex)
+            {
+                Assert.AreEqual("SELECT queries are not supported here.", ex.Message);
+                Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                Assert.AreEqual("'ExecuteTransaction' doesn't support SELECT queries.", ex.AdditionalInfo);
+            }
         }
 
         #endregion
