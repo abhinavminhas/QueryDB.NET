@@ -475,7 +475,7 @@ namespace QueryDB.Core.Tests
             };
             var dbContext = new DBContext(DB.MySQL, MySQLConnectionString);
             var result = dbContext.ExecuteTransaction(statements);
-            Assert.AreEqual(true, result);
+            Assert.IsTrue(result);
 
             var tableCount = dbContext
                 .FetchData(string.Format(dDLExecutionCheckSql, "mysql", "Employee"));
@@ -488,7 +488,7 @@ namespace QueryDB.Core.Tests
                 dropTableSql
             };
             result = dbContext.ExecuteTransaction(statements);
-            Assert.AreEqual(true, result);
+            Assert.IsTrue(result);
 
             tableCount = dbContext
                 .FetchData(string.Format(dDLExecutionCheckSql, "mysql", "Employees"));
@@ -513,7 +513,7 @@ namespace QueryDB.Core.Tests
 
             // Insert & Update
             var result = dbContext.ExecuteTransaction(statements);
-            Assert.AreEqual(true, result);
+            Assert.IsTrue(result);
             var data = dbContext.FetchData(verifyDMLExecution);
             Assert.IsTrue(data.Count == 1);
             var agent = data.FirstOrDefault();
@@ -530,7 +530,7 @@ namespace QueryDB.Core.Tests
                 deleteSql
             };
             result = dbContext.ExecuteTransaction(statements);
-            Assert.AreEqual(true, result);
+            Assert.IsTrue(result);
             data = dbContext.FetchData(verifyDMLExecution);
             Assert.IsTrue(data.Count == 0);
         }
@@ -554,7 +554,7 @@ namespace QueryDB.Core.Tests
 
             // Insert & Update
             var result = dbContext.ExecuteTransaction(statements);
-            Assert.AreEqual(false, result);
+            Assert.IsFalse(result);
             var data = dbContext.FetchData(verifyDMLExecution);
             Assert.IsTrue(data.Count == 0);
         }
