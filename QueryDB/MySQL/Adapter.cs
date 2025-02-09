@@ -49,7 +49,7 @@ namespace QueryDB.MySQL
         /// <param name="connection">The MySQL database connection.</param>
         /// <param name="transaction">The MySQL transaction within which the command should be executed.</param>
         /// <returns>A new <see cref="MySqlCommand"/> instance configured with the provided connection and transaction.</returns>
-        internal MySqlCommand GetMySqlCommand(string cmdText, MySqlConnection connection, MySqlTransaction transaction)
+        internal static MySqlCommand GetMySqlCommand(string cmdText, MySqlConnection connection, MySqlTransaction transaction)
         {
             var sqlCommand = new MySqlCommand(cmdText, connection, transaction);
             return sqlCommand;
@@ -60,7 +60,7 @@ namespace QueryDB.MySQL
         /// </summary>
         /// <param name="connection">The MySQL database connection.</param>
         /// <returns>A new <see cref="MySqlTransaction"/> associated with the provided connection.</returns>
-        internal MySqlTransaction GetMySqlTransaction(MySqlConnection connection)
+        internal static MySqlTransaction GetMySqlTransaction(MySqlConnection connection)
         {
             connection.Open();
             var mySqlTransaction = connection.BeginTransaction();

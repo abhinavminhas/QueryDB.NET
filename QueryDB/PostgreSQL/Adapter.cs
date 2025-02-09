@@ -49,7 +49,7 @@ namespace QueryDB.PostgreSQL
         /// <param name="connection">The PostgreSQL database connection.</param>
         /// <param name="transaction">The PostgreSQL transaction within which the command should be executed.</param>
         /// <returns>A new <see cref="NpgsqlCommand"/> instance configured with the provided connection and transaction.</returns>
-        internal NpgsqlCommand GetPostgreSqlCommand(string cmdText, NpgsqlConnection connection, NpgsqlTransaction transaction)
+        internal static NpgsqlCommand GetPostgreSqlCommand(string cmdText, NpgsqlConnection connection, NpgsqlTransaction transaction)
         {
             var sqlCommand = new NpgsqlCommand(cmdText, connection, transaction);
             return sqlCommand;
@@ -60,7 +60,7 @@ namespace QueryDB.PostgreSQL
         /// </summary>
         /// <param name="connection">The PostgreSQL database connection.</param>
         /// <returns>A new <see cref="NpgsqlTransaction"/> associated with the provided connection.</returns>
-        internal NpgsqlTransaction GetPostgreSqlTransaction(NpgsqlConnection connection)
+        internal static NpgsqlTransaction GetPostgreSqlTransaction(NpgsqlConnection connection)
         {
             connection.Open();
             var npgsqlTransaction = connection.BeginTransaction();

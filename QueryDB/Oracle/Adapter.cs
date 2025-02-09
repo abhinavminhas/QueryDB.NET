@@ -48,7 +48,7 @@ namespace QueryDB.Oracle
         /// <param name="cmdText">The SQL command text to execute.</param>
         /// <param name="connection">The Oracle database connection.</param>
         /// <returns>A new <see cref="OracleCommand"/> instance configured with the provided connection.</returns>
-        internal OracleCommand GetOracleCommand(string cmdText, OracleConnection connection)
+        internal static OracleCommand GetOracleCommand(string cmdText, OracleConnection connection)
         {
             var sqlCommand = new OracleCommand(cmdText, connection);
             return sqlCommand;
@@ -59,7 +59,7 @@ namespace QueryDB.Oracle
         /// </summary>
         /// <param name="connection">The Oracle database connection.</param>
         /// <returns>A new <see cref="OracleTransaction"/> associated with the provided connection.</returns>
-        internal OracleTransaction GetOracleTransaction(OracleConnection connection)
+        internal static OracleTransaction GetOracleTransaction(OracleConnection connection)
         {
             connection.Open();
             var oracleTransaction = connection.BeginTransaction();

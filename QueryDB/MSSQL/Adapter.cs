@@ -49,7 +49,7 @@ namespace QueryDB.MSSQL
         /// <param name="connection">The SQL database connection.</param>
         /// <param name="transaction">The SQL transaction within which the command should be executed.</param>
         /// <returns>A new <see cref="SqlCommand"/> instance configured with the provided connection and transaction.</returns>
-        internal SqlCommand GetSqlCommand(string cmdText, SqlConnection connection, SqlTransaction transaction)
+        internal static SqlCommand GetSqlCommand(string cmdText, SqlConnection connection, SqlTransaction transaction)
         {
             var sqlCommand = new SqlCommand(cmdText, connection, transaction);
             return sqlCommand;
@@ -60,7 +60,7 @@ namespace QueryDB.MSSQL
         /// </summary>
         /// <param name="connection">The SQL database connection.</param>
         /// <returns>A new <see cref="SqlTransaction"/> associated with the provided connection.</returns>
-        internal SqlTransaction GetSqlTransaction(SqlConnection connection)
+        internal static SqlTransaction GetSqlTransaction(SqlConnection connection)
         {
             connection.Open();
             var sqlTransaction = connection.BeginTransaction();
