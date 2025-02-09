@@ -8,7 +8,7 @@ services:
     ports:
       - "1433:1433"
     volumes:
-      - ./QueryDB.Core.Tests/SeedData:/home
+      - ../SeedData:/home
     healthcheck:
       test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P $$SA_PASSWORD -Q \"SELECT 'mssql' AS current_database;\""]
       interval: 5s

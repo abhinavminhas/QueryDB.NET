@@ -9,7 +9,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./QueryDB.Core.Tests/SeedData:/home
+      - ../SeedData:/home
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U sys"]
       interval: 5s

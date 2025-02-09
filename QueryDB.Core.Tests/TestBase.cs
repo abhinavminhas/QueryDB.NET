@@ -19,6 +19,8 @@ namespace QueryDB.Core.Tests
         protected const string MYSQL_TESTS = "MYSQL-TESTS";
         protected const string ORACLE_TESTS = "ORACLE-TESTS";
         protected const string POSTGRESQL_TESTS = "POSTGRESQL-TESTS";
+        protected const string QUERY_DB_EXCEPTION_TESTS = "QUERY-DB-EXCEPTION-TESTS";
+        protected const string UNKNOW_DB_TESTS = "UNKNOW-DB-TESTS";
 
         [AssemblyInitialize]
         internal void CheckDockerImages()

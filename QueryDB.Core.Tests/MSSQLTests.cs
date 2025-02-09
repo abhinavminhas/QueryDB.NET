@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QueryDB.Exceptions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace QueryDB.Core.Tests
@@ -303,6 +305,310 @@ namespace QueryDB.Core.Tests
             catch (IndexOutOfRangeException ex)
             {
                 Assert.AreEqual("Agent_Name", ex.Message);
+            }
+        }
+
+        #endregion
+
+        #region Execute Command Tests - << int ExecuteCommand(string sqlStatement) >>
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_ExecuteCommand_DDL_Queries()
+        {
+            var createTableSql = Queries.MSSQLQueries.TestDB.DDL.Create_Table;
+            var alterTableSql = Queries.MSSQLQueries.TestDB.DDL.Alter_Table;
+            var commentTableSql = Queries.MSSQLQueries.TestDB.DDL.Comment_Table;
+            var commentTableColumnSql = Queries.MSSQLQueries.TestDB.DDL.Comment_Table_Column;
+            var truncateTableSql = Queries.MSSQLQueries.TestDB.DDL.Truncate_Table;
+            var renameTableSql = Queries.MSSQLQueries.TestDB.DDL.Rename_Table;
+            var dropTableSql = Queries.MSSQLQueries.TestDB.DDL.Drop_Table;
+            var dDLExecutionCheckSql = Queries.MSSQLQueries.TestDB.DDL.DDL_Execute_check;
+            var dDLTableCommentCheckSql = Queries.MSSQLQueries.TestDB.DDL.DDL_Table_Comment_check;
+            var dDLTableColumnCommentCheckSql = Queries.MSSQLQueries.TestDB.DDL.DDL_Table_Column_Comment_check;
+
+            var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+            dbContext.ExecuteCommand(createTableSql);
+            dbContext.ExecuteCommand(alterTableSql);
+            dbContext.ExecuteCommand(commentTableSql);
+            dbContext.ExecuteCommand(commentTableColumnSql);
+            dbContext.ExecuteCommand(truncateTableSql);
+
+            var tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "dbo", "Employee"));
+            Assert.AreEqual("1", tableCount[0].ReferenceData["Table_Count"]);
+            var tableComment = dbContext
+                .FetchData(string.Format(dDLTableCommentCheckSql, "dbo", "Employee"));
+            Assert.AreEqual("This table stores employee records", tableComment[0].ReferenceData["Table_Comment"]);
+            var tableColumnComment = dbContext
+                .FetchData(string.Format(dDLTableColumnCommentCheckSql, "dbo", "Employee"));
+            Assert.AreEqual("This column stores employee middle name", tableColumnComment[0].ReferenceData["Table_Column_Comment"]);
+
+            dbContext.ExecuteCommand(renameTableSql);
+
+            tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "dbo", "Employee"));
+            Assert.AreEqual("0", tableCount[0].ReferenceData["Table_Count"]);
+            tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "dbo", "Employees"));
+            Assert.AreEqual("1", tableCount[0].ReferenceData["Table_Count"]);
+
+            dbContext.ExecuteCommand(dropTableSql);
+
+            tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "dbo", "Employees"));
+            Assert.AreEqual("0", tableCount[0].ReferenceData["Table_Count"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_ExecuteCommand_DML_Queries()
+        {
+            var insertSql = Queries.MSSQLQueries.TestDB.DML.InsertSql;
+            var updateSql = Queries.MSSQLQueries.TestDB.DML.UpdateSql;
+            var deleteSql = Queries.MSSQLQueries.TestDB.DML.DeleteSql;
+            var verifyDMLExecution = Queries.MSSQLQueries.TestDB.DML.VerifyDMLExecution;
+
+            var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+
+            // Insert
+            var rows = dbContext.ExecuteCommand(insertSql);
+            Assert.AreEqual(1, rows);
+            var data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 1);
+            var agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["Agent_Code"]);
+            Assert.AreEqual("John", agent.ReferenceData["Agent_Name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["Working_Area"]);
+            Assert.AreEqual("0.11", agent.ReferenceData["Commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["Phone_No"]);
+            Assert.AreEqual("", agent.ReferenceData["Country"]);
+
+            // Update
+            rows = dbContext.ExecuteCommand(updateSql);
+            Assert.AreEqual(1, rows);
+            data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 1);
+            agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["Agent_Code"]);
+            Assert.AreEqual("John", agent.ReferenceData["Agent_Name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["Working_Area"]);
+            Assert.AreEqual("0.15", agent.ReferenceData["Commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["Phone_No"]);
+            Assert.AreEqual("", agent.ReferenceData["Country"]);
+
+            // Delete
+            rows = dbContext.ExecuteCommand(deleteSql);
+            Assert.AreEqual(1, rows);
+            data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 0);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_ExecuteCommand_DML_Unsupported_SELECT_Queries()
+        {
+            var selectSql = Queries.MSSQLQueries.TestDB.DML.SelectSql;
+
+            // Select
+            try
+            {
+                var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+                var rows = dbContext.ExecuteCommand(selectSql);
+                Assert.Fail("No Exception");
+            }
+            catch (QueryDBException ex)
+            {
+                Assert.AreEqual("SELECT queries are not supported here.", ex.Message);
+                Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                Assert.AreEqual("'ExecuteCommand' doesn't support SELECT queries.", ex.AdditionalInfo);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_ExecuteCommand_DCL_Queries()
+        {
+            var login = "test_user";
+            var user = "test_user";
+            var password = "Test@1234";
+            var table = "agents";
+            var commands = "SELECT, UPDATE";
+            var checkCommand = "SELECT";
+
+            var createLogin = string.Format(Queries.MSSQLQueries.TestDB.DCL.CreateLoginSql_Login_Password, login, password);
+            var createUser = string.Format(Queries.MSSQLQueries.TestDB.DCL.CreateUserSql_User_Login, user, login);
+            var grantSql = string.Format(Queries.MSSQLQueries.TestDB.DCL.GrantSql_Command_Table_User, commands, table, user);
+            var revokeSql = string.Format(Queries.MSSQLQueries.TestDB.DCL.RevokeSql_Command_Table_User, commands, table, user);
+            var verifyPermissions = string.Format(Queries.MSSQLQueries.TestDB.DCL.VerifyPermission_User_Table_Command, user, table, checkCommand);
+            var removeUser = string.Format(Queries.MSSQLQueries.TestDB.DCL.RemoveUserSql_User, user);
+            var removeLogin = string.Format(Queries.MSSQLQueries.TestDB.DCL.RemoveLoginSql_Login, login);
+
+            var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+
+            // Create Login
+            var result = dbContext.ExecuteCommand(createLogin);
+            Assert.AreEqual(-1, result);
+
+            // Create User
+            result = dbContext.ExecuteCommand(createUser);
+            Assert.AreEqual(-1, result);
+
+            // Existing Permissions
+            var data = dbContext.FetchData(verifyPermissions).FirstOrDefault();
+            Assert.AreEqual("0", data.ReferenceData["HasPermission"]);
+
+            // Grant
+            result = dbContext.ExecuteCommand(grantSql);
+            Assert.AreEqual(-1, result);
+            data = dbContext.FetchData(verifyPermissions).FirstOrDefault();
+            Assert.AreEqual("1", data.ReferenceData["HasPermission"]);
+
+            // Revoke
+            result = dbContext.ExecuteCommand(revokeSql);
+            Assert.AreEqual(-1, result);
+            data = dbContext.FetchData(verifyPermissions).FirstOrDefault();
+            Assert.AreEqual("0", data.ReferenceData["HasPermission"]);
+
+            // Remove User
+            result = dbContext.ExecuteCommand(removeUser);
+            Assert.AreEqual(-1, result);
+
+            // Remove Login
+            result = dbContext.ExecuteCommand(removeLogin);
+            Assert.AreEqual(-1, result);
+        }
+
+        #endregion
+
+        #region Execute Transaction Tests - << bool ExecuteTransaction(List<string> sqlStatements) >>
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_ExecuteTransaction_DDL_Multiple_Queries()
+        {
+            var createTableSql = Queries.MSSQLQueries.TestDB.DDL.Create_Table;
+            var alterTableSql = Queries.MSSQLQueries.TestDB.DDL.Alter_Table;
+            var truncateTableSql = Queries.MSSQLQueries.TestDB.DDL.Truncate_Table;
+            var renameTableSql = Queries.MSSQLQueries.TestDB.DDL.Rename_Table;
+            var dropTableSql = Queries.MSSQLQueries.TestDB.DDL.Drop_Table;
+            var dDLExecutionCheckSql = Queries.MSSQLQueries.TestDB.DDL.DDL_Execute_check;
+
+            // Create, Alter & Truncate
+            var statements = new List<string>
+            {
+                createTableSql,
+                alterTableSql,
+                truncateTableSql
+            };
+            var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+            var result = dbContext.ExecuteTransaction(statements);
+            Assert.IsTrue(result);
+
+            var tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "dbo", "Employee"));
+            Assert.AreEqual("1", tableCount[0].ReferenceData["Table_Count"]);
+
+            // Rename & Drop
+            statements = new List<string>
+            {
+                renameTableSql,
+                dropTableSql
+            };
+            result = dbContext.ExecuteTransaction(statements);
+            Assert.IsTrue(result);
+
+            tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "dbo", "Employees"));
+            Assert.AreEqual("0", tableCount[0].ReferenceData["Table_Count"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_ExecuteTransaction_DML_Multiple_Queries()
+        {
+            var insertSql = Queries.MSSQLQueries.TestDB.DML.InsertSql;
+            var updateSql = Queries.MSSQLQueries.TestDB.DML.UpdateSql;
+            var deleteSql = Queries.MSSQLQueries.TestDB.DML.DeleteSql;
+            var verifyDMLExecution = Queries.MSSQLQueries.TestDB.DML.VerifyDMLExecution;
+
+            var statements = new List<string>
+            {
+                insertSql,
+                updateSql
+            };
+            var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+
+            // Insert & Update
+            var result = dbContext.ExecuteTransaction(statements);
+            Assert.IsTrue(result);
+            var data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 1);
+            var agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["Agent_Code"]);
+            Assert.AreEqual("John", agent.ReferenceData["Agent_Name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["Working_Area"]);
+            Assert.AreEqual("0.15", agent.ReferenceData["Commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["Phone_No"]);
+            Assert.AreEqual("", agent.ReferenceData["Country"]);
+
+            // Delete
+            statements = new List<string>
+            {
+                deleteSql
+            };
+            result = dbContext.ExecuteTransaction(statements);
+            Assert.IsTrue(result);
+            data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 0);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_ExecuteTransaction_Incomplete_Transaction_Rollback_On_Error()
+        {
+            var insertSql = Queries.MSSQLQueries.TestDB.DML.InsertSql;
+            var updateSql = Queries.MSSQLQueries.TestDB.DML.UpdateSql;
+            var updateErrorSql = "UPDATE";
+            var verifyDMLExecution = Queries.MSSQLQueries.TestDB.DML.VerifyDMLExecution;
+
+            var statements = new List<string>
+            {
+                insertSql,
+                updateSql,
+                updateErrorSql
+            };
+            var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+
+            // Insert & Update
+            var result = dbContext.ExecuteTransaction(statements);
+            Assert.IsFalse(result);
+            var data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 0);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_ExecuteTransaction_DML_Unsupported_SELECT_Queries()
+        {
+            var selectSql = Queries.MSSQLQueries.TestDB.DML.SelectSql;
+
+            // Select
+            try
+            {
+                var statements = new List<string>
+                {
+                    selectSql
+                };
+                var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+                var result = dbContext.ExecuteTransaction(statements);
+                Assert.Fail("No Exception");
+            }
+            catch (QueryDBException ex)
+            {
+                Assert.AreEqual("SELECT queries are not supported here.", ex.Message);
+                Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                Assert.AreEqual("'ExecuteTransaction' doesn't support SELECT queries.", ex.AdditionalInfo);
             }
         }
 

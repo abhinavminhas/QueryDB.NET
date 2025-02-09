@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QueryDB.Exceptions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace QueryDB.Core.Tests
@@ -277,6 +279,302 @@ namespace QueryDB.Core.Tests
             catch (IndexOutOfRangeException ex)
             {
                 Assert.AreEqual("Field not found in row: Agent_Name", ex.Message);
+            }
+        }
+
+        #endregion
+
+        #region Execute Command Tests - << int ExecuteCommand(string sqlStatement) >>
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_ExecuteCommand_DDL_Queries()
+        {
+            var createTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Create_Table;
+            var alterTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Alter_Table;
+            var commentTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Comment_Table;
+            var commentTableColumnSql = Queries.PostgreSQLQueries.TestDB.DDL.Comment_Table_Column;
+            var truncateTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Truncate_Table;
+            var renameTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Rename_Table;
+            var dropTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Drop_Table;
+            var dDLExecutionCheckSql = Queries.PostgreSQLQueries.TestDB.DDL.DDL_Execute_check;
+            var dDLTableCommentCheckSql = Queries.PostgreSQLQueries.TestDB.DDL.DDL_Table_Comment_check;
+            var dDLTableColumnCommentCheckSql = Queries.PostgreSQLQueries.TestDB.DDL.DDL_Table_Column_Comment_check;
+
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+            dbContext.ExecuteCommand(createTableSql);
+            dbContext.ExecuteCommand(alterTableSql);
+            dbContext.ExecuteCommand(commentTableSql);
+            dbContext.ExecuteCommand(commentTableColumnSql);
+            dbContext.ExecuteCommand(truncateTableSql);
+
+            var tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "public", "Employee"));
+            Assert.AreEqual("1", tableCount[0].ReferenceData["table_count"]);
+            var tableComment = dbContext
+                .FetchData(string.Format(dDLTableCommentCheckSql, "public", "Employee"));
+            Assert.AreEqual("This table stores employee records", tableComment[0].ReferenceData["table_comment"]);
+            var tableColumnComment = dbContext
+                .FetchData(string.Format(dDLTableColumnCommentCheckSql, "public", "Employee"));
+            Assert.AreEqual("This column stores employee middle name", tableColumnComment[3].ReferenceData["table_column_comment"]);
+
+            dbContext.ExecuteCommand(renameTableSql);
+
+            tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "public", "Employee"));
+            Assert.AreEqual("0", tableCount[0].ReferenceData["table_count"]);
+            tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "public", "Employees"));
+            Assert.AreEqual("1", tableCount[0].ReferenceData["table_count"]);
+
+            dbContext.ExecuteCommand(dropTableSql);
+
+            tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "public", "Employees"));
+            Assert.AreEqual("0", tableCount[0].ReferenceData["table_count"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_ExecuteCommand_DML_Queries()
+        {
+            var insertSql = Queries.PostgreSQLQueries.TestDB.DML.InsertSql;
+            var updateSql = Queries.PostgreSQLQueries.TestDB.DML.UpdateSql;
+            var deleteSql = Queries.PostgreSQLQueries.TestDB.DML.DeleteSql;
+            var verifyDMLExecution = Queries.MSSQLQueries.TestDB.DML.VerifyDMLExecution;
+
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+
+            // Insert
+            var rows = dbContext.ExecuteCommand(insertSql);
+            Assert.AreEqual(1, rows);
+            var data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 1);
+            var agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["agent_code"]);
+            Assert.AreEqual("John", agent.ReferenceData["agent_name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["working_area"]);
+            Assert.AreEqual("0.11", agent.ReferenceData["commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["phone_no"]);
+            Assert.AreEqual("", agent.ReferenceData["country"]);
+
+            // Update
+            rows = dbContext.ExecuteCommand(updateSql);
+            Assert.AreEqual(1, rows);
+            data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 1);
+            agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["agent_code"]);
+            Assert.AreEqual("John", agent.ReferenceData["agent_name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["working_area"]);
+            Assert.AreEqual("0.15", agent.ReferenceData["commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["phone_no"]);
+            Assert.AreEqual("", agent.ReferenceData["country"]);
+
+            // Delete
+            rows = dbContext.ExecuteCommand(deleteSql);
+            Assert.AreEqual(1, rows);
+            data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 0);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_ExecuteCommand_DML_Unsupported_SELECT_Queries()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.DML.SelectSql;
+
+            // Select
+            try
+            {
+                var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+                var rows = dbContext.ExecuteCommand(selectSql);
+                Assert.Fail("No Exception");
+            }
+            catch (QueryDBException ex)
+            {
+                Assert.AreEqual("SELECT queries are not supported here.", ex.Message);
+                Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                Assert.AreEqual("'ExecuteCommand' doesn't support SELECT queries.", ex.AdditionalInfo);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_ExecuteCommand_DCL_Queries()
+        {
+            var user = "test_user";
+            var password = "Test@1234";
+            var table = "Agents";
+            var commands = "SELECT, UPDATE";
+            var checkCommand = "SELECT";
+
+            var createUser = string.Format(Queries.PostgreSQLQueries.TestDB.DCL.CreateUserSql_User_Password, user, password);
+            var grantSql = string.Format(Queries.PostgreSQLQueries.TestDB.DCL.GrantSql_Command_Table_User, commands, table, user);
+            var revokeSql = string.Format(Queries.PostgreSQLQueries.TestDB.DCL.RevokeSql_Command_Table_User, commands, table, user);
+            var verifyPermissions = string.Format(Queries.PostgreSQLQueries.TestDB.DCL.VerifyPermission_User, user);
+            var removeUser = string.Format(Queries.PostgreSQLQueries.TestDB.DCL.RemoveUserSql_User, user);
+
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+
+            // Create User
+            var result = dbContext.ExecuteCommand(createUser);
+            Assert.AreEqual(-1, result);
+
+            // Existing Permissions
+            var data = dbContext.FetchData(verifyPermissions);
+            Assert.AreEqual(0, data.Count);
+            Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+
+            // Grant
+            result = dbContext.ExecuteCommand(grantSql);
+            Assert.AreEqual(-1, result);
+            data = dbContext.FetchData(verifyPermissions);
+            Assert.AreEqual(2, data.Count);
+            Assert.IsTrue(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+
+            // Revoke
+            result = dbContext.ExecuteCommand(revokeSql);
+            Assert.AreEqual(-1, result);
+            data = dbContext.FetchData(verifyPermissions);
+            Assert.AreEqual(0, data.Count);
+            Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+
+            // Remove User
+            result = dbContext.ExecuteCommand(removeUser);
+            Assert.AreEqual(-1, result);
+        }
+
+        #endregion
+
+        #region Execute Transaction Tests - << bool ExecuteTransaction(List<string> sqlStatements) >>
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_ExecuteTransaction_DDL_Multiple_Queries()
+        {
+            var createTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Create_Table;
+            var alterTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Alter_Table;
+            var truncateTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Truncate_Table;
+            var renameTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Rename_Table;
+            var dropTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Drop_Table;
+            var dDLExecutionCheckSql = Queries.PostgreSQLQueries.TestDB.DDL.DDL_Execute_check;
+
+            // Create, Alter & Truncate
+            var statements = new List<string>
+            {
+                createTableSql,
+                alterTableSql,
+                truncateTableSql
+            };
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+            var result = dbContext.ExecuteTransaction(statements);
+            Assert.IsTrue(result);
+
+            var tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "public", "Employee"));
+            Assert.AreEqual("1", tableCount[0].ReferenceData["table_count"]);
+
+            // Rename & Drop
+            statements = new List<string>
+            {
+                renameTableSql,
+                dropTableSql
+            };
+            result = dbContext.ExecuteTransaction(statements);
+            Assert.IsTrue(result);
+
+            tableCount = dbContext
+                .FetchData(string.Format(dDLExecutionCheckSql, "public", "Employees"));
+            Assert.AreEqual("0", tableCount[0].ReferenceData["table_count"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_ExecuteTransaction_DML_Multiple_Queries()
+        {
+            var insertSql = Queries.PostgreSQLQueries.TestDB.DML.InsertSql;
+            var updateSql = Queries.PostgreSQLQueries.TestDB.DML.UpdateSql;
+            var deleteSql = Queries.PostgreSQLQueries.TestDB.DML.DeleteSql;
+            var verifyDMLExecution = Queries.PostgreSQLQueries.TestDB.DML.VerifyDMLExecution;
+
+            var statements = new List<string>
+            {
+                insertSql,
+                updateSql
+            };
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+
+            // Insert & Update
+            var result = dbContext.ExecuteTransaction(statements);
+            Assert.IsTrue(result);
+            var data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 1);
+            var agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["agent_code"]);
+            Assert.AreEqual("John", agent.ReferenceData["agent_name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["working_area"]);
+            Assert.AreEqual("0.15", agent.ReferenceData["commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["phone_no"]);
+            Assert.AreEqual("", agent.ReferenceData["country"]);
+
+            // Delete
+            statements = new List<string>
+            {
+                deleteSql
+            };
+            result = dbContext.ExecuteTransaction(statements);
+            Assert.IsTrue(result);
+            data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 0);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_ExecuteTransaction_Incomplete_Transaction_Rollback_On_Error()
+        {
+            var insertSql = Queries.PostgreSQLQueries.TestDB.DML.InsertSql;
+            var updateSql = Queries.PostgreSQLQueries.TestDB.DML.UpdateSql;
+            var updateErrorSql = "UPDATE";
+            var verifyDMLExecution = Queries.PostgreSQLQueries.TestDB.DML.VerifyDMLExecution;
+
+            var statements = new List<string>
+            {
+                insertSql,
+                updateSql,
+                updateErrorSql
+            };
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+
+            // Insert & Update
+            var result = dbContext.ExecuteTransaction(statements);
+            Assert.IsFalse(result);
+            var data = dbContext.FetchData(verifyDMLExecution);
+            Assert.IsTrue(data.Count == 0);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_ExecuteTransaction_DML_Unsupported_SELECT_Queries()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.DML.SelectSql;
+
+            // Select
+            try
+            {
+                var statements = new List<string>
+                {
+                    selectSql
+                };
+                var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+                var result = dbContext.ExecuteTransaction(statements);
+                Assert.Fail("No Exception");
+            }
+            catch (QueryDBException ex)
+            {
+                Assert.AreEqual("SELECT queries are not supported here.", ex.Message);
+                Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                Assert.AreEqual("'ExecuteTransaction' doesn't support SELECT queries.", ex.AdditionalInfo);
             }
         }
 

@@ -1,5 +1,9 @@
-﻿using QueryDB.Resources;
+﻿using QueryDB.Exceptions;
+using QueryDB.Resources;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace QueryDB
 {
@@ -113,7 +117,7 @@ namespace QueryDB
                 {
                     var _systemAdapter = new MSSQL.Adapter();
                     dataList = _systemAdapter.FetchData<T>(selectSql, msSqlDBConnection.SqlConnection, strict);
-    }
+                }
             }
             else if (Database.Equals(DB.MySQL))
             {
@@ -140,6 +144,96 @@ namespace QueryDB
                 }
             }
             return dataList;
+        }
+
+        /// <summary>
+        /// Executes SQL commands.
+        /// </summary>
+        /// <param name="sqlStatement">SQL statement as command.</param>
+        /// <returns>The number of rows affected.</returns>
+        public int ExecuteCommand(string sqlStatement)
+        {
+            if (Regex.IsMatch(sqlStatement, "^\\s*SELECT\\s+.*", RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteCommand, 
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedSelectExecuteCommand);
+            if (Database.Equals(DB.MSSQL))
+            {
+                using (var msSqlDBConnection = GetSqlServerConnection())
+                {
+                    var _systemAdapter = new MSSQL.Adapter();
+                    return _systemAdapter.ExecuteCommand(sqlStatement, msSqlDBConnection.SqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.MySQL))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    var _systemAdapter = new MySQL.Adapter();
+                    return _systemAdapter.ExecuteCommand(sqlStatement, mySqlDBConnection.MySqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    var _systemAdapter = new Oracle.Adapter();
+                    return _systemAdapter.ExecuteCommand(sqlStatement, oracleDBConnection.OracleConnection);
+                }
+            }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    var _systemAdapter = new PostgreSQL.Adapter();
+                    return _systemAdapter.ExecuteCommand(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
+                }
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Executes multiple SQL statements within a transaction, ensuring that all statements are executed together.
+        /// </summary>
+        /// <param name="sqlStatements">A list of SQL statements to execute.</param>
+        /// <returns>
+        /// Returns <c>true</c> if all statements are executed successfully and the transaction is committed;
+        /// <c>false</c> if any statement fails and the transaction is rolled back.
+        /// </returns>
+        public bool ExecuteTransaction(List<string> sqlStatements)
+        {
+            var selectExists = sqlStatements.Any(sqlStatement => Regex.IsMatch(sqlStatement, "^\\s*SELECT\\s+.*", RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)));
+            if (selectExists)
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteTransaction,
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedSelectExecuteTransaction);
+            if (Database.Equals(DB.MSSQL))
+            {
+                using (var msSqlDBConnection = GetSqlServerConnection())
+                {
+                    return MSSQL.Adapter.ExecuteTransaction(sqlStatements, msSqlDBConnection.SqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.MySQL))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    return MySQL.Adapter.ExecuteTransaction(sqlStatements, mySqlDBConnection.MySqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    return Oracle.Adapter.ExecuteTransaction(sqlStatements, oracleDBConnection.OracleConnection);
+                }
+            }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    return PostgreSQL.Adapter.ExecuteTransaction(sqlStatements, postgreSqlDBConnection.PostgreSQLConnection);
+                }
+            }
+            return false;
         }
 
         /// <summary>
