@@ -2,6 +2,7 @@
 using QueryDB.Resources;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace QueryDB
@@ -200,11 +201,10 @@ namespace QueryDB
         /// </returns>
         public bool ExecuteTransaction(List<string> sqlStatements)
         {
-            foreach(var sqlStatement in sqlStatements)
+            foreach(var sqlStatement in sqlStatements.Where(sqlStatement => Regex.IsMatch(sqlStatement, "^\\s*SELECT\\s+.*", RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5))))
             {
-                if (Regex.IsMatch(sqlStatement, "^\\s*SELECT\\s+.*", RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
-                    throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteTransaction,
-                        QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedSelectExecuteTransaction);
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteTransaction,
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedSelectExecuteTransaction);
             }
             if (Database.Equals(DB.MSSQL))
             {
