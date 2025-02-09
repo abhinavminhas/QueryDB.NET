@@ -201,11 +201,10 @@ namespace QueryDB
         /// </returns>
         public bool ExecuteTransaction(List<string> sqlStatements)
         {
-            foreach(var sqlStatement in sqlStatements.Where(sqlStatement => Regex.IsMatch(sqlStatement, "^\\s*SELECT\\s+.*", RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5))))
-            {
+            var selectExists = sqlStatements.Any(sqlStatement => Regex.IsMatch(sqlStatement, "^\\s*SELECT\\s+.*", RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)));
+            if (selectExists)
                 throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteTransaction,
                     QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedSelectExecuteTransaction);
-            }
             if (Database.Equals(DB.MSSQL))
             {
                 using (var msSqlDBConnection = GetSqlServerConnection())
