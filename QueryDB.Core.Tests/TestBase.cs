@@ -28,10 +28,10 @@ namespace QueryDB.Core.Tests
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .Build();
 
-            MSSQLConnectionString = _configuration["MSSQLConnection"];
-            MySQLConnectionString = _configuration["MySQLConnection"];
-            OracleConnectionString = _configuration["OracleConnection"];
-            PostgreSQLConnectionString = _configuration["PostgreSQLConnection"];
+            MSSQLConnectionString = _configuration["TestSettings:MSSQLConnection"];
+            MySQLConnectionString = _configuration["TestSettings:MySQLConnection"];
+            OracleConnectionString = _configuration["TestSettings:OracleConnection"];
+            PostgreSQLConnectionString = _configuration["TestSettings:PostgreSQLConnection"];
         }
 
         protected static string ConvertToUTCInUSFormat(string dateString)
