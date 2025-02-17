@@ -72,7 +72,7 @@ jobs:
       with:
         dbPassword: ${{ secrets.DB_PASSWORD }}
     
-    - name: Test
+    - name: Test (${{ matrix.dotnet-version }})
       if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') }}
       run: dotnet test --framework netcoreapp3.1 --no-build --logger "console;verbosity=detailed" --verbosity normal --configuration Release --filter TestCategory=DB-TESTS
 
@@ -106,8 +106,8 @@ jobs:
         files: '${{ github.workspace }}/QueryDB.Core.Tests/appsettings.json'
         replacements: '__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }}'
         
-    - name: Build
-      run: dotnet build QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
+    - name: Build (${{ matrix.dotnet-version }})
+      run: dotnet build --f netcoreapp3.1 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
 
     - name: Docker Compose (Start - DB Containers)
       uses: ./.github/workflows/docker-compose-start-dbs
@@ -124,7 +124,7 @@ jobs:
       with:
         dbPassword: ${{ secrets.DB_PASSWORD }}
     
-    - name: Test
+    - name: Test (${{ matrix.dotnet-version }})
       run: dotnet test --framework netcoreapp3.1 --no-build --logger "console;verbosity=detailed" --verbosity normal --configuration Release --filter TestCategory=DB-TESTS /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
     
     - name: Docker Compose (Tear Down - DB Containers)
