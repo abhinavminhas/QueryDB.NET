@@ -41,22 +41,22 @@ jobs:
       shell: pwsh
       run: |
         if (${{ matrix.dotnet-version }} -like "3.1*") {
-          dotnet build -f netcoreapp3.1 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
+          dotnet build -f netcoreapp3.1 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release --verbosity normal
         }
         elseif (${{ matrix.dotnet-version }} -like "5.0*") {
-          dotnet build -f net5.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
+          dotnet build -f net5.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release --verbosity normal
         }
         elseif (${{ matrix.dotnet-version }} -like "6.0*") {
-          dotnet build -f net6.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
+          dotnet build -f net6.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release --verbosity normal
         }
         elseif (${{ matrix.dotnet-version }} -like "7.0*") {
-          dotnet build -f net7.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
+          dotnet build -f net7.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release --verbosity normal
         }
         elseif (${{ matrix.dotnet-version }} -like "8.0*") {
-          dotnet build -f net8.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
+          dotnet build -f net8.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release --verbosity normal
         }
         elseif (${{ matrix.dotnet-version }} -like "9.0*") {
-          dotnet build -f net9.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
+          dotnet build -f net9.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release --verbosity normal
         }
 
     - name: Docker Compose (Start - DB Containers)
