@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
@@ -8,7 +7,6 @@ namespace QueryDB.Core.Tests
 {
     public class TestBase
     {
-        private readonly string _useDocker = ConfigurationManager.AppSettings["UseDocker"];
         protected readonly string MSSQLConnectionString = ConfigurationManager.AppSettings["MSSQLConnection"];
         protected readonly string MySQLConnectionString = ConfigurationManager.AppSettings["MySQLConnection"];
         protected readonly string OracleConnectionString = ConfigurationManager.AppSettings["OracleConnection"];
