@@ -22,15 +22,6 @@ namespace QueryDB.Core.Tests
         protected const string QUERY_DB_EXCEPTION_TESTS = "QUERY-DB-EXCEPTION-TESTS";
         protected const string UNKNOW_DB_TESTS = "UNKNOW-DB-TESTS";
 
-        [AssemblyInitialize]
-        internal void CheckDockerImages()
-        {
-            if (_useDocker.Equals("true"))
-            {
-                //TBD
-            }
-        }
-
         protected string ConvertToUTCInUSFormat(string dateString)
         {
             DateTimeOffset date;
