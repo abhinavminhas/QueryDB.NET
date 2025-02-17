@@ -1,5 +1,5 @@
-﻿using System;
-using System.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Globalization;
 using System.IO;
 
@@ -7,10 +7,11 @@ namespace QueryDB.Core.Tests
 {
     public class TestBase
     {
-        protected readonly string MSSQLConnectionString = ConfigurationManager.AppSettings["MSSQLConnection"];
-        protected readonly string MySQLConnectionString = ConfigurationManager.AppSettings["MySQLConnection"];
-        protected readonly string OracleConnectionString = ConfigurationManager.AppSettings["OracleConnection"];
-        protected readonly string PostgreSQLConnectionString = ConfigurationManager.AppSettings["PostgreSQLConnection"];
+        private readonly IConfiguration _configuration;
+        protected readonly string MSSQLConnectionString;
+        protected readonly string MySQLConnectionString;
+        protected readonly string OracleConnectionString;
+        protected readonly string PostgreSQLConnectionString;
         protected const string DB_TESTS = "DB-TESTS";
         protected const string SMOKE_TESTS = "SMOKE-TESTS";
         protected const string MSSQL_TESTS = "MSSQL-TESTS";
@@ -19,6 +20,19 @@ namespace QueryDB.Core.Tests
         protected const string POSTGRESQL_TESTS = "POSTGRESQL-TESTS";
         protected const string QUERY_DB_EXCEPTION_TESTS = "QUERY-DB-EXCEPTION-TESTS";
         protected const string UNKNOW_DB_TESTS = "UNKNOW-DB-TESTS";
+
+        public TestBase()
+        {
+            _configuration = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+            MSSQLConnectionString = _configuration["MSSQLConnection"];
+            MySQLConnectionString = _configuration["MySQLConnection"];
+            OracleConnectionString = _configuration["OracleConnection"];
+            PostgreSQLConnectionString = _configuration["PostgreSQLConnection"];
+        }
 
         protected string ConvertToUTCInUSFormat(string dateString)
         {

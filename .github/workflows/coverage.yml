@@ -22,10 +22,10 @@ jobs:
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
 
-    - name: Find And Replace Values (App Config)
+    - name: Find And Replace Values (App Settings)
       uses: abhinavminhas/replace-tokens@main
       with:
-        files: '${{ github.workspace }}/QueryDB.Core.Tests/App.config'
+        files: '${{ github.workspace }}/QueryDB.Core.Tests/appsettings.json'
         replacements: '__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }}'
         
     - name: Build
