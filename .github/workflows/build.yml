@@ -37,8 +37,21 @@ jobs:
         files: '${{ github.workspace }}/QueryDB.Core.Tests/appsettings.json'
         replacements: '__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }}'
         
-    - name: Build
-      run: dotnet build QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
+    - name: Build (${{ matrix.dotnet-version }})
+      run: |
+        if [[ "${{ matrix.dotnet-version }}" == "3.1"* ]]; then
+          dotnet build -f netcoreapp3.1 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
+        elif [[ "${{ matrix.dotnet-version }}" == "5.0"* ]]; then
+          dotnet build -f net5.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
+        elif [[ "${{ matrix.dotnet-version }}" == "6.0"* ]]; then
+          dotnet build -f net6.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
+        elif [[ "${{ matrix.dotnet-version }}" == "7.0"* ]]; then
+          dotnet build -f net7.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
+        elif [[ "${{ matrix.dotnet-version }}" == "8.0"* ]]; then
+          dotnet build -f net8.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
+        elif [[ "${{ matrix.dotnet-version }}" == "9.0"* ]]; then
+          dotnet build -f net9.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
+        fi
 
     - name: Docker Compose (Start - DB Containers)
       if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') }}
