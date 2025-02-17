@@ -38,26 +38,21 @@ jobs:
         replacements: '__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }},__DB_PASSWORD__=${{ secrets.DB_PASSWORD }}'
         
     - name: Build (${{ matrix.dotnet-version }})
-      shell: pwsh
+      shell: bash
       run: |
-        if (${{ matrix.dotnet-version }} -like "3.1*") {
-          dotnet build -f netcoreapp3.1 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release --verbosity normal
-        }
-        elseif (${{ matrix.dotnet-version }} -like "5.0*") {
-          dotnet build -f net5.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release --verbosity detailed
-        }
-        elseif (${{ matrix.dotnet-version }} -like "6.0*") {
-          dotnet build -f net6.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release --verbosity detailed
-        }
-        elseif (${{ matrix.dotnet-version }} -like "7.0*") {
-          dotnet build -f net7.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release --verbosity detailed
-        }
-        elseif (${{ matrix.dotnet-version }} -like "8.0*") {
-          dotnet build -f net8.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release --verbosity detailed
-        }
-        elseif (${{ matrix.dotnet-version }} -like "9.0*") {
-          dotnet build -f net9.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release --verbosity detailed
-        }
+        if [[ "${{ matrix.dotnet-version }}" == "3.1"* ]]; then
+          dotnet build -f netcoreapp3.1 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
+        elif [[ "${{ matrix.dotnet-version }}" == "5.0"* ]]; then
+          dotnet build -f net5.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
+        elif [[ "${{ matrix.dotnet-version }}" == "6.0"* ]]; then
+          dotnet build -f net6.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
+        elif [[ "${{ matrix.dotnet-version }}" == "7.0"* ]]; then
+          dotnet build -f net7.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
+        elif [[ "${{ matrix.dotnet-version }}" == "8.0"* ]]; then
+          dotnet build -f net8.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
+        elif [[ "${{ matrix.dotnet-version }}" == "9.0"* ]]; then
+          dotnet build -f net9.0 QueryDB.Core.Tests/QueryDB.Core.Tests.csproj --configuration Release
+        fi
 
     - name: Docker Compose (Start - DB Containers)
       if: ${{ (matrix.os == 'ubuntu-22.04') && (matrix.dotnet-version == '3.1.x') }}
