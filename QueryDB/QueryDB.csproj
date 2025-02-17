@@ -22,10 +22,10 @@ Supported Databases:
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
-    <PackageReference Include="MySql.Data" Version="9.2.0" />
-    <PackageReference Include="Npgsql" Version="8.0.6" />
-    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.260" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.1" />
+    <PackageReference Include="MySql.Data" Version="8.0.31" />
+    <PackageReference Include="Npgsql" Version="7.0.8" />
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.240" />
   </ItemGroup>
 
   <ItemGroup>
