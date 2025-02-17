@@ -34,7 +34,7 @@ namespace QueryDB.Core.Tests
             PostgreSQLConnectionString = _configuration["PostgreSQLConnection"];
         }
 
-        protected string ConvertToUTCInUSFormat(string dateString)
+        protected static string ConvertToUTCInUSFormat(string dateString)
         {
             DateTimeOffset date;
             string[] formats = {
@@ -61,7 +61,7 @@ namespace QueryDB.Core.Tests
             }
         }
 
-        protected string ConvertToUSFormat(string dateString)
+        protected static string ConvertToUSFormat(string dateString)
         {
             DateTime date;
             string[] formats = {
@@ -94,7 +94,7 @@ namespace QueryDB.Core.Tests
             }
         }
 
-        protected string GetBase64Content(string filePath)
+        protected static string GetBase64Content(string filePath)
         {
             if (!File.Exists(filePath))
                 throw new FileNotFoundException("File not found - '" + filePath + "'.");
