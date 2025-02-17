@@ -39,7 +39,7 @@ namespace QueryDB.Core.Tests
         {
             var selectSql = Queries.OracleQueries.TestDB.SelectSql;
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData(selectSql);
-            Assert.IsTrue(data.Count == 12);
+            Assert.AreEqual(12, data.Count);
             var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_NAME"] == "Benjamin");
             Assert.AreEqual("A009", agent.ReferenceData["AGENT_CODE"]);
             Assert.AreEqual("Benjamin", agent.ReferenceData["AGENT_NAME"]);
@@ -55,7 +55,7 @@ namespace QueryDB.Core.Tests
         {
             var selectSql = Queries.OracleQueries.TestDB.SelectSql;
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData(selectSql, upperCaseKeys: true);
-            Assert.IsTrue(data.Count == 12);
+            Assert.AreEqual(12, data.Count);
             var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_NAME"] == "Benjamin");
             Assert.AreEqual("A009", agent.ReferenceData["AGENT_CODE"]);
             Assert.AreEqual("Benjamin", agent.ReferenceData["AGENT_NAME"]);
@@ -71,7 +71,7 @@ namespace QueryDB.Core.Tests
         {
             var selectSql = Queries.OracleQueries.TestDB.SelectSql_Join;
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData(selectSql);
-            Assert.IsTrue(data.Count == 34);
+            Assert.AreEqual(34, data.Count);
             var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004" && X.ReferenceData["CUST_CODE"] == "C00006");
             Assert.AreEqual("A004", agent.ReferenceData["AGENT_CODE"]);
             Assert.AreEqual("Ivan", agent.ReferenceData["AGENT_NAME"]);
@@ -89,7 +89,7 @@ namespace QueryDB.Core.Tests
         {
             var selectSql = Queries.OracleQueries.TestDB.SelectSql_Join;
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData(selectSql, upperCaseKeys: true);
-            Assert.IsTrue(data.Count == 34);
+            Assert.AreEqual(34, data.Count);
             var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004" && X.ReferenceData["CUST_CODE"] == "C00006");
             Assert.AreEqual("A004", agent.ReferenceData["AGENT_CODE"]);
             Assert.AreEqual("Ivan", agent.ReferenceData["AGENT_NAME"]);
@@ -107,7 +107,7 @@ namespace QueryDB.Core.Tests
         {
             var selectSql = Queries.OracleQueries.TestDB.SelectSql_Alias;
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData(selectSql);
-            Assert.IsTrue(data.Count == 34);
+            Assert.AreEqual(34, data.Count);
             var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004" && X.ReferenceData["CUST_CODE"] == "C00006");
             Assert.AreEqual("A004", agent.ReferenceData["AGENT_CODE"]);
             Assert.AreEqual("Ivan", agent.ReferenceData["AGENT"]);
@@ -123,7 +123,7 @@ namespace QueryDB.Core.Tests
         {
             var selectSql = Queries.OracleQueries.TestDB.SelectSql_Alias;
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData(selectSql, upperCaseKeys: true);
-            Assert.IsTrue(data.Count == 34);
+            Assert.AreEqual(34, data.Count);
             var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004" && X.ReferenceData["CUST_CODE"] == "C00006");
             Assert.AreEqual("A004", agent.ReferenceData["AGENT_CODE"]);
             Assert.AreEqual("Ivan", agent.ReferenceData["AGENT"]);
@@ -139,7 +139,7 @@ namespace QueryDB.Core.Tests
         {
             var selectSql = Queries.OracleQueries.TestDB.SelectSql_DataTypes;
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData(selectSql);
-            Assert.IsTrue(data.Count == 2);
+            Assert.AreEqual(2, data.Count);
             var dataType = data.FirstOrDefault();
             Assert.AreEqual(GetBase64Content(Environment.CurrentDirectory + "/SeedData/oracle.sql"), dataType.ReferenceData["BFILE_COLUMN"]);
             Assert.AreEqual("3q2+7w==", dataType.ReferenceData["BLOB_COLUMN"]);
@@ -173,14 +173,14 @@ namespace QueryDB.Core.Tests
         {
             var selectSql = Queries.OracleQueries.TestDB.SelectSql;
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData<Entities.Oracle.Agents>(selectSql);
-            Assert.IsTrue(data.Count == 12);
+            Assert.AreEqual(12, data.Count);
             var agent = data.FirstOrDefault(X => X.Agent_Name == "Benjamin");
             Assert.AreEqual("A009", agent.Agent_Code);
             Assert.AreEqual("Benjamin", agent.Agent_Name);
             Assert.AreEqual("Hampshair", agent.Working_Area);
             Assert.AreEqual(0.11, agent.Commission);
             Assert.AreEqual("008-22536178", agent.Phone_No);
-            Assert.AreEqual(null, agent.Country);
+            Assert.IsNull(agent.Country);
         }
 
         [TestMethod]
@@ -189,7 +189,7 @@ namespace QueryDB.Core.Tests
         {
             var selectSql = Queries.OracleQueries.TestDB.SelectSql_Join;
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData<Entities.Oracle.Orders>(selectSql);
-            Assert.IsTrue(data.Count == 34);
+            Assert.AreEqual(34, data.Count);
             var agent = data.FirstOrDefault(X => X.Agent_Code == "A004" && X.Cust_Code == "C00006");
             Assert.AreEqual("A004", agent.Agent_Code);
             Assert.AreEqual("Ivan", agent.Agent_Name);
@@ -200,10 +200,10 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual(500.00, agent.Advance_Amount);
             Assert.AreEqual("SOD", agent.Ord_Description);
             // Non Existent Query Data
-            Assert.AreEqual(null, agent.Agent);
-            Assert.AreEqual(null, agent.Agent_Location);
-            Assert.AreEqual(null, agent.Customer);
-            Assert.AreEqual(null, agent.Customer_Location);
+            Assert.IsNull(agent.Agent);
+            Assert.IsNull(agent.Agent_Location);
+            Assert.IsNull(agent.Customer);
+            Assert.IsNull(agent.Customer_Location);
         }
 
         [TestMethod]
@@ -212,7 +212,7 @@ namespace QueryDB.Core.Tests
         {
             var selectSql = Queries.OracleQueries.TestDB.SelectSql_Alias;
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData<Entities.Oracle.Orders>(selectSql);
-            Assert.IsTrue(data.Count == 34);
+            Assert.AreEqual(34, data.Count);
             var agent = data.FirstOrDefault(X => X.Agent_Code == "A004" && X.Cust_Code == "C00006");
             Assert.AreEqual("A004", agent.Agent_Code);
             Assert.AreEqual("Ivan", agent.Agent);
@@ -221,12 +221,12 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("Shilton", agent.Customer);
             Assert.AreEqual("Torento", agent.Customer_Location);
             // Non Existent Query Data
-            Assert.AreEqual(null, agent.Agent_Name);
-            Assert.AreEqual(null, agent.Cust_Name);
+            Assert.IsNull(agent.Agent_Name);
+            Assert.IsNull(agent.Cust_Name);
             Assert.AreEqual(0, agent.Ord_Num);
             Assert.AreEqual(0, agent.Ord_Amount);
             Assert.AreEqual(0, agent.Advance_Amount);
-            Assert.AreEqual(null, agent.Ord_Description);
+            Assert.IsNull(agent.Ord_Description);
         }
 
         [TestMethod]
@@ -235,7 +235,7 @@ namespace QueryDB.Core.Tests
         {
             var selectSql = Queries.OracleQueries.TestDB.SelectSql_DataTypes;
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData<Entities.Oracle.DataTypes>(selectSql);
-            Assert.IsTrue(data.Count == 2);
+            Assert.AreEqual(2, data.Count);
             var dataType = data.FirstOrDefault();
             Assert.AreEqual(GetBase64Content(Environment.CurrentDirectory + "/SeedData/oracle.sql"), ConvertByteArrayToBase64(dataType.BFile_Column));
             Assert.AreEqual("3q2+7w==", ConvertByteArrayToBase64(dataType.Blob_Column));
@@ -265,7 +265,7 @@ namespace QueryDB.Core.Tests
         {
             var selectSql = Queries.OracleQueries.TestDB.SelectSql_Strict;
             var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData<Entities.Oracle.Details>(selectSql, strict: true);
-            Assert.IsTrue(data.Count == 34);
+            Assert.AreEqual(34, data.Count);
             var dataType = data.FirstOrDefault();
             Assert.AreEqual("A003", dataType.Agent_Code);
             Assert.AreEqual("Alex", dataType.Agent);
@@ -357,7 +357,7 @@ namespace QueryDB.Core.Tests
             var rows = dbContext.ExecuteCommand(insertSql);
             Assert.AreEqual(1, rows);
             var data = dbContext.FetchData(verifyDMLExecution);
-            Assert.IsTrue(data.Count == 1);
+            Assert.AreEqual(1, data.Count);
             var agent = data.FirstOrDefault();
             Assert.AreEqual("A020", agent.ReferenceData["AGENT_CODE"]);
             Assert.AreEqual("John", agent.ReferenceData["AGENT_NAME"]);
@@ -370,7 +370,7 @@ namespace QueryDB.Core.Tests
             rows = dbContext.ExecuteCommand(updateSql);
             Assert.AreEqual(1, rows);
             data = dbContext.FetchData(verifyDMLExecution);
-            Assert.IsTrue(data.Count == 1);
+            Assert.AreEqual(1, data.Count);
             agent = data.FirstOrDefault();
             Assert.AreEqual("A020", agent.ReferenceData["AGENT_CODE"]);
             Assert.AreEqual("John", agent.ReferenceData["AGENT_NAME"]);
@@ -383,7 +383,7 @@ namespace QueryDB.Core.Tests
             rows = dbContext.ExecuteCommand(deleteSql);
             Assert.AreEqual(1, rows);
             data = dbContext.FetchData(verifyDMLExecution);
-            Assert.IsTrue(data.Count == 0);
+            Assert.AreEqual(0, data.Count);
         }
 
         [TestMethod]
@@ -526,7 +526,7 @@ namespace QueryDB.Core.Tests
             var result = dbContext.ExecuteTransaction(statements);
             Assert.IsTrue(result);
             var data = dbContext.FetchData(verifyDMLExecution);
-            Assert.IsTrue(data.Count == 1);
+            Assert.AreEqual(1, data.Count);
             var agent = data.FirstOrDefault();
             Assert.AreEqual("A020", agent.ReferenceData["AGENT_CODE"]);
             Assert.AreEqual("John", agent.ReferenceData["AGENT_NAME"]);
@@ -543,7 +543,7 @@ namespace QueryDB.Core.Tests
             result = dbContext.ExecuteTransaction(statements);
             Assert.IsTrue(result);
             data = dbContext.FetchData(verifyDMLExecution);
-            Assert.IsTrue(data.Count == 0);
+            Assert.AreEqual(0, data.Count);
         }
 
         [TestMethod]
@@ -567,7 +567,7 @@ namespace QueryDB.Core.Tests
             var result = dbContext.ExecuteTransaction(statements);
             Assert.IsFalse(result);
             var data = dbContext.FetchData(verifyDMLExecution);
-            Assert.IsTrue(data.Count == 0);
+            Assert.AreEqual(0, data.Count);
         }
 
         [TestMethod]
