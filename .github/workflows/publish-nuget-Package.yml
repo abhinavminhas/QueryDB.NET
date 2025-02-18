@@ -1,0 +1,32 @@
+name: Publish Nuget Package
+
+env:
+    NUGET_PACKAGE_NAME_VERSION: "QueryDB.1.0.0.nupkg"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Publish Nuget Package
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-22.04 ]
+        dotnet-version: [ '3.1.x' ]
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Dotnet Version (${{ matrix.dotnet-version }})
+      uses: actions/setup-dotnet@v4
+      with:
+          dotnet-version: '3.1.x'
+          
+    - name: Create Package
+      run: dotnet pack --configuration=Release QueryDB/QueryDB.csproj
+      
+    - name: Publish Nuget Package
+      run: dotnet nuget push QueryDB/bin/Release/${{ env.NUGET_PACKAGE_NAME_VERSION }} -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
+      

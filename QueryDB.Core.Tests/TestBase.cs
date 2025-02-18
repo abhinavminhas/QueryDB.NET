@@ -1,6 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.Extensions.Configuration;
 using System;
-using System.Configuration;
 using System.Globalization;
 using System.IO;
 
@@ -8,11 +7,11 @@ namespace QueryDB.Core.Tests
 {
     public class TestBase
     {
-        private readonly string _useDocker = ConfigurationManager.AppSettings["UseDocker"];
-        protected readonly string MSSQLConnectionString = ConfigurationManager.AppSettings["MSSQLConnection"];
-        protected readonly string MySQLConnectionString = ConfigurationManager.AppSettings["MySQLConnection"];
-        protected readonly string OracleConnectionString = ConfigurationManager.AppSettings["OracleConnection"];
-        protected readonly string PostgreSQLConnectionString = ConfigurationManager.AppSettings["PostgreSQLConnection"];
+        private readonly IConfiguration _configuration;
+        protected readonly string MSSQLConnectionString;
+        protected readonly string MySQLConnectionString;
+        protected readonly string OracleConnectionString;
+        protected readonly string PostgreSQLConnectionString;
         protected const string DB_TESTS = "DB-TESTS";
         protected const string SMOKE_TESTS = "SMOKE-TESTS";
         protected const string MSSQL_TESTS = "MSSQL-TESTS";
@@ -22,16 +21,20 @@ namespace QueryDB.Core.Tests
         protected const string QUERY_DB_EXCEPTION_TESTS = "QUERY-DB-EXCEPTION-TESTS";
         protected const string UNKNOW_DB_TESTS = "UNKNOW-DB-TESTS";
 
-        [AssemblyInitialize]
-        internal void CheckDockerImages()
+        public TestBase()
         {
-            if (_useDocker.Equals("true"))
-            {
-                //TBD
-            }
+            _configuration = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+            MSSQLConnectionString = _configuration["TestSettings:MSSQLConnection"];
+            MySQLConnectionString = _configuration["TestSettings:MySQLConnection"];
+            OracleConnectionString = _configuration["TestSettings:OracleConnection"];
+            PostgreSQLConnectionString = _configuration["TestSettings:PostgreSQLConnection"];
         }
 
-        protected string ConvertToUTCInUSFormat(string dateString)
+        protected static string ConvertToUTCInUSFormat(string dateString)
         {
             DateTimeOffset date;
             string[] formats = {
@@ -58,7 +61,7 @@ namespace QueryDB.Core.Tests
             }
         }
 
-        protected string ConvertToUSFormat(string dateString)
+        protected static string ConvertToUSFormat(string dateString)
         {
             DateTime date;
             string[] formats = {
@@ -91,7 +94,7 @@ namespace QueryDB.Core.Tests
             }
         }
 
-        protected string GetBase64Content(string filePath)
+        protected static string GetBase64Content(string filePath)
         {
             if (!File.Exists(filePath))
                 throw new FileNotFoundException("File not found - '" + filePath + "'.");
