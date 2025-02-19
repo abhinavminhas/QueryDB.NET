@@ -28,9 +28,9 @@ The package is available and can be downloaded using [nuget.org](https://www.nug
 Built on **.NET Standard 2.0** - ([_Supported Versions_](https://learn.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0#tabpanel_1_net-standard-2-0))
 
 ## Features
-- Retrieve data from database.
-- Execute scalar database commands.
-- Execute database commands.
+- Retrieve data from the database.
+- Execute scalar queries (returning a single value).
+- Execute non-query database commands (e.g. `INSERT`, `UPDATE`, `DELETE`).
 - Execute transactions while maintaining atomicity.
 
 ## Getting Started
