@@ -126,6 +126,45 @@ namespace QueryDB.MSSQL
         }
 
         /// <summary>
+        /// Executes the provided SQL statement using the given SQL connection and returns the first column of the first row in the result set.
+        /// If the result is DBNull, an empty string is returned.
+        /// </summary>
+        /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
+        /// <param name="connection">The <see cref="SqlConnection"/> to use for executing the SQL statement.</param>
+        /// <returns>
+        /// A <see cref="string"/> representing the value of the first column of the first row in the result set,
+        /// or an empty string if the result is DBNull.
+        /// </returns>
+        internal string ExecuteScalar(string sqlStatement, SqlConnection connection)
+        {
+            using (var sqlCommand = GetSqlCommand(sqlStatement, connection, CommandType.Text))
+            {
+                var result = sqlCommand.ExecuteScalar();
+                return result == DBNull.Value ? string.Empty : result.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Executes the provided SQL statement using the given SQL connection and returns the first column of the first row in the result set,
+        /// converted to the specified type <typeparamref name="T"/>. If the result is DBNull, the default value of <typeparamref name="T"/> is returned.
+        /// </summary>
+        /// <typeparam name="T">The type to which the result should be converted.</typeparam>
+        /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
+        /// <param name="connection">The <see cref="SqlConnection"/> to use for executing the SQL statement.</param>
+        /// <returns>
+        /// The value of the first column of the first row in the result set, converted to type <typeparamref name="T"/>,
+        /// or the default value of <typeparamref name="T"/> if the result is DBNull.
+        /// </returns>
+        internal T ExecuteScalar<T>(string sqlStatement, SqlConnection connection)
+        {
+            using (var sqlCommand = GetSqlCommand(sqlStatement, connection, CommandType.Text))
+            {
+                var result = sqlCommand.ExecuteScalar();
+                return result == DBNull.Value ? default : (T)Convert.ChangeType(result, typeof(T));
+            }
+        }
+
+        /// <summary>
         /// Executes SQL commands.
         /// </summary>
         /// <param name="sqlStatement">SQL statement as command.</param>
@@ -151,7 +190,6 @@ namespace QueryDB.MSSQL
         /// <exception cref="Exception">
         /// Logs and handles exceptions if any SQL command execution fails.
         /// </exception>
-        
         internal static bool ExecuteTransaction(List<string> sqlStatements, SqlConnection connection)
         {
             using (SqlTransaction transaction = GetSqlTransaction(connection))

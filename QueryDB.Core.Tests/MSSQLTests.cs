@@ -310,6 +310,183 @@ namespace QueryDB.Core.Tests
 
         #endregion
 
+        #region Execute Scalar Tests - << string ExecuteScalar(string sqlStatement); >>
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_ExecuteScalar_As_StringReturn_Scalar_Queries()
+        {
+            var countOfRecords = Queries.MSSQLQueries.TestDB.ScalarQueries.Count_Of_Records;
+            var max = Queries.MSSQLQueries.TestDB.ScalarQueries.Max;
+            var min = Queries.MSSQLQueries.TestDB.ScalarQueries.Min;
+            var sum = Queries.MSSQLQueries.TestDB.ScalarQueries.Sum;
+            var avg = Queries.MSSQLQueries.TestDB.ScalarQueries.Avg;
+            var singleValueSelect = Queries.MSSQLQueries.TestDB.ScalarQueries.Single_Value_Select;
+
+            var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+
+            var count = dbContext.ExecuteScalar(countOfRecords);
+            Assert.AreEqual("12", count);
+            var maxValue = dbContext.ExecuteScalar(max);
+            Assert.AreEqual("10000.00", maxValue);
+            var minValue = dbContext.ExecuteScalar(min);
+            Assert.AreEqual("3000.00", minValue);
+            var sumValue = dbContext.ExecuteScalar(sum);
+            Assert.AreEqual("161000.00", sumValue);
+            var avgValue = dbContext.ExecuteScalar(avg);
+            Assert.AreEqual("6520.000000", avgValue);
+            var singleValue = dbContext.ExecuteScalar(singleValueSelect);
+            Assert.AreEqual("2", singleValue);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_ExecuteScalar_As_StringReturn_DefaultValue()
+        {
+            var noValueReturned = Queries.MSSQLQueries.TestDB.ScalarQueries.No_Value_Returned;
+            var dBNullValue = Queries.MSSQLQueries.TestDB.ScalarQueries.DB_Null_Value;
+
+            var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+
+            var result = dbContext.ExecuteScalar(noValueReturned);
+            Assert.IsInstanceOfType<string>(result);
+            Assert.AreEqual("", result);
+
+            result = dbContext.ExecuteScalar(dBNullValue);
+            Assert.IsInstanceOfType<string>(result);
+            Assert.AreEqual(string.Empty, result);
+        }
+
+        #endregion
+
+        #region Execute Scalar Tests - << T ExecuteScalar<T>(string sqlStatement); >>
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_ExecuteScalar_As_TypedReturn_Scalar_Queries()
+        {
+            var countOfRecords = Queries.MSSQLQueries.TestDB.ScalarQueries.Count_Of_Records;
+            var max = Queries.MSSQLQueries.TestDB.ScalarQueries.Max;
+            var min = Queries.MSSQLQueries.TestDB.ScalarQueries.Min;
+            var sum = Queries.MSSQLQueries.TestDB.ScalarQueries.Sum;
+            var avg = Queries.MSSQLQueries.TestDB.ScalarQueries.Avg;
+            var singleValueSelect = Queries.MSSQLQueries.TestDB.ScalarQueries.Single_Value_Select;
+
+            var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+
+            var count = dbContext.ExecuteScalar<int>(countOfRecords);
+            Assert.AreEqual(12, count);
+            var maxValue = dbContext.ExecuteScalar<float>(max);
+            Assert.AreEqual(10000.00, maxValue);
+            var minValue = dbContext.ExecuteScalar<float>(min);
+            Assert.AreEqual(3000.00, minValue);
+            var sumValue = dbContext.ExecuteScalar<float>(sum);
+            Assert.AreEqual(161000.00, sumValue);
+            var avgValue = dbContext.ExecuteScalar<decimal>(avg);
+            Assert.AreEqual((decimal)6520.000000, avgValue);
+            var singleValue = dbContext.ExecuteScalar<string>(singleValueSelect);
+            Assert.AreEqual("2", singleValue);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_ExecuteScalar_As_TypedReturn_DefaultValue()
+        {
+            var dBNullValue = Queries.MSSQLQueries.TestDB.ScalarQueries.DB_Null_Value;
+
+            var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+
+            dynamic result = dbContext.ExecuteScalar<int>(dBNullValue);
+            Assert.IsInstanceOfType<int>(result);
+            Assert.AreEqual(default(int), result);
+
+            result = dbContext.ExecuteScalar<long>(dBNullValue);
+            Assert.IsInstanceOfType<long>(result);
+            Assert.AreEqual(default(long), result);
+
+            result = dbContext.ExecuteScalar<short>(dBNullValue);
+            Assert.IsInstanceOfType<short>(result);
+            Assert.AreEqual(default(short), result);
+
+            result = dbContext.ExecuteScalar<uint>(dBNullValue);
+            Assert.IsInstanceOfType<uint>(result);
+            Assert.AreEqual(default(uint), result);
+
+            result = dbContext.ExecuteScalar<ulong>(dBNullValue);
+            Assert.IsInstanceOfType<ulong>(result);
+            Assert.AreEqual(default(ulong), result);
+
+            result = dbContext.ExecuteScalar<ushort>(dBNullValue);
+            Assert.IsInstanceOfType<ushort>(result);
+            Assert.AreEqual(default(ushort), result);
+
+            result = dbContext.ExecuteScalar<decimal>(dBNullValue);
+            Assert.IsInstanceOfType<decimal>(result);
+            Assert.AreEqual(default(decimal), result);
+
+            result = dbContext.ExecuteScalar<double>(dBNullValue);
+            Assert.IsInstanceOfType<double>(result);
+            Assert.AreEqual(default(double), result);
+
+            result = dbContext.ExecuteScalar<float>(dBNullValue);
+            Assert.IsInstanceOfType<float>(result);
+            Assert.AreEqual(default(float), result);
+
+            result = dbContext.ExecuteScalar<byte>(dBNullValue);
+            Assert.IsInstanceOfType<byte>(result);
+            Assert.AreEqual(default(byte), result);
+
+            result = dbContext.ExecuteScalar<bool>(dBNullValue);
+            Assert.IsInstanceOfType<bool>(result);
+            Assert.AreEqual(default(bool), result);
+
+            result = dbContext.ExecuteScalar<DateTime>(dBNullValue);
+            Assert.IsInstanceOfType<DateTime>(result);
+            Assert.AreEqual(default(DateTime), result);
+
+            result = dbContext.ExecuteScalar<Guid>(dBNullValue);
+            Assert.IsInstanceOfType<Guid>(result);
+            Assert.AreEqual(default(Guid), result);
+
+            result = dbContext.ExecuteScalar<string>(dBNullValue);
+            Assert.IsNull(result);
+            Assert.AreEqual(default(string), result);
+
+            result = dbContext.ExecuteScalar<int?>(dBNullValue);
+            Assert.IsNull(result);
+            Assert.AreEqual(default(int?), result);
+
+            result = dbContext.ExecuteScalar<long?>(dBNullValue);
+            Assert.IsNull(result);
+            Assert.AreEqual(default(long?), result);
+
+            result = dbContext.ExecuteScalar<short?>(dBNullValue);
+            Assert.IsNull(result);
+            Assert.AreEqual(default(short?), result);
+
+            result = dbContext.ExecuteScalar<decimal?>(dBNullValue);
+            Assert.IsNull(result);
+            Assert.AreEqual(default(decimal?), result);
+
+            result = dbContext.ExecuteScalar<double?>(dBNullValue);
+            Assert.IsNull(result);
+            Assert.AreEqual(default(double?), result);
+
+            result = dbContext.ExecuteScalar<float?>(dBNullValue);
+            Assert.IsNull(result);
+            Assert.AreEqual(default(float?), result);
+
+            result = dbContext.ExecuteScalar<bool?>(dBNullValue);
+            Assert.IsNull(result);
+            Assert.AreEqual(default(bool?), result);
+
+            result = dbContext.ExecuteScalar<DateTime?>(dBNullValue);
+            Assert.IsNull(result);
+            Assert.AreEqual(default(DateTime?), result);
+        }
+
+        #endregion
+
         #region Execute Command Tests - << int ExecuteCommand(string sqlStatement) >>
 
         [TestMethod]

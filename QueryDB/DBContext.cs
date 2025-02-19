@@ -147,6 +147,93 @@ namespace QueryDB
         }
 
         /// <summary>
+        /// Executes a SQL query and returns the result as a string.
+        /// </summary>
+        /// <param name="sqlStatement">The SQL query to execute.</param>
+        /// <returns>A string representing the result of the query. If the result is DBNull, an empty string is returned.</returns>
+        public string ExecuteScalar(string sqlStatement)
+        {
+            var value = string.Empty;
+            if (Database.Equals(DB.MSSQL))
+            {
+                using (var msSqlDBConnection = GetSqlServerConnection())
+                {
+                    var _systemAdapter = new MSSQL.Adapter();
+                    value = _systemAdapter.ExecuteScalar(sqlStatement, msSqlDBConnection.SqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.MySQL))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    var _systemAdapter = new MySQL.Adapter();
+                    value = _systemAdapter.ExecuteScalar(sqlStatement, mySqlDBConnection.MySqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    var _systemAdapter = new Oracle.Adapter();
+                    value = _systemAdapter.ExecuteScalar(sqlStatement, oracleDBConnection.OracleConnection);
+                }
+            }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    var _systemAdapter = new PostgreSQL.Adapter();
+                    value = _systemAdapter.ExecuteScalar(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
+                }
+            }
+            return value;
+        }
+
+        /// <summary>
+        /// Executes a SQL query and returns the result as the specified type.
+        /// </summary>
+        /// <typeparam name="T">The type to which the result should be converted.</typeparam>
+        /// <param name="sqlStatement">The SQL query to execute.</param>
+        /// <returns>The result of the query, converted to the specified type. If the result is DBNull, the default value for the type is returned.</returns>
+        public T ExecuteScalar<T>(string sqlStatement)
+        {
+            var value = default(T);
+            if (Database.Equals(DB.MSSQL))
+            {
+                using (var msSqlDBConnection = GetSqlServerConnection())
+                {
+                    var _systemAdapter = new MSSQL.Adapter();
+                    value = _systemAdapter.ExecuteScalar<T>(sqlStatement, msSqlDBConnection.SqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.MySQL))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    var _systemAdapter = new MySQL.Adapter();
+                    value = _systemAdapter.ExecuteScalar<T>(sqlStatement, mySqlDBConnection.MySqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    var _systemAdapter = new Oracle.Adapter();
+                    value = _systemAdapter.ExecuteScalar<T>(sqlStatement, oracleDBConnection.OracleConnection);
+                }
+            }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    var _systemAdapter = new PostgreSQL.Adapter();
+                    value = _systemAdapter.ExecuteScalar<T>(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
+                }
+            }
+            return value;
+        }
+
+        /// <summary>
         /// Executes SQL commands.
         /// </summary>
         /// <param name="sqlStatement">SQL statement as command.</param>
@@ -154,7 +241,7 @@ namespace QueryDB
         public int ExecuteCommand(string sqlStatement)
         {
             if (Regex.IsMatch(sqlStatement, "^\\s*SELECT\\s+.*", RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
-                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteCommand, 
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteCommand,
                     QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedSelectExecuteCommand);
             if (Database.Equals(DB.MSSQL))
             {
