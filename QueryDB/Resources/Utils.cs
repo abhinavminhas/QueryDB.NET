@@ -10,6 +10,11 @@ namespace QueryDB.Resources
     internal static class Utils
     {
         /// <summary>
+        /// Regex pattern to validate that a SQL query starts with 'SELECT'.
+        /// </summary>
+        internal static readonly string SelectQueryPattern = @"^\s*SELECT\s+.*";
+
+        /// <summary>
         /// Checks if a specified column exists in the given data reader.
         /// </summary>
         /// <param name="reader">The data reader to check.</param>

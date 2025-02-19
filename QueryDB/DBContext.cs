@@ -153,7 +153,7 @@ namespace QueryDB
         /// <returns>A string representing the result of the query. If the result is DBNull, an empty string is returned.</returns>
         public string ExecuteScalar(string sqlStatement)
         {
-            if (!Regex.IsMatch(sqlStatement, @"^\s*SELECT\s+.*", RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+            if (!Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
                 throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedExecuteScalarCommand,
                     QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedExecuteScalarCommand);
             var value = string.Empty;
@@ -200,7 +200,7 @@ namespace QueryDB
         /// <returns>The result of the query, converted to the specified type. If the result is DBNull, the default value for the type is returned.</returns>
         public T ExecuteScalar<T>(string sqlStatement)
         {
-            if (!Regex.IsMatch(sqlStatement, @"^\s*SELECT\s+.*", RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+            if (!Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
                 throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedExecuteScalarCommand,
                     QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedExecuteScalarCommand);
             var value = default(T);
@@ -246,7 +246,7 @@ namespace QueryDB
         /// <returns>The number of rows affected.</returns>
         public int ExecuteCommand(string sqlStatement)
         {
-            if (Regex.IsMatch(sqlStatement, "^\\s*SELECT\\s+.*", RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+            if (Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
                 throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteCommand,
                     QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedSelectExecuteCommand);
             if (Database.Equals(DB.MSSQL))
@@ -294,7 +294,7 @@ namespace QueryDB
         /// </returns>
         public bool ExecuteTransaction(List<string> sqlStatements)
         {
-            var selectExists = sqlStatements.Any(sqlStatement => Regex.IsMatch(sqlStatement, "^\\s*SELECT\\s+.*", RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)));
+            var selectExists = sqlStatements.Any(sqlStatement => Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)));
             if (selectExists)
                 throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteTransaction,
                     QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedSelectExecuteTransaction);
