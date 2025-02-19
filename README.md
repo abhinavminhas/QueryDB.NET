@@ -25,7 +25,7 @@ The package is available and can be downloaded using [nuget.org](https://www.nug
 
 ## .NET Supported Versions
 
-Built on **.NET Standard 2.0** - ([_Supported Versions_](https://learn.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0#tabpanel_1_net-standard-2-0))
+Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0#tabpanel_1_net-standard-2-0:~:text=Select%20.NET%20Standard%20version) )
 
 ## Features
 - Retrieve data from the database.
