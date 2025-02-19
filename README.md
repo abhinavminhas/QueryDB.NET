@@ -43,9 +43,18 @@ Built on [**.NET Standard 2.0**](https://learn.microsoft.com/en-us/dotnet/standa
 - Execute DBContext commands
 
     ```
-    var dbContext = new DBContext(DB.<Database Type>, <Connection String>);
-    var result = dbContext.ExecuteTransaction(<Sql Statements>);
+    var result = dbContext.FetchData(<Sql Statement>);
+    var result = dbContext.FetchData<T>(<Sql Statement>);
+    var result = dbContext.ExecuteScalar(<Sql Statement>);
+    var result = dbContext.ExecuteScalar<T>(<Sql Statement>);
+    var result = dbContext.ExecuteCommand(<Sql Statement>);
+    var result = dbContext.ExecuteTransaction(<List of Sql Statements>);
     ```
     ```
-    new DBContext(DB.<Database Type>, <Connection String>).ExecuteTransaction(<Sql Statements>);
+    var result = new DBContext(DB.<Database Type>, <Connection String>).FetchData(<Sql Statement>);
+    var result = new DBContext(DB.<Database Type>, <Connection String>).FetchData<T>(<Sql Statement>);
+    var result = new DBContext(DB.<Database Type>, <Connection String>).ExecuteScalar(<Sql Statement>);
+    var result = new DBContext(DB.<Database Type>, <Connection String>).ExecuteScalar<T>(<Sql Statement>);
+    var result = new DBContext(DB.<Database Type>, <Connection String>).ExecuteCommand(<Sql Statement>);
+    var result = new DBContext(DB.<Database Type>, <Connection String>).ExecuteTransaction(<Sql Statements>);
     ```
