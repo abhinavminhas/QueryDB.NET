@@ -25,7 +25,7 @@ The package is available and can be downloaded using [nuget.org](https://www.nug
 
 ## .NET Supported Versions
 
-Built on [**.NET Standard 2.0**](https://learn.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0#tabpanel_1_net-standard-2-0)
+Built on **.NET Standard 2.0** - ([_Supported Versions_](https://learn.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0#tabpanel_1_net-standard-2-0))
 
 ## Features
 - Retrieve data from database.
@@ -49,12 +49,4 @@ Built on [**.NET Standard 2.0**](https://learn.microsoft.com/en-us/dotnet/standa
     var result = dbContext.ExecuteScalar<T>(<Sql Statement>);
     var result = dbContext.ExecuteCommand(<Sql Statement>);
     var result = dbContext.ExecuteTransaction(<List of Sql Statements>);
-    ```
-    ```
-    var result = new DBContext(DB.<Database Type>, <Connection String>).FetchData(<Sql Statement>);
-    var result = new DBContext(DB.<Database Type>, <Connection String>).FetchData<T>(<Sql Statement>);
-    var result = new DBContext(DB.<Database Type>, <Connection String>).ExecuteScalar(<Sql Statement>);
-    var result = new DBContext(DB.<Database Type>, <Connection String>).ExecuteScalar<T>(<Sql Statement>);
-    var result = new DBContext(DB.<Database Type>, <Connection String>).ExecuteCommand(<Sql Statement>);
-    var result = new DBContext(DB.<Database Type>, <Connection String>).ExecuteTransaction(<Sql Statements>);
     ```
