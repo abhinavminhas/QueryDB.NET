@@ -153,6 +153,9 @@ namespace QueryDB
         /// <returns>A string representing the result of the query. If the result is DBNull, an empty string is returned.</returns>
         public string ExecuteScalar(string sqlStatement)
         {
+            if (!Regex.IsMatch(sqlStatement, @"^\s*SELECT\s+.*", RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedExecuteScalarCommand,
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedExecuteScalarCommand);
             var value = string.Empty;
             if (Database.Equals(DB.MSSQL))
             {
@@ -197,6 +200,9 @@ namespace QueryDB
         /// <returns>The result of the query, converted to the specified type. If the result is DBNull, the default value for the type is returned.</returns>
         public T ExecuteScalar<T>(string sqlStatement)
         {
+            if (!Regex.IsMatch(sqlStatement, @"^\s*SELECT\s+.*", RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedExecuteScalarCommand,
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedExecuteScalarCommand);
             var value = default(T);
             if (Database.Equals(DB.MSSQL))
             {

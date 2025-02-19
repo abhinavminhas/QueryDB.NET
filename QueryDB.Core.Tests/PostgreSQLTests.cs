@@ -331,6 +331,43 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual(string.Empty, result);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_ExecuteScalar_As_StringReturn_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.PostgreSQLQueries.TestDB.DDL.Create_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Alter_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Comment_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Truncate_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Drop_Table,
+
+                Queries.PostgreSQLQueries.TestDB.DML.InsertSql,
+                Queries.PostgreSQLQueries.TestDB.DML.UpdateSql,
+                Queries.PostgreSQLQueries.TestDB.DML.DeleteSql,
+
+                Queries.PostgreSQLQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.PostgreSQLQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+                    dbContext.ExecuteScalar(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'ExecuteScalar' only supports SELECT queries that have a scalar (single value) return.", ex.AdditionalInfo);
+                }
+            }
+        }
+
         #endregion
 
         #region Execute Scalar Tests - << T ExecuteScalar<T>(string sqlStatement); >>
@@ -457,6 +494,43 @@ namespace QueryDB.Core.Tests
             result = dbContext.ExecuteScalar<DateTime?>(dBNullValue);
             Assert.IsNull(result);
             Assert.AreEqual(default(DateTime?), result);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_ExecuteScalar_As_TypedReturn_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.PostgreSQLQueries.TestDB.DDL.Create_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Alter_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Comment_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Truncate_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Drop_Table,
+
+                Queries.PostgreSQLQueries.TestDB.DML.InsertSql,
+                Queries.PostgreSQLQueries.TestDB.DML.UpdateSql,
+                Queries.PostgreSQLQueries.TestDB.DML.DeleteSql,
+
+                Queries.PostgreSQLQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.PostgreSQLQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+                    dbContext.ExecuteScalar<string>(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'ExecuteScalar' only supports SELECT queries that have a scalar (single value) return.", ex.AdditionalInfo);
+                }
+            }
         }
 
         #endregion

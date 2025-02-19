@@ -357,6 +357,43 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual(string.Empty, result);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_ExecuteScalar_As_StringReturn_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.MSSQLQueries.TestDB.DDL.Create_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Alter_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Comment_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Truncate_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Drop_Table,
+
+                Queries.MSSQLQueries.TestDB.DML.InsertSql,
+                Queries.MSSQLQueries.TestDB.DML.UpdateSql,
+                Queries.MSSQLQueries.TestDB.DML.DeleteSql,
+
+                Queries.MSSQLQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.MSSQLQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+                    dbContext.ExecuteScalar(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'ExecuteScalar' only supports SELECT queries that have a scalar (single value) return.", ex.AdditionalInfo);
+                }
+            }
+        }
+
         #endregion
 
         #region Execute Scalar Tests - << T ExecuteScalar<T>(string sqlStatement); >>
@@ -483,6 +520,43 @@ namespace QueryDB.Core.Tests
             result = dbContext.ExecuteScalar<DateTime?>(dBNullValue);
             Assert.IsNull(result);
             Assert.AreEqual(default(DateTime?), result);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_ExecuteScalar_As_TypedReturn_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.MSSQLQueries.TestDB.DDL.Create_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Alter_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Comment_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Truncate_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Drop_Table,
+
+                Queries.MSSQLQueries.TestDB.DML.InsertSql,
+                Queries.MSSQLQueries.TestDB.DML.UpdateSql,
+                Queries.MSSQLQueries.TestDB.DML.DeleteSql,
+
+                Queries.MSSQLQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.MSSQLQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+                    dbContext.ExecuteScalar<string>(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'ExecuteScalar' only supports SELECT queries that have a scalar (single value) return.", ex.AdditionalInfo);
+                }
+            }
         }
 
         #endregion

@@ -339,6 +339,43 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual(string.Empty, result);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public void Test_Oracle_ExecuteScalar_As_StringReturn_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.OracleQueries.TestDB.DDL.Create_Table,
+                Queries.OracleQueries.TestDB.DDL.Alter_Table,
+                Queries.OracleQueries.TestDB.DDL.Comment_Table,
+                Queries.OracleQueries.TestDB.DDL.Truncate_Table,
+                Queries.OracleQueries.TestDB.DDL.Drop_Table,
+
+                Queries.OracleQueries.TestDB.DML.InsertSql,
+                Queries.OracleQueries.TestDB.DML.UpdateSql,
+                Queries.OracleQueries.TestDB.DML.DeleteSql,
+
+                Queries.OracleQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.OracleQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
+                    dbContext.ExecuteScalar(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'ExecuteScalar' only supports SELECT queries that have a scalar (single value) return.", ex.AdditionalInfo);
+                }
+            }
+        }
+
         #endregion
 
         #region Execute Scalar Tests - << T ExecuteScalar<T>(string sqlStatement); >>
@@ -465,6 +502,43 @@ namespace QueryDB.Core.Tests
             result = dbContext.ExecuteScalar<DateTime?>(dBNullValue);
             Assert.IsNull(result);
             Assert.AreEqual(default(DateTime?), result);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public void Test_Oracle_ExecuteScalar_As_TypedReturn_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.OracleQueries.TestDB.DDL.Create_Table,
+                Queries.OracleQueries.TestDB.DDL.Alter_Table,
+                Queries.OracleQueries.TestDB.DDL.Comment_Table,
+                Queries.OracleQueries.TestDB.DDL.Truncate_Table,
+                Queries.OracleQueries.TestDB.DDL.Drop_Table,
+
+                Queries.OracleQueries.TestDB.DML.InsertSql,
+                Queries.OracleQueries.TestDB.DML.UpdateSql,
+                Queries.OracleQueries.TestDB.DML.DeleteSql,
+
+                Queries.OracleQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.OracleQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
+                    dbContext.ExecuteScalar<string>(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'ExecuteScalar' only supports SELECT queries that have a scalar (single value) return.", ex.AdditionalInfo);
+                }
+            }
         }
 
         #endregion
