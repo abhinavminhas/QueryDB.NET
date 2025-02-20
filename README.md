@@ -35,13 +35,13 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
 
 ## Getting Started
     
-- Setup `DBContext` with the database of your choice  
+- _**Setup `DBContext` with the database of your choice**_
 
     ```
     var dbContext = new DBContext(DB.<Database Type>, <Connection String>);
     ```
 
-- Execute `DBContext` commands  
+- _**Execute `DBContext` commands**_
 
     ```
     var result = dbContext.FetchData(<Sql Statement>);
