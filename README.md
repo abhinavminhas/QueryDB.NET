@@ -18,3 +18,35 @@ QueryDB is a flexible database query framework designed to simplify querying and
 - [MySQL](https://www.mysql.com/)
 - [Oracle](https://www.oracle.com/)
 - [PostgreSQL](https://www.postgresql.org/)
+
+## Download
+The package is available and can be downloaded using [nuget.org](https://www.nuget.org/) package manager.  
+- Package Name - [QueryDB](https://www.nuget.org/packages/QueryDB).
+
+## .NET Supported Versions
+
+Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0#tabpanel_1_net-standard-2-0:~:text=Select%20.NET%20Standard%20version) )
+
+## Features
+- Retrieve data from the database.
+- Execute scalar queries (returning a single value).
+- Execute non-query database commands (e.g. `INSERT`, `UPDATE`, `DELETE`).
+- Execute transactions while maintaining atomicity.
+
+## Getting Started
+- Setup DBContext with the database of your choice
+
+    ```
+    var dbContext = new DBContext(DB.<Database Type>, <Connection String>);
+    ```
+
+- Execute DBContext commands
+
+    ```
+    var result = dbContext.FetchData(<Sql Statement>);
+    var result = dbContext.FetchData<T>(<Sql Statement>);
+    var result = dbContext.ExecuteScalar(<Sql Statement>);
+    var result = dbContext.ExecuteScalar<T>(<Sql Statement>);
+    var result = dbContext.ExecuteCommand(<Sql Statement>);
+    var result = dbContext.ExecuteTransaction(<List of Sql Statements>);
+    ```

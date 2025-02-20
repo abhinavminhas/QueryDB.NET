@@ -21,6 +21,17 @@
                 internal static string SelectSql_Strict = @"SELECT A.Agent_Code, A.Agent_Name AS Agent, C.Cust_Code, C.Cust_Name AS Customer, O.Ord_Num, O.Ord_Amount FROM Agents A INNER JOIN 
                                                         Customer C ON C.Agent_Code = A.Agent_Code INNER JOIN 
                                                         Orders O ON O.Cust_Code = C.Cust_Code AND O.Agent_Code = A.Agent_Code";
+                internal static class ScalarQueries
+                {
+                    internal static string Count_Of_Records = @"SELECT COUNT(*) FROM Agents";
+                    internal static string Max = @"SELECT MAX(Opening_Amt) FROM Customer";
+                    internal static string Min = @"SELECT MIN(Opening_Amt) FROM Customer";
+                    internal static string Sum = @"SELECT Sum(Opening_Amt) FROM Customer";
+                    internal static string Avg = @"SELECT Avg(Payment_Amt) FROM Customer";
+                    internal static string Single_Value_Select = @"SELECT Grade FROM Customer WHERE Cust_Code = 'C00001'";
+                    internal static string No_Value_Returned = @"SELECT ''";
+                    internal static string DB_Null_Value = @"SELECT CAST(NULL AS VARCHAR)";
+                }
                 internal static class DDL
                 {
                     internal static string Create_Table = @"CREATE TABLE Employee (EmployeeID INT PRIMARY KEY, FirstName NVARCHAR(50), LastName NVARCHAR(50))";
@@ -77,6 +88,17 @@
                 internal static string SelectSql_Strict = @"SELECT A.Agent_Code, A.Agent_Name AS Agent, C.Cust_Code, C.Cust_Name AS Customer, O.Ord_Num, O.Ord_Amount FROM Agents A INNER JOIN 
                                                         Customer C ON C.Agent_Code = A.Agent_Code INNER JOIN 
                                                         Orders O ON O.Cust_Code = C.Cust_Code AND O.Agent_Code = A.Agent_Code";
+                internal static class ScalarQueries
+                {
+                    internal static string Count_Of_Records = @"SELECT COUNT(*) FROM Agents";
+                    internal static string Max = @"SELECT MAX(Opening_Amt) FROM Customer";
+                    internal static string Min = @"SELECT MIN(Opening_Amt) FROM Customer";
+                    internal static string Sum = @"SELECT Sum(Opening_Amt) FROM Customer";
+                    internal static string Avg = @"SELECT Avg(Payment_Amt) FROM Customer";
+                    internal static string Single_Value_Select = @"SELECT Grade FROM Customer WHERE Cust_Code = 'C00001'";
+                    internal static string No_Value_Returned = @"SELECT ''";
+                    internal static string DB_Null_Value = @"SELECT CAST(NULL AS CHAR)";
+                }
                 internal static class DDL
                 {
                     internal static string Create_Table = @"CREATE TABLE Employee (EmployeeID INT PRIMARY KEY, FirstName NVARCHAR(50), LastName NVARCHAR(50))";
@@ -128,6 +150,17 @@
                 internal static string SelectSql_Strict = @"SELECT A.Agent_Code, A.Agent_Name AS Agent, C.Cust_Code, C.Cust_Name AS Customer, O.Ord_Num, O.Ord_Amount FROM Agents A INNER JOIN 
                                                         Customer C ON C.Agent_Code = A.Agent_Code INNER JOIN 
                                                         Orders O ON O.Cust_Code = C.Cust_Code AND O.Agent_Code = A.Agent_Code";
+                internal static class ScalarQueries
+                {
+                    internal static string Count_Of_Records = @"SELECT COUNT(*) FROM Agents";
+                    internal static string Max = @"SELECT MAX(Opening_Amt) FROM Customer";
+                    internal static string Min = @"SELECT MIN(Opening_Amt) FROM Customer";
+                    internal static string Sum = @"SELECT Sum(Opening_Amt) FROM Customer";
+                    internal static string Avg = @"SELECT Avg(Payment_Amt) FROM Customer";
+                    internal static string Single_Value_Select = @"SELECT Grade FROM Customer WHERE Cust_Code = 'C00001'";
+                    internal static string No_Value_Returned = @"SELECT '' FROM DUAL";
+                    internal static string DB_Null_Value = @"SELECT CAST(NULL AS VARCHAR2(4)) FROM DUAL";
+                }
                 internal static class DDL
                 {
                     internal static string Create_Table = @"CREATE TABLE Employee (EmployeeID NUMBER PRIMARY KEY, FirstName NVARCHAR2(50), LastName NVARCHAR2(50))";
@@ -180,6 +213,17 @@
                 internal static string SelectSql_Strict = @"SELECT A.Agent_Code, A.Agent_Name AS Agent, C.Cust_Code, C.Cust_Name AS Customer, O.Ord_Num, O.Ord_Amount FROM Agents A INNER JOIN 
                                                         Customer C ON C.Agent_Code = A.Agent_Code INNER JOIN 
                                                         Orders O ON O.Cust_Code = C.Cust_Code AND O.Agent_Code = A.Agent_Code";
+                internal static class ScalarQueries
+                {
+                    internal static string Count_Of_Records = @"SELECT COUNT(*) FROM Agents";
+                    internal static string Max = @"SELECT MAX(Opening_Amt) FROM Customer";
+                    internal static string Min = @"SELECT MIN(Opening_Amt) FROM Customer";
+                    internal static string Sum = @"SELECT Sum(Opening_Amt) FROM Customer";
+                    internal static string Avg = @"SELECT Avg(Payment_Amt) FROM Customer";
+                    internal static string Single_Value_Select = @"SELECT Grade FROM Customer WHERE Cust_Code = 'C00001'";
+                    internal static string No_Value_Returned = @"SELECT ''";
+                    internal static string DB_Null_Value = @"SELECT CAST(NULL AS VARCHAR)";
+                }
                 internal static class DDL
                 {
                     internal static string Create_Table = @"CREATE TABLE Employee (EmployeeID INT PRIMARY KEY, FirstName VARCHAR(50), LastName VARCHAR(50))";

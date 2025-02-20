@@ -26,6 +26,21 @@ namespace QueryDB
         List<T> FetchData<T>(string selectSql, bool strict = false) where T : new();
 
         /// <summary>
+        /// Executes a SQL query and returns the result as a string.
+        /// </summary>
+        /// <param name="sqlStatement">The SQL query to execute.</param>
+        /// <returns>A string representing the result of the query. If the result is DBNull, an empty string is returned.</returns>
+        string ExecuteScalar(string sqlStatement);
+
+        /// <summary>
+        /// Executes a SQL query and returns the result as the specified type.
+        /// </summary>
+        /// <typeparam name="T">The type to which the result should be converted.</typeparam>
+        /// <param name="sqlStatement">The SQL query to execute.</param>
+        /// <returns>The result of the query, converted to the specified type. If the result is DBNull, the default value for the type is returned.</returns>
+        T ExecuteScalar<T>(string sqlStatement);
+
+        /// <summary>
         /// Executes SQL commands.
         /// </summary>
         /// <param name="sqlStatement">SQL statement as command.</param>
