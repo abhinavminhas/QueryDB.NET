@@ -34,13 +34,14 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
 - Execute transactions while maintaining atomicity.
 
 ## Getting Started
-- Setup DBContext with the database of your choice
+    
+- Setup `DBContext` with the database of your choice  
 
     ```
     var dbContext = new DBContext(DB.<Database Type>, <Connection String>);
     ```
 
-- Execute DBContext commands
+- Execute `DBContext` commands  
 
     ```
     var result = dbContext.FetchData(<Sql Statement>);
