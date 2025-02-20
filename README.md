@@ -45,8 +45,14 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
     ```
     var result = dbContext.FetchData(<Sql Statement>);
     var result = dbContext.FetchData<T>(<Sql Statement>);
+    ```
+    ```
     var result = dbContext.ExecuteScalar(<Sql Statement>);
     var result = dbContext.ExecuteScalar<T>(<Sql Statement>);
+    ```
+    ```
     var result = dbContext.ExecuteCommand(<Sql Statement>);
+    ```
+    ```
     var result = dbContext.ExecuteTransaction(<List of Sql Statements>);
     ```
