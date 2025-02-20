@@ -9,16 +9,20 @@ Supported Databases:
 - MSSQL
 - MySQL
 - Oracle
-- PostgreSQL</Description>
+- PostgreSQL
+
+Features:
+- Retrieve data from the database.
+- Execute scalar queries (returning a single value).
+- Execute non-query database commands.
+- Execute transactions while maintaining atomicity.</Description>
     <PackageProjectUrl>https://github.com/abhinavminhas/QueryDB.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/abhinavminhas/QueryDB.NET</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>sql, query, rdbms, database, mssql, sqlserver, mysql, oracle, postgresql</PackageTags>
-    <PackageReleaseNotes>QueryDB framework for simplified querying and executing transactions across multiple database systems.
-- Retrieve data from database.
-- Execute database commands.
-- Execute transactions while maintaining atomicity.</PackageReleaseNotes>
+    <PackageReleaseNotes>1. Execute scalar queries (returning a single value).</PackageReleaseNotes>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
