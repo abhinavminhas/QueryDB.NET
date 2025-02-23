@@ -1217,6 +1217,169 @@ namespace QueryDB.Core.Tests
 
         #endregion
 
+        #region Execute Command Async Tests - << Task<int> ExecuteCommandAsync(string sqlStatement) >>
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
+        public async Task Test_MySQL_ExecuteCommandAsync_DDL_Queries()
+        {
+            var createTableSql = Queries.MySQLQueries.TestDB.DDL.Create_Table;
+            var alterTableSql = Queries.MySQLQueries.TestDB.DDL.Alter_Table;
+            var commentTableSql = Queries.MySQLQueries.TestDB.DDL.Comment_Table;
+            var commentTableColumnSql = Queries.MySQLQueries.TestDB.DDL.Comment_Table_Column;
+            var truncateTableSql = Queries.MySQLQueries.TestDB.DDL.Truncate_Table;
+            var renameTableSql = Queries.MySQLQueries.TestDB.DDL.Rename_Table;
+            var dropTableSql = Queries.MySQLQueries.TestDB.DDL.Drop_Table;
+            var dDLExecutionCheckSql = Queries.MySQLQueries.TestDB.DDL.DDL_Execute_check;
+            var dDLTableCommentCheckSql = Queries.MySQLQueries.TestDB.DDL.DDL_Table_Comment_check;
+            var dDLTableColumnCommentCheckSql = Queries.MySQLQueries.TestDB.DDL.DDL_Table_Column_Comment_check;
+
+            var dbContext = new DBContext(DB.MySQL, MySQLConnectionString);
+            await dbContext.ExecuteCommandAsync(createTableSql);
+            await dbContext.ExecuteCommandAsync(alterTableSql);
+            await dbContext.ExecuteCommandAsync(commentTableSql);
+            await dbContext.ExecuteCommandAsync(commentTableColumnSql);
+            await dbContext.ExecuteCommandAsync(truncateTableSql);
+
+            var tableCount = await dbContext
+                .FetchDataAsync(string.Format(dDLExecutionCheckSql, "mysql", "Employee"));
+            Assert.AreEqual("1", tableCount[0].ReferenceData["Table_Count"]);
+            var tableComment = await dbContext
+                .FetchDataAsync(string.Format(dDLTableCommentCheckSql, "mysql", "Employee"));
+            Assert.AreEqual("This table stores employee records", tableComment[0].ReferenceData["Table_Comment"]);
+            var tableColumnComment = await dbContext
+                .FetchDataAsync(string.Format(dDLTableColumnCommentCheckSql, "mysql", "Employee"));
+            Assert.AreEqual("This column stores employee middle name", tableColumnComment[3].ReferenceData["Table_Column_Comment"]);
+
+            await dbContext.ExecuteCommandAsync(renameTableSql);
+
+            tableCount = await dbContext
+                .FetchDataAsync(string.Format(dDLExecutionCheckSql, "mysql", "Employee"));
+            Assert.AreEqual("0", tableCount[0].ReferenceData["Table_Count"]);
+            tableCount = await dbContext
+                .FetchDataAsync(string.Format(dDLExecutionCheckSql, "mysql", "Employees"));
+            Assert.AreEqual("1", tableCount[0].ReferenceData["Table_Count"]);
+
+            await dbContext.ExecuteCommandAsync(dropTableSql);
+
+            tableCount = await dbContext
+                .FetchDataAsync(string.Format(dDLExecutionCheckSql, "mysql", "Employees"));
+            Assert.AreEqual("0", tableCount[0].ReferenceData["Table_Count"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
+        public async Task Test_MySQL_ExecuteCommandAsync_DML_Queries()
+        {
+            var insertSql = Queries.MySQLQueries.TestDB.DML.InsertSql;
+            var updateSql = Queries.MySQLQueries.TestDB.DML.UpdateSql;
+            var deleteSql = Queries.MySQLQueries.TestDB.DML.DeleteSql;
+            var verifyDMLExecution = Queries.MySQLQueries.TestDB.DML.VerifyDMLExecution;
+
+            var dbContext = new DBContext(DB.MySQL, MySQLConnectionString);
+
+            // Insert
+            var rows = await dbContext.ExecuteCommandAsync(insertSql);
+            Assert.AreEqual(1, rows);
+            var data = await dbContext.FetchDataAsync(verifyDMLExecution);
+            Assert.AreEqual(1, data.Count);
+            var agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["Agent_Code"]);
+            Assert.AreEqual("John", agent.ReferenceData["Agent_Name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["Working_Area"]);
+            Assert.AreEqual("0.11", agent.ReferenceData["Commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["Phone_No"]);
+            Assert.AreEqual("", agent.ReferenceData["Country"]);
+
+            // Update
+            rows = await dbContext.ExecuteCommandAsync(updateSql);
+            Assert.AreEqual(1, rows);
+            data = await dbContext.FetchDataAsync(verifyDMLExecution);
+            Assert.AreEqual(1, data.Count);
+            agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["Agent_Code"]);
+            Assert.AreEqual("John", agent.ReferenceData["Agent_Name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["Working_Area"]);
+            Assert.AreEqual("0.15", agent.ReferenceData["Commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["Phone_No"]);
+            Assert.AreEqual("", agent.ReferenceData["Country"]);
+
+            // Delete
+            rows = await dbContext.ExecuteCommandAsync(deleteSql);
+            Assert.AreEqual(1, rows);
+            data = await dbContext.FetchDataAsync(verifyDMLExecution);
+            Assert.AreEqual(0, data.Count);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
+        public async Task Test_MySQL_ExecuteCommandAsync_DML_Unsupported_SELECT_Queries()
+        {
+            var selectSql = Queries.MySQLQueries.TestDB.DML.SelectSql;
+
+            // Select
+            try
+            {
+                var dbContext = new DBContext(DB.MySQL, MySQLConnectionString);
+                var rows = await dbContext.ExecuteCommandAsync(selectSql);
+                Assert.Fail("No Exception");
+            }
+            catch (QueryDBException ex)
+            {
+                Assert.AreEqual("SELECT queries are not supported here.", ex.Message);
+                Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                Assert.AreEqual("'ExecuteCommand' doesn't support SELECT queries.", ex.AdditionalInfo);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
+        public async Task Test_MySQL_ExecuteCommandAsync_DCL_Queries()
+        {
+            var user = "test_user";
+            var password = "Test@1234";
+            var table = "Agents";
+            var commands = "SELECT, UPDATE";
+            var checkCommand = "SELECT";
+
+            var createUser = string.Format(Queries.MySQLQueries.TestDB.DCL.CreateUserSql_User_Password, user, password);
+            var grantSql = string.Format(Queries.MySQLQueries.TestDB.DCL.GrantSql_Command_Table_User, commands, table, user);
+            var revokeSql = string.Format(Queries.MySQLQueries.TestDB.DCL.RevokeSql_Command_Table_User, commands, table, user);
+            var verifyPermissions = string.Format(Queries.MySQLQueries.TestDB.DCL.VerifyPermission_User, user);
+            var removeUser = string.Format(Queries.MySQLQueries.TestDB.DCL.RemoveUserSql_User, user);
+
+            var dbContext = new DBContext(DB.MySQL, MySQLConnectionString);
+
+            // Create User
+            var result = await dbContext.ExecuteCommandAsync(createUser);
+            Assert.AreEqual(0, result);
+
+            // Existing Permissions
+            var data = await dbContext.FetchDataAsync(verifyPermissions);
+            Assert.AreEqual(1, data.Count);
+            Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+
+            // Grant
+            result = await dbContext.ExecuteCommandAsync(grantSql);
+            Assert.AreEqual(0, result);
+            data = await dbContext.FetchDataAsync(verifyPermissions);
+            Assert.AreEqual(2, data.Count);
+            Assert.IsTrue(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+
+            // Revoke
+            result = await dbContext.ExecuteCommandAsync(revokeSql);
+            Assert.AreEqual(0, result);
+            data = await dbContext.FetchDataAsync(verifyPermissions);
+            Assert.AreEqual(1, data.Count);
+            Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+
+            //Remove User
+            result = await dbContext.ExecuteCommandAsync(removeUser);
+            Assert.AreEqual(0, result);
+        }
+
+        #endregion
+
         #region Execute Transaction Tests - << bool ExecuteTransaction(List<string> sqlStatements) >>
 
         [TestMethod]

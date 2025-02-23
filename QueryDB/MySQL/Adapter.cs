@@ -170,11 +170,11 @@ namespace QueryDB.MySQL
         }
 
         /// <summary>
-        /// Executes SQL commands.
+        /// Executes a SQL statement that does not return a result set.
         /// </summary>
-        /// <param name="sqlStatement">SQL statement as command.</param>
-        /// <param name="connection">'MySQL' Connection.</param>
-        /// <returns>The number of rows affected.</returns>
+        /// <param name="sqlStatement">SQL statement to execute.</param>
+        /// <param name="connection">The <see cref="MySqlConnection"/> object used to connect to the database.</param>
+        /// <returns>The number of rows affected by the execution of the SQL statement.</returns>
         internal int ExecuteCommand(string sqlStatement, MySqlConnection connection)
         {
             using (var sqlCommand = GetMySqlCommand(sqlStatement, connection, CommandType.Text))
@@ -348,6 +348,20 @@ namespace QueryDB.MySQL
             {
                 var result = await sqlCommand.ExecuteScalarAsync();
                 return result == DBNull.Value ? default : (T)Convert.ChangeType(result, typeof(T));
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously executes a SQL statement that does not return a result set.
+        /// </summary>
+        /// <param name="sqlStatement">SQL statement to execute.</param>
+        /// <param name="connection">The <see cref="MySqlConnection"/> object used to connect to the database.</param>
+        /// <returns>The number of rows affected by the execution of the SQL statement.</returns>
+        internal async Task<int> ExecuteCommandAsync(string sqlStatement, MySqlConnection connection)
+        {
+            using (var sqlCommand = await GetMySqlCommandAsync(sqlStatement, connection, CommandType.Text))
+            {
+                return await sqlCommand.ExecuteNonQueryAsync();
             }
         }
 

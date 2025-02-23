@@ -441,10 +441,10 @@ namespace QueryDB
         }
 
         /// <summary>
-        /// Executes SQL commands.
+        /// Executes a SQL statement that does not return a result set.
         /// </summary>
-        /// <param name="sqlStatement">SQL statement as command.</param>
-        /// <returns>The number of rows affected.</returns>
+        /// <param name="sqlStatement">SQL statement to execute.</param>
+        /// <returns>The number of rows affected by the execution of the SQL statement.</returns>
         public int ExecuteCommand(string sqlStatement)
         {
             if (Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
@@ -480,6 +480,51 @@ namespace QueryDB
                 {
                     var _systemAdapter = new PostgreSQL.Adapter();
                     return _systemAdapter.ExecuteCommand(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
+                }
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Asynchronously executes a SQL statement that does not return a result set.
+        /// </summary>
+        /// <param name="sqlStatement">SQL statement to execute.</param>
+        /// <returns>The number of rows affected by the execution of the SQL statement.</returns>
+        public async Task<int> ExecuteCommandAsync(string sqlStatement)
+        {
+            if (Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteCommand,
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedSelectExecuteCommand);
+            if (Database.Equals(DB.MSSQL))
+            {
+                using (var msSqlDBConnection = GetSqlServerConnection())
+                {
+                    var _systemAdapter = new MSSQL.Adapter();
+                    return await _systemAdapter.ExecuteCommandAsync(sqlStatement, msSqlDBConnection.SqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.MySQL))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    var _systemAdapter = new MySQL.Adapter();
+                    return await _systemAdapter.ExecuteCommandAsync(sqlStatement, mySqlDBConnection.MySqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    var _systemAdapter = new Oracle.Adapter();
+                    return await _systemAdapter.ExecuteCommandAsync(sqlStatement, oracleDBConnection.OracleConnection);
+                }
+            }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    var _systemAdapter = new PostgreSQL.Adapter();
+                    return await _systemAdapter.ExecuteCommandAsync(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
                 }
             }
             return -1;

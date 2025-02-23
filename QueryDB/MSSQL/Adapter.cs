@@ -170,11 +170,11 @@ namespace QueryDB.MSSQL
         }
 
         /// <summary>
-        /// Executes SQL commands.
+        /// Executes a SQL statement that does not return a result set.
         /// </summary>
-        /// <param name="sqlStatement">SQL statement as command.</param>
-        /// <param name="connection">'Sql' Connection.</param>
-        /// <returns>The number of rows affected.</returns>
+        /// <param name="sqlStatement">SQL statement to execute.</param>
+        /// <param name="connection">The <see cref="SqlConnection"/> object used to connect to the database.</param>
+        /// <returns>The number of rows affected by the execution of the SQL statement.</returns>
         internal int ExecuteCommand(string sqlStatement, SqlConnection connection)
         {
             using(var sqlCommand = GetSqlCommand(sqlStatement, connection, CommandType.Text))
@@ -350,6 +350,20 @@ namespace QueryDB.MSSQL
             {
                 var result = await sqlCommand.ExecuteScalarAsync();
                 return result == DBNull.Value ? default : (T)Convert.ChangeType(result, typeof(T));
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously executes a SQL statement that does not return a result set.
+        /// </summary>
+        /// <param name="sqlStatement">SQL statement to execute.</param>
+        /// <param name="connection">The <see cref="SqlConnection"/> object used to connect to the database.</param>
+        /// <returns>The number of rows affected by the execution of the SQL statement.</returns>
+        internal async Task<int> ExecuteCommandAsync(string sqlStatement, SqlConnection connection)
+        {
+            using (var sqlCommand = await GetSqlCommandAsync(sqlStatement, connection, CommandType.Text))
+            {
+                return await sqlCommand.ExecuteNonQueryAsync();
             }
         }
 

@@ -89,11 +89,18 @@ namespace QueryDB
         Task<T> ExecuteScalarAsync<T>(string sqlStatement);
 
         /// <summary>
-        /// Executes SQL commands.
+        /// Executes a SQL statement that does not return a result set.
         /// </summary>
-        /// <param name="sqlStatement">SQL statement as command.</param>
-        /// <returns>The number of rows affected.</returns>
+        /// <param name="sqlStatement">SQL statement to execute.</param>
+        /// <returns>The number of rows affected by the execution of the SQL statement.</returns>
         int ExecuteCommand(string sqlStatement);
+
+        /// <summary>
+        /// Asynchronously executes a SQL statement that does not return a result set.
+        /// </summary>
+        /// <param name="sqlStatement">SQL statement to execute.</param>
+        /// <returns>The number of rows affected by the execution of the SQL statement.</returns>
+        Task<int> ExecuteCommandAsync(string sqlStatement);
 
         /// <summary>
         /// Executes multiple SQL statements within a transaction, ensuring that all statements are executed together.

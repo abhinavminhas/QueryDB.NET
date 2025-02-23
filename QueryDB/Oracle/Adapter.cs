@@ -176,11 +176,11 @@ namespace QueryDB.Oracle
         }
 
         /// <summary>
-        /// Executes SQL commands.
+        /// Executes a SQL statement that does not return a result set.
         /// </summary>
-        /// <param name="sqlStatement">SQL statement as command.</param>
-        /// <param name="connection">'Oracle' Connection.</param>
-        /// <returns>The number of rows affected.</returns>
+        /// <param name="sqlStatement">SQL statement to execute.</param>
+        /// <param name="connection">The <see cref="OracleConnection"/> object used to connect to the database.</param>
+        /// <returns>The number of rows affected by the execution of the SQL statement.</returns>
         internal int ExecuteCommand(string sqlStatement, OracleConnection connection)
         {
             using (var sqlCommand = GetOracleCommand(sqlStatement, connection, CommandType.Text))
@@ -364,6 +364,20 @@ namespace QueryDB.Oracle
             {
                 var result = await sqlCommand.ExecuteScalarAsync();
                 return result == null || result == DBNull.Value ? default : (T)Convert.ChangeType(result, typeof(T));
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously executes a SQL statement that does not return a result set.
+        /// </summary>
+        /// <param name="sqlStatement">SQL statement to execute.</param>
+        /// <param name="connection">The <see cref="OracleConnection"/> object used to connect to the database.</param>
+        /// <returns>The number of rows affected by the execution of the SQL statement.</returns>
+        internal async Task<int> ExecuteCommandAsync(string sqlStatement, OracleConnection connection)
+        {
+            using (var sqlCommand = await GetOracleCommandAsync(sqlStatement, connection, CommandType.Text))
+            {
+                return await sqlCommand.ExecuteNonQueryAsync();
             }
         }
 
