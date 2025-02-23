@@ -3,6 +3,7 @@ using QueryDB.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace QueryDB.Core.Tests
 {
@@ -161,7 +162,137 @@ namespace QueryDB.Core.Tests
 
         #endregion
 
-        #region Fetch Data Tests - << List<T> FetchData<T>(string selectSql) >>
+        #region Fetch Data Async Tests - << Task<List<DataDictionary>> FetchDataAsync(string selectSql, bool upperCaseKeys = false) >>
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_FetchDataAsync_Dictionary_SelectQuery()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql;
+            var data = await new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync(selectSql);
+            Assert.AreEqual(12, data.Count);
+            var agent = data.FirstOrDefault(X => X.ReferenceData["agent_name"] == "Benjamin");
+            Assert.AreEqual("A009", agent.ReferenceData["agent_code"]);
+            Assert.AreEqual("Benjamin", agent.ReferenceData["agent_name"]);
+            Assert.AreEqual("Hampshair", agent.ReferenceData["working_area"]);
+            Assert.AreEqual("0.11", agent.ReferenceData["commission"]);
+            Assert.AreEqual("008-22536178", agent.ReferenceData["phone_no"]);
+            Assert.AreEqual("", agent.ReferenceData["country"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_FetchDataAsync_Dictionary_SelectQuery_UpperCaseKeys()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql;
+            var data = await new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync(selectSql, upperCaseKeys: true);
+            Assert.AreEqual(12, data.Count);
+            var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_NAME"] == "Benjamin");
+            Assert.AreEqual("A009", agent.ReferenceData["AGENT_CODE"]);
+            Assert.AreEqual("Benjamin", agent.ReferenceData["AGENT_NAME"]);
+            Assert.AreEqual("Hampshair", agent.ReferenceData["WORKING_AREA"]);
+            Assert.AreEqual("0.11", agent.ReferenceData["COMMISSION"]);
+            Assert.AreEqual("008-22536178", agent.ReferenceData["PHONE_NO"]);
+            Assert.AreEqual("", agent.ReferenceData["COUNTRY"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_FetchDataAsync_Dictionary_SelectQuery_Joins()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_Join;
+            var data = await new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync(selectSql);
+            Assert.AreEqual(34, data.Count);
+            var agent = data.FirstOrDefault(X => X.ReferenceData["agent_code"] == "A004" && X.ReferenceData["cust_code"] == "C00006");
+            Assert.AreEqual("A004", agent.ReferenceData["agent_code"]);
+            Assert.AreEqual("Ivan", agent.ReferenceData["agent_name"]);
+            Assert.AreEqual("C00006", agent.ReferenceData["cust_code"]);
+            Assert.AreEqual("Shilton", agent.ReferenceData["cust_name"]);
+            Assert.AreEqual("200104", agent.ReferenceData["ord_num"]);
+            Assert.AreEqual("1500.00", agent.ReferenceData["ord_amount"]);
+            Assert.AreEqual("500.00", agent.ReferenceData["advance_amount"]);
+            Assert.AreEqual("SOD", agent.ReferenceData["ord_description"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_FetchDataAsync_Dictionary_SelectQuery_Joins_UpperCaseKeys()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_Join;
+            var data = await new  DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync(selectSql, upperCaseKeys: true);
+            Assert.AreEqual(34, data.Count);
+            var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004" && X.ReferenceData["CUST_CODE"] == "C00006");
+            Assert.AreEqual("A004", agent.ReferenceData["AGENT_CODE"]);
+            Assert.AreEqual("Ivan", agent.ReferenceData["AGENT_NAME"]);
+            Assert.AreEqual("C00006", agent.ReferenceData["CUST_CODE"]);
+            Assert.AreEqual("Shilton", agent.ReferenceData["CUST_NAME"]);
+            Assert.AreEqual("200104", agent.ReferenceData["ORD_NUM"]);
+            Assert.AreEqual("1500.00", agent.ReferenceData["ORD_AMOUNT"]);
+            Assert.AreEqual("500.00", agent.ReferenceData["ADVANCE_AMOUNT"]);
+            Assert.AreEqual("SOD", agent.ReferenceData["ORD_DESCRIPTION"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_FetchDataAsync_Dictionary_SelectQuery_Aliases()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_Alias;
+            var data = await new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync(selectSql);
+            Assert.AreEqual(34, data.Count);
+            var agent = data.FirstOrDefault(X => X.ReferenceData["agent_code"] == "A004" && X.ReferenceData["cust_code"] == "C00006");
+            Assert.AreEqual("A004", agent.ReferenceData["agent_code"]);
+            Assert.AreEqual("Ivan", agent.ReferenceData["agent"]);
+            Assert.AreEqual("Torento", agent.ReferenceData["agent_location"]);
+            Assert.AreEqual("C00006", agent.ReferenceData["cust_code"]);
+            Assert.AreEqual("Shilton", agent.ReferenceData["customer"]);
+            Assert.AreEqual("Torento", agent.ReferenceData["customer_location"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_FetchDataAsync_Dictionary_SelectQuery_Aliases_UpperCaseKeys()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_Alias;
+            var data = await new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync(selectSql, upperCaseKeys: true);
+            Assert.AreEqual(34, data.Count);
+            var agent = data.FirstOrDefault(X => X.ReferenceData["AGENT_CODE"] == "A004" && X.ReferenceData["CUST_CODE"] == "C00006");
+            Assert.AreEqual("A004", agent.ReferenceData["AGENT_CODE"]);
+            Assert.AreEqual("Ivan", agent.ReferenceData["AGENT"]);
+            Assert.AreEqual("Torento", agent.ReferenceData["AGENT_LOCATION"]);
+            Assert.AreEqual("C00006", agent.ReferenceData["CUST_CODE"]);
+            Assert.AreEqual("Shilton", agent.ReferenceData["CUSTOMER"]);
+            Assert.AreEqual("Torento", agent.ReferenceData["CUSTOMER_LOCATION"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_FetchDataAsync_Dictionary_DataTypes_Check()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_DataTypes;
+            var data = await new  DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync(selectSql);
+            Assert.AreEqual(1, data.Count);
+            var dataType = data.FirstOrDefault();
+            Assert.AreEqual("9223372036854775807", dataType.ReferenceData["bigint_column"]);
+            Assert.AreEqual("True", dataType.ReferenceData["boolean_column"]);
+            Assert.AreEqual("3q2+7w==", dataType.ReferenceData["bytea_column"]);
+            Assert.AreEqual("char10", dataType.ReferenceData["char_column"]);
+            Assert.AreEqual("varchar50", dataType.ReferenceData["varchar_column"]);
+            Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.ReferenceData["date_column"]));
+            Assert.AreEqual("123456.789", dataType.ReferenceData["double_column"]);
+            Assert.AreEqual("2147483647", dataType.ReferenceData["int_column"]);
+            Assert.AreEqual("12345.67", dataType.ReferenceData["money_column"]);
+            Assert.AreEqual("123456.789", dataType.ReferenceData["numeric_column"]);
+            Assert.AreEqual("12345.67", dataType.ReferenceData["real_column"]);
+            Assert.AreEqual("32767", dataType.ReferenceData["smallint_column"]);
+            Assert.AreEqual("some text", dataType.ReferenceData["text_column"]);
+            Assert.AreEqual("12:34:56", dataType.ReferenceData["time_column"]);
+            Assert.AreEqual("09/21/2024 14:34:56", ConvertToUSFormat(dataType.ReferenceData["timestamp_column"]));
+            Assert.AreEqual("123e4567-e89b-12d3-a456-426614174000", dataType.ReferenceData["uuid_column"]);
+        }
+
+        #endregion
+
+        #region Fetch Data Tests - << List<T> FetchData<T>(string selectSql, bool strict = false) >>
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
@@ -284,7 +415,130 @@ namespace QueryDB.Core.Tests
 
         #endregion
 
-        #region Execute Scalar Tests - << string ExecuteScalar(string sqlStatement); >>
+        #region Fetch Data Async Tests - << Task<List<T>> FetchDataAsync<T>(string selectSql, bool strict = false) >>
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_FetchDataAsync_Entity_SelectQuery()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql;
+            var data = await new  DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync<Entities.PostgreSQL.Agents>(selectSql);
+            Assert.AreEqual(12, data.Count);
+            var agent = data.FirstOrDefault(X => X.Agent_Name == "Benjamin");
+            Assert.AreEqual("A009", agent.Agent_Code);
+            Assert.AreEqual("Benjamin", agent.Agent_Name);
+            Assert.AreEqual("Hampshair", agent.Working_Area);
+            Assert.AreEqual((decimal)0.11, agent.Commission);
+            Assert.AreEqual("008-22536178", agent.Phone_No);
+            Assert.AreEqual("", agent.Country);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_FetchDataAsync_Entity_SelectQuery_Joins()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_Join;
+            var data = await new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync<Entities.PostgreSQL.Orders>(selectSql);
+            Assert.AreEqual(34, data.Count);
+            var agent = data.FirstOrDefault(X => X.Agent_Code == "A004" && X.Cust_Code == "C00006");
+            Assert.AreEqual("A004", agent.Agent_Code);
+            Assert.AreEqual("Ivan", agent.Agent_Name);
+            Assert.AreEqual("C00006", agent.Cust_Code);
+            Assert.AreEqual("Shilton", agent.Cust_Name);
+            Assert.AreEqual(200104, agent.Ord_Num);
+            Assert.AreEqual((decimal)1500.00, agent.Ord_Amount);
+            Assert.AreEqual((decimal)500.00, agent.Advance_Amount);
+            Assert.AreEqual("SOD", agent.Ord_Description);
+            // Non Existent Query Data
+            Assert.IsNull(agent.Agent);
+            Assert.IsNull(agent.Agent_Location);
+            Assert.IsNull(agent.Customer);
+            Assert.IsNull(agent.Customer_Location);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_FetchDataAsync_Entity_SelectQuery_Aliases()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_Alias;
+            var data = await new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync<Entities.PostgreSQL.Orders>(selectSql);
+            Assert.AreEqual(34, data.Count);
+            var agent = data.FirstOrDefault(X => X.Agent_Code == "A004" && X.Cust_Code == "C00006");
+            Assert.AreEqual("A004", agent.Agent_Code);
+            Assert.AreEqual("Ivan", agent.Agent);
+            Assert.AreEqual("Torento", agent.Agent_Location);
+            Assert.AreEqual("C00006", agent.Cust_Code);
+            Assert.AreEqual("Shilton", agent.Customer);
+            Assert.AreEqual("Torento", agent.Customer_Location);
+            // Non Existent Query Data
+            Assert.IsNull(agent.Agent_Name);
+            Assert.IsNull(agent.Cust_Name);
+            Assert.AreEqual(0, agent.Ord_Num);
+            Assert.AreEqual(0, agent.Ord_Amount);
+            Assert.AreEqual(0, agent.Advance_Amount);
+            Assert.IsNull(agent.Ord_Description);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_FetchDataAsync_Entity_DataTypes_Check()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_DataTypes;
+            var data = await new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync<Entities.PostgreSQL.DataTypes>(selectSql);
+            Assert.AreEqual(1, data.Count);
+            var dataType = data.FirstOrDefault();
+            Assert.AreEqual(9223372036854775807, dataType.BigInt_Column);
+            Assert.IsTrue(dataType.Boolean_Column);
+            Assert.AreEqual("3q2+7w==", ConvertByteArrayToBase64(dataType.Bytea_Column));
+            Assert.AreEqual("char10", dataType.Char_Column);
+            Assert.AreEqual("varchar50", dataType.Varchar_Column);
+            Assert.AreEqual("09/21/2024 00:00:00", ConvertToUSFormat(dataType.Date_Column.ToString()));
+            Assert.AreEqual(123456.789, dataType.Double_Column);
+            Assert.AreEqual(2147483647, dataType.Int_Column);
+            Assert.AreEqual((decimal)12345.67, dataType.Money_Column);
+            Assert.AreEqual((decimal)123456.789, dataType.Numeric_Column);
+            Assert.AreEqual((float)12345.67, dataType.Real_Column);
+            Assert.AreEqual(32767, dataType.SmallInt_Column);
+            Assert.AreEqual("some text", dataType.Text_Column);
+            Assert.AreEqual("12:34:56", dataType.Time_Column.ToString());
+            Assert.AreEqual("09/21/2024 14:34:56", ConvertToUSFormat(dataType.Timestamp_Column.ToString()));
+            Assert.AreEqual("123e4567-e89b-12d3-a456-426614174000", dataType.Uuid_Column.ToString());
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_FetchDataAsync_Entity_Strict_Check()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_Strict;
+            var data = await new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync<Entities.PostgreSQL.Details>(selectSql, strict: true);
+            Assert.AreEqual(34, data.Count);
+            var dataType = data.FirstOrDefault();
+            Assert.AreEqual("A003", dataType.Agent_Code);
+            Assert.AreEqual("Alex", dataType.Agent);
+            Assert.AreEqual("C00013", dataType.Cust_Code);
+            Assert.AreEqual("Holmes", dataType.Customer);
+            Assert.AreEqual(200100, dataType.Ord_Num);
+            Assert.AreEqual((decimal)1000.00, dataType.Ord_Amount);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_FetchDataAsync_Entity_Strict_Error_Check()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SelectSql_Strict;
+            try
+            {
+                var data = await new  DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync<Entities.PostgreSQL.Orders>(selectSql, strict: true);
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                Assert.AreEqual("Field not found in row: Agent_Name", ex.Message);
+            }
+        }
+
+        #endregion
+
+        #region Execute Scalar Tests - << string ExecuteScalar(string sqlStatement) >>
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
@@ -370,7 +624,7 @@ namespace QueryDB.Core.Tests
 
         #endregion
 
-        #region Execute Scalar Tests - << T ExecuteScalar<T>(string sqlStatement); >>
+        #region Execute Scalar Tests - << T ExecuteScalar<T>(string sqlStatement) >>
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace QueryDB
 {
@@ -56,13 +57,13 @@ namespace QueryDB
         }
 
         /// <summary>
-        /// Retrieves records for 'Select' queries from the database.
+        /// Executes and retrieves records for 'Select' queries from the database.
         /// Converts column names to keys holding values, with multiple database rows returned into a list.
         /// Note: Use aliases in query for similar column names.
         /// </summary>
         /// <param name="selectSql">'Select' query.</param>
-        /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase. Default - 'false'.</param>
-        /// <returns>List of data Dictionary with column names as keys holding values into a list for multiple rows of data.</returns>
+        /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase. Default - <c>false</c>.</param>
+        /// <returns>List of <see cref="DataDictionary"/> with column names as keys holding values into a list for multiple rows of data.</returns>
         public List<DataDictionary> FetchData(string selectSql, bool upperCaseKeys = false)
         {
             var dataList = new List<DataDictionary>();
@@ -102,12 +103,58 @@ namespace QueryDB
         }
 
         /// <summary>
-        ///  Retrieves records for 'Select' queries from the database.
+        /// Asynchronously executes and retrieves records for 'Select' queries from the database.
+        /// Converts column names to keys holding values, with multiple database rows returned into a list.
+        /// Note: Use aliases in query for similar column names.
+        /// </summary>
+        /// <param name="selectSql">'Select' query.</param>
+        /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase. Default - <c>false</c>.</param>
+        /// <returns>List of <see cref="DataDictionary"/> with column names as keys holding values into a list for multiple rows of data.</returns>
+        public async Task<List<DataDictionary>> FetchDataAsync(string selectSql, bool upperCaseKeys = false)
+        {
+            var dataList = new List<DataDictionary>();
+            if (Database.Equals(DB.MSSQL))
+            {
+                using (var msSqlDBConnection = GetSqlServerConnection())
+                {
+                    var _systemAdapter = new MSSQL.Adapter();
+                    dataList = await _systemAdapter.FetchDataAsync(selectSql, msSqlDBConnection.SqlConnection, upperCaseKeys);
+                }
+            }
+            else if (Database.Equals(DB.MySQL))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    var _systemAdapter = new MySQL.Adapter();
+                    dataList = await _systemAdapter.FetchDataAsync(selectSql, mySqlDBConnection.MySqlConnection, upperCaseKeys);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    var _systemAdapter = new Oracle.Adapter();
+                    dataList = await _systemAdapter.FetchDataAsync(selectSql, oracleDBConnection.OracleConnection, upperCaseKeys);
+                }
+            }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    var _systemAdapter = new PostgreSQL.Adapter();
+                    dataList = await _systemAdapter.FetchDataAsync(selectSql, postgreSqlDBConnection.PostgreSQLConnection, upperCaseKeys);
+                }
+            }
+            return dataList;
+        }
+
+        /// <summary>
+        /// Executes and retrieves records for 'Select' queries from the database.
         /// </summary>
         /// <typeparam name="T">Object entity to return data mapped into.</typeparam>
         /// <param name="selectSql">'Select' query.</param>
-        /// <param name="strict">Enables fetch data only for object <T> properties existing in database query result. Default - 'false'.</param>
-        /// <returns>List of data rows mapped into object entity into a list for multiple rows of data.</returns>
+        /// <param name="strict">Enables fetch data only for object type <typeparamref name="T"/> properties existing in database query result. Default - <c>false</c>.</param>
+        /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
         public List<T> FetchData<T>(string selectSql, bool strict = false) where T : new()
         {
             var dataList = new List<T>();
@@ -141,6 +188,51 @@ namespace QueryDB
                 {
                     var _systemAdapter = new PostgreSQL.Adapter();
                     dataList = _systemAdapter.FetchData<T>(selectSql, postgreSqlDBConnection.PostgreSQLConnection, strict);
+                }
+            }
+            return dataList;
+        }
+
+        /// <summary>
+        /// Asynchronously executes and retrieves records for 'Select' queries from the database.
+        /// </summary>
+        /// <typeparam name="T">Object entity to return data mapped into.</typeparam>
+        /// <param name="selectSql">'Select' query.</param>
+        /// <param name="strict">Enables fetch data only for object type <typeparamref name="T"/> properties existing in database query result. Default - <c>false</c>.</param>
+        /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
+        public async Task<List<T>> FetchDataAsync<T>(string selectSql, bool strict = false) where T : new()
+        {
+            var dataList = new List<T>();
+            if (Database.Equals(DB.MSSQL))
+            {
+                using (var msSqlDBConnection = GetSqlServerConnection())
+                {
+                    var _systemAdapter = new MSSQL.Adapter();
+                    dataList = await _systemAdapter.FetchDataAsync<T>(selectSql, msSqlDBConnection.SqlConnection, strict);
+                }
+            }
+            else if (Database.Equals(DB.MySQL))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    var _systemAdapter = new MySQL.Adapter();
+                    dataList = await _systemAdapter.FetchDataAsync<T>(selectSql, mySqlDBConnection.MySqlConnection, strict);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    var _systemAdapter = new Oracle.Adapter();
+                    dataList = await _systemAdapter.FetchDataAsync<T>(selectSql, oracleDBConnection.OracleConnection, strict);
+                }
+            }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    var _systemAdapter = new PostgreSQL.Adapter();
+                    dataList = await _systemAdapter.FetchDataAsync<T>(selectSql, postgreSqlDBConnection.PostgreSQLConnection, strict);
                 }
             }
             return dataList;

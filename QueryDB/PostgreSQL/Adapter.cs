@@ -3,6 +3,7 @@ using QueryDB.Resources;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace QueryDB.PostgreSQL
 {
@@ -11,13 +12,16 @@ namespace QueryDB.PostgreSQL
     /// </summary>
     internal class Adapter
     {
+
+        #region Synchronous
+
         /// <summary>
-        /// Gets the 'PostgreSQL' data reader.
+        /// Executes the specified SQL command and returns 'PostgreSQL' data reader.
         /// </summary>
         /// <param name="cmdText">The text of the query.</param>
-        /// <param name="connection">'PostgreSQL' connection.</param>
+        /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
         /// <param name="commandType">Sql command type.</param>
-        /// <returns>'PostgreSQL' data reader.</returns>
+        /// <returns>A <see cref="NpgsqlDataReader"/> object that can be used to read the query results.</returns>
         internal NpgsqlDataReader GetPostgreSqlReader(string cmdText, NpgsqlConnection connection, CommandType commandType)
         {
             connection.Open();
@@ -32,7 +36,7 @@ namespace QueryDB.PostgreSQL
         /// connection, and command type. Opens the connection before creating the command.
         /// </summary>
         /// <param name="cmdText">The SQL command text to execute.</param>
-        /// <param name="connection">The <see cref="NpgsqlConnection"/> to use.</param>
+        /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
         /// <param name="commandType">The type of the command (e.g., Text, StoredProcedure).</param>
         /// <returns>A configured <see cref="NpgsqlCommand"/> instance.</returns>
         internal NpgsqlCommand GetPostgreSqlCommand(string cmdText, NpgsqlConnection connection, CommandType commandType)
@@ -68,13 +72,14 @@ namespace QueryDB.PostgreSQL
         }
 
         /// <summary>
-        /// Retrieves records for 'Select' queries from the database.
+        /// Executes and retrieves records for 'Select' queries from the database.
         /// Converts column names to keys holding values, with multiple database rows returned into a list.
+        /// Note: Use aliases in query for similar column names.
         /// </summary>
         /// <param name="selectSql">'Select' query.</param>
-        /// <param name="connection">'PostgreSQL' Connection.</param>
+        /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
         /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase.</param>
-        /// <returns>List of data Dictionary with column names as keys holding values into a list for multiple rows of data.
+        /// <returns>List of <see cref="DataDictionary"/> with column names as keys holding values into a list for multiple rows of data.
         /// Note: Byte[] is returned as Base64 string.</returns>
         internal List<DataDictionary> FetchData(string selectSql, NpgsqlConnection connection, bool upperCaseKeys)
         {
@@ -99,13 +104,13 @@ namespace QueryDB.PostgreSQL
         }
 
         /// <summary>
-        ///  Retrieves records for 'Select' queries from the database.
+        /// Executes and retrieves records for 'Select' queries from the database.
         /// </summary>
         /// <typeparam name="T">Object entity to return data mapped into.</typeparam>
         /// <param name="selectSql">'Select' query.</param>
-        /// <param name="connection">'PostgreSQL' Connection.</param>
-        /// <param name="strict">Enables fetch data only for object <T> properties existing in database query result.</param>
-        /// <returns>List of data rows mapped into object entity into a list for multiple rows of data.</returns>
+        /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
+        /// <param name="strict">Enables fetch data only for object type <typeparamref name="T"/> properties existing in database query result.</param>
+        /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
         internal List<T> FetchData<T>(string selectSql, NpgsqlConnection connection, bool strict) where T : new()
         {
             var dataList = new List<T>();
@@ -214,5 +219,101 @@ namespace QueryDB.PostgreSQL
                 }
             }
         }
+
+        #endregion
+
+        #region Asynchronous
+
+        /// <summary>
+        /// Asynchronously executes the specified SQL command and returns 'PostgreSQL' data reader.
+        /// </summary>
+        /// <param name="cmdText">The text of the query.</param>
+        /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
+        /// <param name="commandType">Sql command type.</param>
+        /// <returns>A <see cref="NpgsqlDataReader"/> object that can be used to read the query results.</returns>
+        internal async Task<NpgsqlDataReader> GetPostgreSqlReaderAsync(string cmdText, NpgsqlConnection connection, CommandType commandType)
+        {
+            await connection.OpenAsync();
+            using (var sqlCommand = new NpgsqlCommand(cmdText, connection) { CommandType = commandType })
+            {
+                return await sqlCommand.ExecuteReaderAsync();
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously creates and returns a new <see cref="NpgsqlCommand"/> with the specified command text, 
+        /// connection, and command type. Opens the connection before creating the command.
+        /// </summary>
+        /// <param name="cmdText">The SQL command text to execute.</param>
+        /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
+        /// <param name="commandType">The type of the command (e.g., Text, StoredProcedure).</param>
+        /// <returns>A configured <see cref="NpgsqlCommand"/> instance.</returns>
+        internal async Task<NpgsqlCommand> GetPostgreSqlCommandAsync(string cmdText, NpgsqlConnection connection, CommandType commandType)
+        {
+            await connection.OpenAsync();
+            var sqlCommand = new NpgsqlCommand(cmdText, connection) { CommandType = commandType };
+            return sqlCommand;
+        }
+
+        /// <summary>
+        /// Asynchronously executes and retrieves records for 'Select' queries from the database.
+        /// Converts column names to keys holding values, with multiple database rows returned into a list.
+        /// Note: Use aliases in query for similar column names.
+        /// </summary>
+        /// <param name="selectSql">'Select' query.</param>
+        /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
+        /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase.</param>
+        /// <returns>List of <see cref="DataDictionary"/> with column names as keys holding values into a list for multiple rows of data.
+        /// Note: Byte[] is returned as Base64 string.</returns>
+        internal async Task<List<DataDictionary>> FetchDataAsync(string selectSql, NpgsqlConnection connection, bool upperCaseKeys)
+        {
+            var dataList = new List<DataDictionary>();
+            using (var reader = await GetPostgreSqlReaderAsync(selectSql, connection, CommandType.Text))
+            {
+                while (await reader.ReadAsync())
+                {
+                    var addRow = new DataDictionary();
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        string key = upperCaseKeys ? reader.GetName(i).ToUpper() : reader.GetName(i);
+                        if (reader.GetValue(i) is byte[] value)
+                            addRow.ReferenceData.Add(key, Convert.ToBase64String(value));
+                        else
+                            addRow.ReferenceData.Add(key, reader.GetValue(i).ToString());
+                    }
+                    dataList.Add(addRow);
+                }
+            }
+            return dataList;
+        }
+
+        /// <summary>
+        /// Asynchronously executes and retrieves records for 'Select' queries from the database.
+        /// </summary>
+        /// <typeparam name="T">Object entity to return data mapped into.</typeparam>
+        /// <param name="selectSql">'Select' query.</param>
+        /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
+        /// <param name="strict">Enables fetch data only for object type <typeparamref name="T"/> properties existing in database query result.</param>
+        /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
+        internal async Task<List<T>> FetchDataAsync<T>(string selectSql, NpgsqlConnection connection, bool strict) where T : new()
+        {
+            var dataList = new List<T>();
+            using (var reader = await GetPostgreSqlReaderAsync(selectSql, connection, CommandType.Text))
+            {
+                while (await reader.ReadAsync())
+                {
+                    var addObjectRow = new T();
+                    foreach (var prop in typeof(T).GetProperties())
+                    {
+                        if ((strict || Utils.ColumnExists(reader, prop.Name)) && !reader.IsDBNull(reader.GetOrdinal(prop.Name)))
+                            prop.SetValue(addObjectRow, reader[prop.Name]);
+                    }
+                    dataList.Add(addObjectRow);
+                }
+            }
+            return dataList;
+        }
+
+        #endregion
     }
 }
