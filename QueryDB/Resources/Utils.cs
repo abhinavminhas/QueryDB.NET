@@ -99,7 +99,7 @@ namespace QueryDB.Resources
         {
             string content = string.Empty;
             var bFile = reader.GetOracleBFile(columnIndex);
-            if (bFile != null && !reader.IsDBNull(columnIndex))
+            if (bFile != null && !await reader.IsDBNullAsync(columnIndex))
             {
                 bFile.OpenFile();
                 byte[] buffer = new byte[bFile.Length];
@@ -156,7 +156,7 @@ namespace QueryDB.Resources
             byte[] buffer = null;
             int columnIndex = reader.GetOrdinal(columnName);
             var bFile = reader.GetOracleBFile(columnIndex);
-            if (bFile != null && !reader.IsDBNull(columnIndex))
+            if (bFile != null && !await reader.IsDBNullAsync(columnIndex))
             {
                 bFile.OpenFile();
                 buffer = new byte[bFile.Length];

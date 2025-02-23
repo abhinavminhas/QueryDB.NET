@@ -314,7 +314,7 @@ namespace QueryDB.Oracle
                     var addObjectRow = new T();
                     foreach (var prop in typeof(T).GetProperties())
                     {
-                        if ((strict || Utils.ColumnExists(reader, prop.Name)) && !reader.IsDBNull(reader.GetOrdinal(prop.Name)))
+                        if ((strict || Utils.ColumnExists(reader, prop.Name)) && !await reader.IsDBNullAsync(reader.GetOrdinal(prop.Name)))
                         {
                             if (Utils.IsBFileColumn(reader, prop.Name))
                                 prop.SetValue(addObjectRow, await Utils.GetBFileByteContentAsync(reader, prop.Name));
