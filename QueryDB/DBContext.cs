@@ -103,6 +103,51 @@ namespace QueryDB
         }
 
         /// <summary>
+        /// Executes and retrieves records for 'Select' queries from the database.
+        /// </summary>
+        /// <typeparam name="T">Object entity to return data mapped into.</typeparam>
+        /// <param name="selectSql">'Select' query.</param>
+        /// <param name="strict">Enables fetch data only for object type <typeparamref name="T"/> properties existing in database query result. Default - <c>false</c>.</param>
+        /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
+        public List<T> FetchData<T>(string selectSql, bool strict = false) where T : new()
+        {
+            var dataList = new List<T>();
+            if (Database.Equals(DB.MSSQL))
+            {
+                using (var msSqlDBConnection = GetSqlServerConnection())
+                {
+                    var _systemAdapter = new MSSQL.Adapter();
+                    dataList = _systemAdapter.FetchData<T>(selectSql, msSqlDBConnection.SqlConnection, strict);
+                }
+            }
+            else if (Database.Equals(DB.MySQL))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    var _systemAdapter = new MySQL.Adapter();
+                    dataList = _systemAdapter.FetchData<T>(selectSql, mySqlDBConnection.MySqlConnection, strict);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    var _systemAdapter = new Oracle.Adapter();
+                    dataList = _systemAdapter.FetchData<T>(selectSql, oracleDBConnection.OracleConnection, strict);
+                }
+            }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    var _systemAdapter = new PostgreSQL.Adapter();
+                    dataList = _systemAdapter.FetchData<T>(selectSql, postgreSqlDBConnection.PostgreSQLConnection, strict);
+                }
+            }
+            return dataList;
+        }
+
+        /// <summary>
         /// Asynchronously executes and retrieves records for 'Select' queries from the database.
         /// Converts column names to keys holding values, with multiple database rows returned into a list.
         /// Note: Use aliases in query for similar column names.
@@ -143,51 +188,6 @@ namespace QueryDB
                 {
                     var _systemAdapter = new PostgreSQL.Adapter();
                     dataList = await _systemAdapter.FetchDataAsync(selectSql, postgreSqlDBConnection.PostgreSQLConnection, upperCaseKeys);
-                }
-            }
-            return dataList;
-        }
-
-        /// <summary>
-        /// Executes and retrieves records for 'Select' queries from the database.
-        /// </summary>
-        /// <typeparam name="T">Object entity to return data mapped into.</typeparam>
-        /// <param name="selectSql">'Select' query.</param>
-        /// <param name="strict">Enables fetch data only for object type <typeparamref name="T"/> properties existing in database query result. Default - <c>false</c>.</param>
-        /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
-        public List<T> FetchData<T>(string selectSql, bool strict = false) where T : new()
-        {
-            var dataList = new List<T>();
-            if (Database.Equals(DB.MSSQL))
-            {
-                using (var msSqlDBConnection = GetSqlServerConnection())
-                {
-                    var _systemAdapter = new MSSQL.Adapter();
-                    dataList = _systemAdapter.FetchData<T>(selectSql, msSqlDBConnection.SqlConnection, strict);
-                }
-            }
-            else if (Database.Equals(DB.MySQL))
-            {
-                using (var mySqlDBConnection = GetMySqlConnection())
-                {
-                    var _systemAdapter = new MySQL.Adapter();
-                    dataList = _systemAdapter.FetchData<T>(selectSql, mySqlDBConnection.MySqlConnection, strict);
-                }
-            }
-            else if (Database.Equals(DB.Oracle))
-            {
-                using (var oracleDBConnection = GetOracleConnection())
-                {
-                    var _systemAdapter = new Oracle.Adapter();
-                    dataList = _systemAdapter.FetchData<T>(selectSql, oracleDBConnection.OracleConnection, strict);
-                }
-            }
-            else if (Database.Equals(DB.PostgreSQL))
-            {
-                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
-                {
-                    var _systemAdapter = new PostgreSQL.Adapter();
-                    dataList = _systemAdapter.FetchData<T>(selectSql, postgreSqlDBConnection.PostgreSQLConnection, strict);
                 }
             }
             return dataList;

@@ -18,14 +18,6 @@ namespace QueryDB
         List<DataDictionary> FetchData(string selectSql, bool upperCaseKeys = false);
 
         /// <summary>
-        /// Asynchronously executes and retrieves records for 'Select' queries from the database.
-        /// </summary>
-        /// <param name="selectSql">'Select' query.</param>
-        /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase. Default - <c>false</c>.</param>
-        /// <returns>List of <see cref="DataDictionary"/> with column names as keys holding values into a list for multiple rows of data.</returns>
-        Task<List<DataDictionary>> FetchDataAsync(string selectSql, bool upperCaseKeys = false);
-
-        /// <summary>
         /// Executes and retrieves records for 'Select' queries from the database.
         /// </summary>
         /// <typeparam name="T">Object entity to return data mapped into.</typeparam>
@@ -33,6 +25,14 @@ namespace QueryDB
         /// <param name="strict">Enables fetch data only for object type <typeparamref name="T"/> properties existing in database query result. Default - <c>false</c>.</param>
         /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
         List<T> FetchData<T>(string selectSql, bool strict = false) where T : new();
+
+        /// <summary>
+        /// Asynchronously executes and retrieves records for 'Select' queries from the database.
+        /// </summary>
+        /// <param name="selectSql">'Select' query.</param>
+        /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase. Default - <c>false</c>.</param>
+        /// <returns>List of <see cref="DataDictionary"/> with column names as keys holding values into a list for multiple rows of data.</returns>
+        Task<List<DataDictionary>> FetchDataAsync(string selectSql, bool upperCaseKeys = false);
 
         /// <summary>
         /// Asynchronously executes and retrieves records for 'Select' queries from the database.
