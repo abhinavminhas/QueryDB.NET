@@ -406,6 +406,7 @@ namespace QueryDB.Core.Tests
             try
             {
                 var data = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData<Entities.PostgreSQL.Orders>(selectSql, strict: true);
+                Assert.Fail("No Exception");
             }
             catch (IndexOutOfRangeException ex)
             {
@@ -529,6 +530,7 @@ namespace QueryDB.Core.Tests
             try
             {
                 var data = await new  DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync<Entities.PostgreSQL.Orders>(selectSql, strict: true);
+                Assert.Fail("No Exception");
             }
             catch (IndexOutOfRangeException ex)
             {

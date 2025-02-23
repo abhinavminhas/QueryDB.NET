@@ -418,6 +418,7 @@ namespace QueryDB.Core.Tests
             try
             {
                 var data = new DBContext(DB.Oracle, OracleConnectionString).FetchData<Entities.Oracle.Orders>(selectSql, strict: true);
+                Assert.Fail("No Exception");
             }
             catch (IndexOutOfRangeException ex)
             {
@@ -545,6 +546,7 @@ namespace QueryDB.Core.Tests
             try
             {
                 var data = await new DBContext(DB.Oracle, OracleConnectionString).FetchDataAsync<Entities.Oracle.Orders>(selectSql, strict: true);
+                Assert.Fail("No Exception");
             }
             catch (IndexOutOfRangeException ex)
             {

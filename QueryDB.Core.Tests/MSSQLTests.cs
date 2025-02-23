@@ -445,6 +445,7 @@ namespace QueryDB.Core.Tests
             try
             {
                 var data = new DBContext(DB.MSSQL, MSSQLConnectionString).FetchData<Entities.MSSQL.Orders>(selectSql, strict: true);
+                Assert.Fail("No Exception");
             }
             catch (IndexOutOfRangeException ex)
             {
@@ -581,6 +582,7 @@ namespace QueryDB.Core.Tests
             try
             {
                 var data = await new DBContext(DB.MSSQL, MSSQLConnectionString).FetchDataAsync<Entities.MSSQL.Orders>(selectSql, strict: true);
+                Assert.Fail("No Exception");
             }
             catch (IndexOutOfRangeException ex)
             {
