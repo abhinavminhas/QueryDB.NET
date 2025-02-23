@@ -314,6 +314,45 @@ namespace QueryDB.PostgreSQL
             return dataList;
         }
 
+        /// <summary>
+        /// Asynchronously executes the provided SQL statement using the given PostgreSQL connection and returns the first column of the first row in the result set.
+        /// If the result is DBNull, an empty string is returned.
+        /// </summary>
+        /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
+        /// <param name="connection">The <see cref="NpgsqlConnection"/> to use for executing the SQL statement.</param>
+        /// <returns>
+        /// A <see cref="string"/> representing the value of the first column of the first row in the result set,
+        /// or an empty string if the result is DBNull.
+        /// </returns>
+        internal async Task<string> ExecuteScalarAsync(string sqlStatement, NpgsqlConnection connection)
+        {
+            using (var sqlCommand = await GetPostgreSqlCommandAsync(sqlStatement, connection, CommandType.Text))
+            {
+                var result = await sqlCommand.ExecuteScalarAsync();
+                return result == null || result == DBNull.Value ? string.Empty : result.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously executes the provided SQL statement using the given PostgreSQL connection and returns the first column of the first row in the result set,
+        /// converted to the specified type <typeparamref name="T"/>. If the result is DBNull, the default value of <typeparamref name="T"/> is returned.
+        /// </summary>
+        /// <typeparam name="T">The type to which the result should be converted.</typeparam>
+        /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
+        /// <param name="connection">The <see cref="NpgsqlConnection"/> to use for executing the SQL statement.</param>
+        /// <returns>
+        /// The value of the first column of the first row in the result set, converted to type <typeparamref name="T"/>,
+        /// or the default value of <typeparamref name="T"/> if the result is DBNull.
+        /// </returns>
+        internal async Task<T> ExecuteScalarAsync<T>(string sqlStatement, NpgsqlConnection connection)
+        {
+            using (var sqlCommand = await GetPostgreSqlCommandAsync(sqlStatement, connection, CommandType.Text))
+            {
+                var result = await sqlCommand.ExecuteScalarAsync();
+                return result == null || result == DBNull.Value ? default : (T)Convert.ChangeType(result, typeof(T));
+            }
+        }
+
         #endregion
     }
 }

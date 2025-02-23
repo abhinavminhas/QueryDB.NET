@@ -642,6 +642,92 @@ namespace QueryDB.Core.Tests
 
         #endregion
 
+        #region Execute Scalar Async Tests - << Task<string> ExecuteScalarAsync(string sqlStatement) >>
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public async Task Test_Oracle_ExecuteScalarAsync_As_StringReturn_Scalar_Queries()
+        {
+            var countOfRecords = Queries.OracleQueries.TestDB.ScalarQueries.Count_Of_Records;
+            var max = Queries.OracleQueries.TestDB.ScalarQueries.Max;
+            var min = Queries.OracleQueries.TestDB.ScalarQueries.Min;
+            var sum = Queries.OracleQueries.TestDB.ScalarQueries.Sum;
+            var avg = Queries.OracleQueries.TestDB.ScalarQueries.Avg;
+            var singleValueSelect = Queries.OracleQueries.TestDB.ScalarQueries.Single_Value_Select;
+
+            var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
+
+            var count = await dbContext.ExecuteScalarAsync(countOfRecords);
+            Assert.AreEqual("12", count);
+            var maxValue = await dbContext.ExecuteScalarAsync(max);
+            Assert.AreEqual("10000", maxValue);
+            var minValue = await dbContext.ExecuteScalarAsync(min);
+            Assert.AreEqual("3000", minValue);
+            var sumValue = await dbContext.ExecuteScalarAsync(sum);
+            Assert.AreEqual("161000", sumValue);
+            var avgValue = await dbContext.ExecuteScalarAsync(avg);
+            Assert.AreEqual("6520", avgValue);
+            var singleValue = await dbContext.ExecuteScalarAsync(singleValueSelect);
+            Assert.AreEqual("2", singleValue);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public async Task Test_Oracle_ExecuteScalarAsync_As_StringReturn_DefaultValue()
+        {
+            var noValueReturned = Queries.OracleQueries.TestDB.ScalarQueries.No_Value_Returned;
+            var dBNullValue = Queries.OracleQueries.TestDB.ScalarQueries.DB_Null_Value;
+
+            var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
+
+            var result = await dbContext.ExecuteScalarAsync(noValueReturned);
+            Assert.IsInstanceOfType<string>(result);
+            Assert.AreEqual("", result);
+
+            result = await dbContext.ExecuteScalarAsync(dBNullValue);
+            Assert.IsInstanceOfType<string>(result);
+            Assert.AreEqual(string.Empty, result);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public async Task Test_Oracle_ExecuteScalarAsync_As_StringReturn_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.OracleQueries.TestDB.DDL.Create_Table,
+                Queries.OracleQueries.TestDB.DDL.Alter_Table,
+                Queries.OracleQueries.TestDB.DDL.Comment_Table,
+                Queries.OracleQueries.TestDB.DDL.Truncate_Table,
+                Queries.OracleQueries.TestDB.DDL.Drop_Table,
+
+                Queries.OracleQueries.TestDB.DML.InsertSql,
+                Queries.OracleQueries.TestDB.DML.UpdateSql,
+                Queries.OracleQueries.TestDB.DML.DeleteSql,
+
+                Queries.OracleQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.OracleQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
+                    await dbContext.ExecuteScalarAsync(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'ExecuteScalar' only supports SELECT queries that have a scalar (single value) return.", ex.AdditionalInfo);
+                }
+            }
+        }
+
+        #endregion
+
         #region Execute Scalar Tests - << T ExecuteScalar<T>(string sqlStatement) >>
 
         [TestMethod]
@@ -794,6 +880,171 @@ namespace QueryDB.Core.Tests
                 {
                     var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
                     dbContext.ExecuteScalar<string>(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'ExecuteScalar' only supports SELECT queries that have a scalar (single value) return.", ex.AdditionalInfo);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Execute Scalar Async Tests - << Task<T> ExecuteScalarAsync<T>(string sqlStatement) >>
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public async Task Test_Oracle_ExecuteScalarAsync_As_TypedReturn_Scalar_Queries()
+        {
+            var countOfRecords = Queries.OracleQueries.TestDB.ScalarQueries.Count_Of_Records;
+            var max = Queries.OracleQueries.TestDB.ScalarQueries.Max;
+            var min = Queries.OracleQueries.TestDB.ScalarQueries.Min;
+            var sum = Queries.OracleQueries.TestDB.ScalarQueries.Sum;
+            var avg = Queries.OracleQueries.TestDB.ScalarQueries.Avg;
+            var singleValueSelect = Queries.OracleQueries.TestDB.ScalarQueries.Single_Value_Select;
+
+            var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
+
+            var count = await dbContext.ExecuteScalarAsync<int>(countOfRecords);
+            Assert.AreEqual(12, count);
+            var maxValue = await dbContext.ExecuteScalarAsync<float>(max);
+            Assert.AreEqual(10000.00, maxValue);
+            var minValue = await dbContext.ExecuteScalarAsync<float>(min);
+            Assert.AreEqual(3000.00, minValue);
+            var sumValue = await dbContext.ExecuteScalarAsync<float>(sum);
+            Assert.AreEqual(161000.00, sumValue);
+            var avgValue = await dbContext.ExecuteScalarAsync<decimal>(avg);
+            Assert.AreEqual((decimal)6520.000000, avgValue);
+            var singleValue = await dbContext.ExecuteScalarAsync<string>(singleValueSelect);
+            Assert.AreEqual("2", singleValue);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public async Task Test_Oracle_ExecuteScalarAsync_As_TypedReturn_DefaultValue()
+        {
+            var dBNullValue = Queries.OracleQueries.TestDB.ScalarQueries.DB_Null_Value;
+
+            var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
+
+            dynamic result = await dbContext.ExecuteScalarAsync<int>(dBNullValue);
+            Assert.IsInstanceOfType<int>(result);
+            Assert.AreEqual(default(int), result);
+
+            result = await dbContext.ExecuteScalarAsync<long>(dBNullValue);
+            Assert.IsInstanceOfType<long>(result);
+            Assert.AreEqual(default(long), result);
+
+            result = await dbContext.ExecuteScalarAsync<short>(dBNullValue);
+            Assert.IsInstanceOfType<short>(result);
+            Assert.AreEqual(default(short), result);
+
+            result = await dbContext.ExecuteScalarAsync<uint>(dBNullValue);
+            Assert.IsInstanceOfType<uint>(result);
+            Assert.AreEqual(default(uint), result);
+
+            result = await dbContext.ExecuteScalarAsync<ulong>(dBNullValue);
+            Assert.IsInstanceOfType<ulong>(result);
+            Assert.AreEqual(default(ulong), result);
+
+            result = await dbContext.ExecuteScalarAsync<ushort>(dBNullValue);
+            Assert.IsInstanceOfType<ushort>(result);
+            Assert.AreEqual(default(ushort), result);
+
+            result = await dbContext.ExecuteScalarAsync<decimal>(dBNullValue);
+            Assert.IsInstanceOfType<decimal>(result);
+            Assert.AreEqual(default(decimal), result);
+
+            result = await dbContext.ExecuteScalarAsync<double>(dBNullValue);
+            Assert.IsInstanceOfType<double>(result);
+            Assert.AreEqual(default(double), result);
+
+            result = await dbContext.ExecuteScalarAsync<float>(dBNullValue);
+            Assert.IsInstanceOfType<float>(result);
+            Assert.AreEqual(default(float), result);
+
+            result = await dbContext.ExecuteScalarAsync<byte>(dBNullValue);
+            Assert.IsInstanceOfType<byte>(result);
+            Assert.AreEqual(default(byte), result);
+
+            result = await dbContext.ExecuteScalarAsync<bool>(dBNullValue);
+            Assert.IsInstanceOfType<bool>(result);
+            Assert.AreEqual(default(bool), result);
+
+            result = await dbContext.ExecuteScalarAsync<DateTime>(dBNullValue);
+            Assert.IsInstanceOfType<DateTime>(result);
+            Assert.AreEqual(default(DateTime), result);
+
+            result = await dbContext.ExecuteScalarAsync<Guid>(dBNullValue);
+            Assert.IsInstanceOfType<Guid>(result);
+            Assert.AreEqual(default(Guid), result);
+
+            result = await dbContext.ExecuteScalarAsync<string>(dBNullValue);
+            Assert.IsNull(result);
+            Assert.AreEqual(default(string), result);
+
+            result = await dbContext.ExecuteScalarAsync<int?>(dBNullValue);
+            Assert.IsNull(result);
+            Assert.AreEqual(default(int?), result);
+
+            result = await dbContext.ExecuteScalarAsync<long?>(dBNullValue);
+            Assert.IsNull(result);
+            Assert.AreEqual(default(long?), result);
+
+            result = await dbContext.ExecuteScalarAsync<short?>(dBNullValue);
+            Assert.IsNull(result);
+            Assert.AreEqual(default(short?), result);
+
+            result = await dbContext.ExecuteScalarAsync<decimal?>(dBNullValue);
+            Assert.IsNull(result);
+            Assert.AreEqual(default(decimal?), result);
+
+            result = await dbContext.ExecuteScalarAsync<double?>(dBNullValue);
+            Assert.IsNull(result);
+            Assert.AreEqual(default(double?), result);
+
+            result = await dbContext.ExecuteScalarAsync<float?>(dBNullValue);
+            Assert.IsNull(result);
+            Assert.AreEqual(default(float?), result);
+
+            result = await dbContext.ExecuteScalarAsync<bool?>(dBNullValue);
+            Assert.IsNull(result);
+            Assert.AreEqual(default(bool?), result);
+
+            result = await dbContext.ExecuteScalarAsync<DateTime?>(dBNullValue);
+            Assert.IsNull(result);
+            Assert.AreEqual(default(DateTime?), result);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public async Task Test_Oracle_ExecuteScalarAsync_As_TypedReturn_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.OracleQueries.TestDB.DDL.Create_Table,
+                Queries.OracleQueries.TestDB.DDL.Alter_Table,
+                Queries.OracleQueries.TestDB.DDL.Comment_Table,
+                Queries.OracleQueries.TestDB.DDL.Truncate_Table,
+                Queries.OracleQueries.TestDB.DDL.Drop_Table,
+
+                Queries.OracleQueries.TestDB.DML.InsertSql,
+                Queries.OracleQueries.TestDB.DML.UpdateSql,
+                Queries.OracleQueries.TestDB.DML.DeleteSql,
+
+                Queries.OracleQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.OracleQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
+                    await dbContext.ExecuteScalarAsync<string>(sqlStatement);
                     Assert.Fail("No Exception");
                 }
                 catch (QueryDBException ex)

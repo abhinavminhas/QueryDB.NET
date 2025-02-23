@@ -43,19 +43,50 @@ namespace QueryDB
         Task<List<T>> FetchDataAsync<T>(string selectSql, bool strict = false) where T : new();
 
         /// <summary>
-        /// Executes a SQL query and returns the result as a string.
+        /// Executes the provided SQL statement and returns the first column of the first row in the result set.
+        /// If the result is DBNull, an empty string is returned.
         /// </summary>
-        /// <param name="sqlStatement">The SQL query to execute.</param>
-        /// <returns>A string representing the result of the query. If the result is DBNull, an empty string is returned.</returns>
+        /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
+        /// <returns>
+        /// A <see cref="string"/> representing the value of the first column of the first row in the result set,
+        /// or an empty string if the result is DBNull.
+        /// </returns>
         string ExecuteScalar(string sqlStatement);
 
         /// <summary>
-        /// Executes a SQL query and returns the result as the specified type.
+        /// Executes the provided SQL statement and returns the first column of the first row in the result set,
+        /// converted to the specified type <typeparamref name="T"/>. If the result is DBNull, the default value of <typeparamref name="T"/> is returned.
         /// </summary>
         /// <typeparam name="T">The type to which the result should be converted.</typeparam>
-        /// <param name="sqlStatement">The SQL query to execute.</param>
-        /// <returns>The result of the query, converted to the specified type. If the result is DBNull, the default value for the type is returned.</returns>
+        /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
+        /// <returns>
+        /// The value of the first column of the first row in the result set, converted to type <typeparamref name="T"/>,
+        /// or the default value of <typeparamref name="T"/> if the result is DBNull.
+        /// </returns>
         T ExecuteScalar<T>(string sqlStatement);
+
+        /// <summary>
+        /// Asynchronously executes the provided SQL statement and returns the first column of the first row in the result set.
+        /// If the result is DBNull, an empty string is returned.
+        /// </summary>
+        /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
+        /// <returns>
+        /// A <see cref="string"/> representing the value of the first column of the first row in the result set,
+        /// or an empty string if the result is DBNull.
+        /// </returns>
+        Task<string> ExecuteScalarAsync(string sqlStatement);
+
+        /// <summary>
+        /// Asynchronously executes the provided SQL statement and returns the first column of the first row in the result set,
+        /// converted to the specified type <typeparamref name="T"/>. If the result is DBNull, the default value of <typeparamref name="T"/> is returned.
+        /// </summary>
+        /// <typeparam name="T">The type to which the result should be converted.</typeparam>
+        /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
+        /// <returns>
+        /// The value of the first column of the first row in the result set, converted to type <typeparamref name="T"/>,
+        /// or the default value of <typeparamref name="T"/> if the result is DBNull.
+        /// </returns>
+        Task<T> ExecuteScalarAsync<T>(string sqlStatement);
 
         /// <summary>
         /// Executes SQL commands.

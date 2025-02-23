@@ -239,10 +239,14 @@ namespace QueryDB
         }
 
         /// <summary>
-        /// Executes a SQL query and returns the result as a string.
+        /// Executes the provided SQL statement and returns the first column of the first row in the result set.
+        /// If the result is DBNull, an empty string is returned.
         /// </summary>
-        /// <param name="sqlStatement">The SQL query to execute.</param>
-        /// <returns>A string representing the result of the query. If the result is DBNull, an empty string is returned.</returns>
+        /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
+        /// <returns>
+        /// A <see cref="string"/> representing the value of the first column of the first row in the result set,
+        /// or an empty string if the result is DBNull.
+        /// </returns>
         public string ExecuteScalar(string sqlStatement)
         {
             if (!Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
@@ -285,11 +289,15 @@ namespace QueryDB
         }
 
         /// <summary>
-        /// Executes a SQL query and returns the result as the specified type.
+        /// Executes the provided SQL statement and returns the first column of the first row in the result set,
+        /// converted to the specified type <typeparamref name="T"/>. If the result is DBNull, the default value of <typeparamref name="T"/> is returned.
         /// </summary>
         /// <typeparam name="T">The type to which the result should be converted.</typeparam>
-        /// <param name="sqlStatement">The SQL query to execute.</param>
-        /// <returns>The result of the query, converted to the specified type. If the result is DBNull, the default value for the type is returned.</returns>
+        /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
+        /// <returns>
+        /// The value of the first column of the first row in the result set, converted to type <typeparamref name="T"/>,
+        /// or the default value of <typeparamref name="T"/> if the result is DBNull.
+        /// </returns>
         public T ExecuteScalar<T>(string sqlStatement)
         {
             if (!Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
@@ -326,6 +334,107 @@ namespace QueryDB
                 {
                     var _systemAdapter = new PostgreSQL.Adapter();
                     value = _systemAdapter.ExecuteScalar<T>(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
+                }
+            }
+            return value;
+        }
+
+        /// <summary>
+        /// Asynchronously executes the provided SQL statement and returns the first column of the first row in the result set.
+        /// If the result is DBNull, an empty string is returned.
+        /// </summary>
+        /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
+        /// <returns>
+        /// A <see cref="string"/> representing the value of the first column of the first row in the result set,
+        /// or an empty string if the result is DBNull.
+        /// </returns>
+        public async Task<string> ExecuteScalarAsync(string sqlStatement)
+        {
+            if (!Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedExecuteScalarCommand,
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedExecuteScalarCommand);
+            var value = string.Empty;
+            if (Database.Equals(DB.MSSQL))
+            {
+                using (var msSqlDBConnection = GetSqlServerConnection())
+                {
+                    var _systemAdapter = new MSSQL.Adapter();
+                    value = await _systemAdapter.ExecuteScalarAsync(sqlStatement, msSqlDBConnection.SqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.MySQL))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    var _systemAdapter = new MySQL.Adapter();
+                    value = await _systemAdapter.ExecuteScalarAsync(sqlStatement, mySqlDBConnection.MySqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    var _systemAdapter = new Oracle.Adapter();
+                    value = await _systemAdapter.ExecuteScalarAsync(sqlStatement, oracleDBConnection.OracleConnection);
+                }
+            }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    var _systemAdapter = new PostgreSQL.Adapter();
+                    value = await _systemAdapter.ExecuteScalarAsync(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
+                }
+            }
+            return value;
+        }
+
+        /// <summary>
+        /// Asynchronously executes the provided SQL statement and returns the first column of the first row in the result set,
+        /// converted to the specified type <typeparamref name="T"/>. If the result is DBNull, the default value of <typeparamref name="T"/> is returned.
+        /// </summary>
+        /// <typeparam name="T">The type to which the result should be converted.</typeparam>
+        /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
+        /// <returns>
+        /// The value of the first column of the first row in the result set, converted to type <typeparamref name="T"/>,
+        /// or the default value of <typeparamref name="T"/> if the result is DBNull.
+        /// </returns>
+        public async Task<T> ExecuteScalarAsync<T>(string sqlStatement)
+        {
+            if (!Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedExecuteScalarCommand,
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedExecuteScalarCommand);
+            var value = default(T);
+            if (Database.Equals(DB.MSSQL))
+            {
+                using (var msSqlDBConnection = GetSqlServerConnection())
+                {
+                    var _systemAdapter = new MSSQL.Adapter();
+                    value = await _systemAdapter.ExecuteScalarAsync<T>(sqlStatement, msSqlDBConnection.SqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.MySQL))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    var _systemAdapter = new MySQL.Adapter();
+                    value = await _systemAdapter.ExecuteScalarAsync<T>(sqlStatement, mySqlDBConnection.MySqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    var _systemAdapter = new Oracle.Adapter();
+                    value = await _systemAdapter.ExecuteScalarAsync<T>(sqlStatement, oracleDBConnection.OracleConnection);
+                }
+            }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    var _systemAdapter = new PostgreSQL.Adapter();
+                    value = await _systemAdapter.ExecuteScalarAsync<T>(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
                 }
             }
             return value;
