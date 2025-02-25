@@ -49,6 +49,21 @@ namespace QueryDB.Core.Tests
             Assert.IsFalse(result);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(UNKNOW_DB_TESTS)]
+        public async Task ExecuteTransactionAsync_UnknownDB_ReturnsFalse()
+        {
+            var sqlStatements = new List<string>
+            {
+                "DELETE FROM users"
+            };
+
+            var dbContext = new DBContext((DB)999, "some_invalid_connection_string");
+            var result = await dbContext.ExecuteTransactionAsync(sqlStatements);
+
+            Assert.IsFalse(result);
+        }
+
         #endregion
 
     }
