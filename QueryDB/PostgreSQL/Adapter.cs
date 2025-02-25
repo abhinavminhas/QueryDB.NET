@@ -62,7 +62,7 @@ namespace QueryDB.PostgreSQL
         /// <summary>
         /// Initiates and returns a new PostgreSQL transaction for the specified database connection.
         /// </summary>
-        /// <param name="connection">The PostgreSQL database connection.</param>
+        /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
         /// <returns>A new <see cref="NpgsqlTransaction"/> associated with the provided connection.</returns>
         internal static NpgsqlTransaction GetPostgreSqlTransaction(NpgsqlConnection connection)
         {
@@ -187,7 +187,7 @@ namespace QueryDB.PostgreSQL
         /// Executes multiple SQL statements within a PostgreSQL transaction to ensure atomicity.
         /// </summary>
         /// <param name="sqlStatements">A list of SQL statements to execute.</param>
-        /// <param name="connection">The PostgreSQL database connection.</param>
+        /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
         /// <returns>
         /// Returns <c>true</c> if the transaction is committed successfully; 
         /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
@@ -255,6 +255,18 @@ namespace QueryDB.PostgreSQL
             return sqlCommand;
         }
 
+        /// <summary>
+        /// Asynchronously initiates and returns a new PostgreSQL transaction for the specified database connection.
+        /// </summary>
+        /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
+        /// <returns>A new <see cref="NpgsqlTransaction"/> associated with the provided connection.</returns>
+        internal static async Task<NpgsqlTransaction> GetPostgreSqlTransactionAsync(NpgsqlConnection connection)
+        {
+            await connection.OpenAsync();
+            var npgsqlTransaction = connection.BeginTransaction();
+            return npgsqlTransaction;
+
+        }
         /// <summary>
         /// Asynchronously executes and retrieves records for 'Select' queries from the database.
         /// Converts column names to keys holding values, with multiple database rows returned into a list.
@@ -367,6 +379,44 @@ namespace QueryDB.PostgreSQL
             }
         }
 
+        /// <summary>
+        /// Asynchronously executes multiple SQL statements within a PostgreSQL transaction to ensure atomicity.
+        /// </summary>
+        /// <param name="sqlStatements">A list of SQL statements to execute.</param>
+        /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
+        /// <returns>
+        /// Returns <c>true</c> if the transaction is committed successfully; 
+        /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
+        /// </returns>
+        /// <exception cref="Exception">
+        /// Logs and handles exceptions if any SQL command execution fails.
+        /// </exception>
+        internal static async Task<bool> ExecuteTransactionAsync(List<string> sqlStatements, NpgsqlConnection connection)
+        {
+            using (NpgsqlTransaction transaction = await GetPostgreSqlTransactionAsync(connection))
+            {
+                try
+                {
+                    foreach (var sqlStatement in sqlStatements)
+                    {
+                        using (var sqlCommand = GetPostgreSqlCommand(sqlStatement, connection, transaction))
+                        {
+                            await sqlCommand.ExecuteNonQueryAsync();
+                        }
+                    }
+                    transaction.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
+                    return false;
+                }
+            }
+        }
+
         #endregion
+
     }
 }

@@ -62,7 +62,7 @@ namespace QueryDB.MSSQL
         /// <summary>
         /// Initiates and returns a new SQL transaction for the specified database connection.
         /// </summary>
-        /// <param name="connection">The SQL database connection.</param>
+        /// <param name="connection">The <see cref="SqlConnection"/> object used to connect to the database.</param>
         /// <returns>A new <see cref="SqlTransaction"/> associated with the provided connection.</returns>
         internal static SqlTransaction GetSqlTransaction(SqlConnection connection)
         {
@@ -187,7 +187,7 @@ namespace QueryDB.MSSQL
         /// Executes multiple SQL statements within a transaction to ensure atomicity.
         /// </summary>
         /// <param name="sqlStatements">A list of SQL statements to execute.</param>
-        /// <param name="connection">The SQL database connection.</param>
+        /// <param name="connection">The <see cref="SqlConnection"/> object used to connect to the database.</param>
         /// <returns>
         /// Returns <c>true</c> if the transaction is committed successfully; 
         /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
@@ -253,6 +253,18 @@ namespace QueryDB.MSSQL
             await connection.OpenAsync();
             var sqlCommand = new SqlCommand(cmdText, connection) { CommandType = commandType };
             return sqlCommand;
+        }
+
+        /// <summary>
+        /// Asynchronously initiates and returns a new SQL transaction for the specified database connection.
+        /// </summary>
+        /// <param name="connection">The <see cref="SqlConnection"/> object used to connect to the database.</param>
+        /// <returns>A new <see cref="SqlTransaction"/> associated with the provided connection.</returns>
+        internal static async Task<SqlTransaction> GetSqlTransactionAsync(SqlConnection connection)
+        {
+            await connection.OpenAsync();
+            var sqlTransaction = connection.BeginTransaction();
+            return sqlTransaction;
         }
 
         /// <summary>
@@ -364,6 +376,43 @@ namespace QueryDB.MSSQL
             using (var sqlCommand = await GetSqlCommandAsync(sqlStatement, connection, CommandType.Text))
             {
                 return await sqlCommand.ExecuteNonQueryAsync();
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously executes multiple SQL statements within a transaction to ensure atomicity.
+        /// </summary>
+        /// <param name="sqlStatements">A list of SQL statements to execute.</param>
+        /// <param name="connection">The <see cref="SqlConnection"/> object used to connect to the database.</param>
+        /// <returns>
+        /// Returns <c>true</c> if the transaction is committed successfully; 
+        /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
+        /// </returns>
+        /// <exception cref="Exception">
+        /// Logs and handles exceptions if any SQL command execution fails.
+        /// </exception>
+        internal static async Task<bool> ExecuteTransactionAsync(List<string> sqlStatements, SqlConnection connection)
+        {
+            using (SqlTransaction transaction = await GetSqlTransactionAsync(connection))
+            {
+                try
+                {
+                    foreach (var sqlStatement in sqlStatements)
+                    {
+                        using (var sqlCommand = GetSqlCommand(sqlStatement, connection, transaction))
+                        {
+                            await sqlCommand.ExecuteNonQueryAsync();
+                        }
+                    }
+                    transaction.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
+                    return false;
+                }
             }
         }
 

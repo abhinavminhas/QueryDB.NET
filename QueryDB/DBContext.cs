@@ -576,6 +576,51 @@ namespace QueryDB
         }
 
         /// <summary>
+        /// Asynchronously executes multiple SQL statements within a transaction, ensuring that all statements are executed together.
+        /// </summary>
+        /// <param name="sqlStatements">A list of SQL statements to execute.</param>
+        /// <returns>
+        /// Returns <c>true</c> if all statements are executed successfully and the transaction is committed;
+        /// <c>false</c> if any statement fails and the transaction is rolled back.
+        /// </returns>
+        public async Task<bool> ExecuteTransactionAsync(List<string> sqlStatements)
+        {
+            var selectExists = sqlStatements.Any(sqlStatement => Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)));
+            if (selectExists)
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteTransaction,
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedSelectExecuteTransaction);
+            if (Database.Equals(DB.MSSQL))
+            {
+                using (var msSqlDBConnection = GetSqlServerConnection())
+                {
+                    return await MSSQL.Adapter.ExecuteTransactionAsync(sqlStatements, msSqlDBConnection.SqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.MySQL))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    return await MySQL.Adapter.ExecuteTransactionAsync(sqlStatements, mySqlDBConnection.MySqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    return await Oracle.Adapter.ExecuteTransactionAsync(sqlStatements, oracleDBConnection.OracleConnection);
+                }
+            }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    return await PostgreSQL.Adapter.ExecuteTransactionAsync(sqlStatements, postgreSqlDBConnection.PostgreSQLConnection);
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Gets 'SQL Server' connection.
         /// </summary>
         /// <returns>'SQL Server' Connection.</returns>

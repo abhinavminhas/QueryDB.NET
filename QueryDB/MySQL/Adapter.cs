@@ -62,7 +62,7 @@ namespace QueryDB.MySQL
         /// <summary>
         /// Initiates and returns a new MySQL transaction for the given database connection.
         /// </summary>
-        /// <param name="connection">The MySQL database connection.</param>
+        /// <param name="connection">The <see cref="MySqlConnection"/> object used to connect to the database.</param>
         /// <returns>A new <see cref="MySqlTransaction"/> associated with the provided connection.</returns>
         internal static MySqlTransaction GetMySqlTransaction(MySqlConnection connection)
         {
@@ -187,7 +187,7 @@ namespace QueryDB.MySQL
         /// Executes multiple SQL statements within a MySQL transaction to ensure atomicity.
         /// </summary>
         /// <param name="sqlStatements">A list of SQL statements to execute.</param>
-        /// <param name="connection">The MySQL database connection.</param>
+        /// <param name="connection">The <see cref="MySqlConnection"/> object used to connect to the database.</param>
         /// <returns>
         /// Returns <c>true</c> if the transaction is committed successfully; 
         /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
@@ -253,6 +253,18 @@ namespace QueryDB.MySQL
             await connection.OpenAsync();
             var sqlCommand = new MySqlCommand(cmdText, connection) { CommandType = commandType };
             return sqlCommand;
+        }
+
+        /// <summary>
+        /// Asynchronously initiates and returns a new MySQL transaction for the given database connection.
+        /// </summary>
+        /// <param name="connection">The <see cref="MySqlConnection"/> object used to connect to the database.</param>
+        /// <returns>A new <see cref="MySqlTransaction"/> associated with the provided connection.</returns>
+        internal static async Task<MySqlTransaction> GetMySqlTransactionAsync(MySqlConnection connection)
+        {
+            await connection.OpenAsync();
+            var mySqlTransaction = await connection.BeginTransactionAsync();
+            return mySqlTransaction;
         }
 
         /// <summary>
@@ -362,6 +374,43 @@ namespace QueryDB.MySQL
             using (var sqlCommand = await GetMySqlCommandAsync(sqlStatement, connection, CommandType.Text))
             {
                 return await sqlCommand.ExecuteNonQueryAsync();
+            }
+        }
+
+        /// <summary>
+        /// Asynchronously executes multiple SQL statements within a MySQL transaction to ensure atomicity.
+        /// </summary>
+        /// <param name="sqlStatements">A list of SQL statements to execute.</param>
+        /// <param name="connection">The <see cref="MySqlConnection"/> object used to connect to the database.</param>
+        /// <returns>
+        /// Returns <c>true</c> if the transaction is committed successfully; 
+        /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
+        /// </returns>
+        /// <exception cref="Exception">
+        /// Logs and handles exceptions if any SQL command execution fails.
+        /// </exception>
+        internal static async Task<bool> ExecuteTransactionAsync(List<string> sqlStatements, MySqlConnection connection)
+        {
+            using (MySqlTransaction transaction = await GetMySqlTransactionAsync(connection))
+            {
+                try
+                {
+                    foreach (var sqlStatement in sqlStatements)
+                    {
+                        using (var sqlCommand = GetMySqlCommand(sqlStatement, connection, transaction))
+                        {
+                            await sqlCommand.ExecuteNonQueryAsync();
+                        }
+                    }
+                    transaction.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
+                    return false;
+                }
             }
         }
 

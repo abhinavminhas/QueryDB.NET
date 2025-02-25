@@ -61,7 +61,7 @@ namespace QueryDB.Oracle
         /// <summary>
         /// Initiates and returns a new Oracle transaction for the specified database connection.
         /// </summary>
-        /// <param name="connection">The Oracle database connection.</param>
+        /// <param name="connection">The <see cref="OracleConnection"/> object used to connect to the database.</param>
         /// <returns>A new <see cref="OracleTransaction"/> associated with the provided connection.</returns>
         internal static OracleTransaction GetOracleTransaction(OracleConnection connection)
         {
@@ -128,7 +128,7 @@ namespace QueryDB.Oracle
                                 prop.SetValue(addObjectRow, Utils.GetBFileByteContent(reader, prop.Name));
                             else
                                 prop.SetValue(addObjectRow, reader[prop.Name]);
-                        }   
+                        }
                     }
                     dataList.Add(addObjectRow);
                 }
@@ -193,7 +193,7 @@ namespace QueryDB.Oracle
         /// Executes multiple SQL statements within an Oracle transaction to ensure atomicity.
         /// </summary>
         /// <param name="sqlStatements">A list of SQL statements to execute.</param>
-        /// <param name="connection">The Oracle database connection.</param>
+        /// <param name="connection">The <see cref="OracleConnection"/> object used to connect to the database.</param>
         /// <returns>
         /// Returns <c>true</c> if the transaction is committed successfully; 
         /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
@@ -260,6 +260,18 @@ namespace QueryDB.Oracle
             await connection.OpenAsync();
             var sqlCommand = new OracleCommand(cmdText, connection) { CommandType = commandType };
             return sqlCommand;
+        }
+
+        /// <summary>
+        /// Asynchronously initiates and returns a new Oracle transaction for the specified database connection.
+        /// </summary>
+        /// <param name="connection">The <see cref="OracleConnection"/> object used to connect to the database.</param>
+        /// <returns>A new <see cref="OracleTransaction"/> associated with the provided connection.</returns>
+        internal static async Task<OracleTransaction> GetOracleTransactionAsync(OracleConnection connection)
+        {
+            await connection.OpenAsync();
+            var oracleTransaction = connection.BeginTransaction();
+            return oracleTransaction;
         }
 
         /// <summary>
@@ -381,6 +393,46 @@ namespace QueryDB.Oracle
             }
         }
 
+        /// <summary>
+        /// Asynchronously executes multiple SQL statements within an Oracle transaction to ensure atomicity.
+        /// </summary>
+        /// <param name="sqlStatements">A list of SQL statements to execute.</param>
+        /// <param name="connection">The <see cref="OracleConnection"/> object used to connect to the database.</param>
+        /// <returns>
+        /// Returns <c>true</c> if the transaction is committed successfully; 
+        /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
+        /// </returns>
+        /// <exception cref="Exception">
+        /// Logs and handles exceptions if any SQL command execution fails.
+        /// </exception>
+        internal static async Task<bool> ExecuteTransactionAsync(List<string> sqlStatements, OracleConnection connection)
+        {
+            using (OracleTransaction transaction = await GetOracleTransactionAsync(connection))
+            {
+                try
+                {
+                    foreach (var sqlStatement in sqlStatements)
+                    {
+                        using (var sqlCommand = GetOracleCommand(sqlStatement, connection))
+                        {
+                            sqlCommand.Transaction = transaction;
+                            await sqlCommand.ExecuteNonQueryAsync();
+                        }
+                    }
+                    transaction.Commit();
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
+                    return false;
+                }
+            }
+
+        }
+
         #endregion
+
     }
 }

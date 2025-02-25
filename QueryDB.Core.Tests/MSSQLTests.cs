@@ -214,7 +214,7 @@ namespace QueryDB.Core.Tests
         public async Task Test_MSSQL_FetchDataAsync_Dictionary_SelectQuery_Joins()
         {
             var selectSql = Queries.MSSQLQueries.TestDB.SelectSql_Join;
-            var data = await new  DBContext(DB.MSSQL, MSSQLConnectionString).FetchDataAsync(selectSql);
+            var data = await new DBContext(DB.MSSQL, MSSQLConnectionString).FetchDataAsync(selectSql);
             Assert.AreEqual(34, data.Count);
             var agent = data.FirstOrDefault(X => X.ReferenceData["Agent_Code"] == "A004" && X.ReferenceData["Cust_Code"] == "C00006");
             Assert.AreEqual("A004", agent.ReferenceData["Agent_Code"]);
@@ -250,7 +250,7 @@ namespace QueryDB.Core.Tests
         public async Task Test_MSSQL_FetchDataAsync_Dictionary_SelectQuery_Aliases()
         {
             var selectSql = Queries.MSSQLQueries.TestDB.SelectSql_Alias;
-            var data = await new  DBContext(DB.MSSQL, MSSQLConnectionString).FetchDataAsync(selectSql);
+            var data = await new DBContext(DB.MSSQL, MSSQLConnectionString).FetchDataAsync(selectSql);
             Assert.AreEqual(34, data.Count);
             var agent = data.FirstOrDefault(X => X.ReferenceData["Agent_Code"] == "A004" && X.ReferenceData["Cust_Code"] == "C00006");
             Assert.AreEqual("A004", agent.ReferenceData["Agent_Code"]);
@@ -716,7 +716,7 @@ namespace QueryDB.Core.Tests
 
             var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
 
-            var result = await dbContext .ExecuteScalarAsync(noValueReturned);
+            var result = await dbContext.ExecuteScalarAsync(noValueReturned);
             Assert.IsInstanceOfType<string>(result);
             Assert.AreEqual("", result);
 
@@ -1560,6 +1560,139 @@ namespace QueryDB.Core.Tests
                 };
                 var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
                 var result = dbContext.ExecuteTransaction(statements);
+                Assert.Fail("No Exception");
+            }
+            catch (QueryDBException ex)
+            {
+                Assert.AreEqual("SELECT queries are not supported here.", ex.Message);
+                Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                Assert.AreEqual("'ExecuteTransaction' doesn't support SELECT queries.", ex.AdditionalInfo);
+            }
+        }
+
+        #endregion
+
+        #region Execute Transaction Async Tests - << Task<bool> ExecuteTransactionAsync(List<string> sqlStatements) >>
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public async Task Test_MSSQL_ExecuteTransactionAsync_DDL_Multiple_Queries()
+        {
+            var createTableSql = Queries.MSSQLQueries.TestDB.DDL.Create_Table;
+            var alterTableSql = Queries.MSSQLQueries.TestDB.DDL.Alter_Table;
+            var truncateTableSql = Queries.MSSQLQueries.TestDB.DDL.Truncate_Table;
+            var renameTableSql = Queries.MSSQLQueries.TestDB.DDL.Rename_Table;
+            var dropTableSql = Queries.MSSQLQueries.TestDB.DDL.Drop_Table;
+            var dDLExecutionCheckSql = Queries.MSSQLQueries.TestDB.DDL.DDL_Execute_check;
+
+            // Create, Alter & Truncate
+            var statements = new List<string>
+            {
+                createTableSql,
+                alterTableSql,
+                truncateTableSql
+            };
+            var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+            var result = await dbContext.ExecuteTransactionAsync(statements);
+            Assert.IsTrue(result);
+
+            var tableCount = await dbContext
+                .FetchDataAsync(string.Format(dDLExecutionCheckSql, "dbo", "Employee"));
+            Assert.AreEqual("1", tableCount[0].ReferenceData["Table_Count"]);
+
+            // Rename & Drop
+            statements = new List<string>
+            {
+                renameTableSql,
+                dropTableSql
+            };
+            result = await dbContext.ExecuteTransactionAsync(statements);
+            Assert.IsTrue(result);
+
+            tableCount = await dbContext
+                .FetchDataAsync(string.Format(dDLExecutionCheckSql, "dbo", "Employees"));
+            Assert.AreEqual("0", tableCount[0].ReferenceData["Table_Count"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public async Task Test_MSSQL_ExecuteTransactionAsync_DML_Multiple_Queries()
+        {
+            var insertSql = Queries.MSSQLQueries.TestDB.DML.InsertSql;
+            var updateSql = Queries.MSSQLQueries.TestDB.DML.UpdateSql;
+            var deleteSql = Queries.MSSQLQueries.TestDB.DML.DeleteSql;
+            var verifyDMLExecution = Queries.MSSQLQueries.TestDB.DML.VerifyDMLExecution;
+
+            var statements = new List<string>
+            {
+                insertSql,
+                updateSql
+            };
+            var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+
+            // Insert & Update
+            var result = await dbContext.ExecuteTransactionAsync(statements);
+            Assert.IsTrue(result);
+            var data = await dbContext.FetchDataAsync(verifyDMLExecution);
+            Assert.AreEqual(1, data.Count);
+            var agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["Agent_Code"]);
+            Assert.AreEqual("John", agent.ReferenceData["Agent_Name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["Working_Area"]);
+            Assert.AreEqual("0.15", agent.ReferenceData["Commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["Phone_No"]);
+            Assert.AreEqual("", agent.ReferenceData["Country"]);
+
+            // Delete
+            statements = new List<string>
+            {
+                deleteSql
+            };
+            result = await dbContext.ExecuteTransactionAsync(statements);
+            Assert.IsTrue(result);
+            data = await dbContext.FetchDataAsync(verifyDMLExecution);
+            Assert.AreEqual(0, data.Count);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public async Task Test_MSSQL_ExecuteTransactionAsync_Incomplete_Transaction_Rollback_On_Error()
+        {
+            var insertSql = Queries.MSSQLQueries.TestDB.DML.InsertSql;
+            var updateSql = Queries.MSSQLQueries.TestDB.DML.UpdateSql;
+            var updateErrorSql = "UPDATE";
+            var verifyDMLExecution = Queries.MSSQLQueries.TestDB.DML.VerifyDMLExecution;
+
+            var statements = new List<string>
+            {
+                insertSql,
+                updateSql,
+                updateErrorSql
+            };
+            var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+
+            // Insert & Update
+            var result = await dbContext.ExecuteTransactionAsync(statements);
+            Assert.IsFalse(result);
+            var data = await dbContext.FetchDataAsync(verifyDMLExecution);
+            Assert.AreEqual(0, data.Count);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public async Task Test_MSSQL_ExecuteTransactionAsync_DML_Unsupported_SELECT_Queries()
+        {
+            var selectSql = Queries.MSSQLQueries.TestDB.DML.SelectSql;
+
+            // Select
+            try
+            {
+                var statements = new List<string>
+                {
+                    selectSql
+                };
+                var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+                var result = await dbContext.ExecuteTransactionAsync(statements);
                 Assert.Fail("No Exception");
             }
             catch (QueryDBException ex)

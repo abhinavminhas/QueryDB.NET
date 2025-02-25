@@ -1501,6 +1501,139 @@ namespace QueryDB.Core.Tests
 
         #endregion
 
+        #region Execute Transaction Async Tests - << Task<bool> ExecuteTransactionAsync(List<string> sqlStatements) >>
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_ExecuteTransactionAsync_DDL_Multiple_Queries()
+        {
+            var createTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Create_Table;
+            var alterTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Alter_Table;
+            var truncateTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Truncate_Table;
+            var renameTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Rename_Table;
+            var dropTableSql = Queries.PostgreSQLQueries.TestDB.DDL.Drop_Table;
+            var dDLExecutionCheckSql = Queries.PostgreSQLQueries.TestDB.DDL.DDL_Execute_check;
+
+            // Create, Alter & Truncate
+            var statements = new List<string>
+            {
+                createTableSql,
+                alterTableSql,
+                truncateTableSql
+            };
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+            var result = await dbContext.ExecuteTransactionAsync(statements);
+            Assert.IsTrue(result);
+
+            var tableCount = await dbContext
+                .FetchDataAsync(string.Format(dDLExecutionCheckSql, "public", "Employee"));
+            Assert.AreEqual("1", tableCount[0].ReferenceData["table_count"]);
+
+            // Rename & Drop
+            statements = new List<string>
+            {
+                renameTableSql,
+                dropTableSql
+            };
+            result = await dbContext.ExecuteTransactionAsync(statements);
+            Assert.IsTrue(result);
+
+            tableCount = await dbContext
+                .FetchDataAsync(string.Format(dDLExecutionCheckSql, "public", "Employees"));
+            Assert.AreEqual("0", tableCount[0].ReferenceData["table_count"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_ExecuteTransactionAsync_DML_Multiple_Queries()
+        {
+            var insertSql = Queries.PostgreSQLQueries.TestDB.DML.InsertSql;
+            var updateSql = Queries.PostgreSQLQueries.TestDB.DML.UpdateSql;
+            var deleteSql = Queries.PostgreSQLQueries.TestDB.DML.DeleteSql;
+            var verifyDMLExecution = Queries.PostgreSQLQueries.TestDB.DML.VerifyDMLExecution;
+
+            var statements = new List<string>
+            {
+                insertSql,
+                updateSql
+            };
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+
+            // Insert & Update
+            var result = await dbContext.ExecuteTransactionAsync(statements);
+            Assert.IsTrue(result);
+            var data = await dbContext.FetchDataAsync(verifyDMLExecution);
+            Assert.AreEqual(1, data.Count);
+            var agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["agent_code"]);
+            Assert.AreEqual("John", agent.ReferenceData["agent_name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["working_area"]);
+            Assert.AreEqual("0.15", agent.ReferenceData["commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["phone_no"]);
+            Assert.AreEqual("", agent.ReferenceData["country"]);
+
+            // Delete
+            statements = new List<string>
+            {
+                deleteSql
+            };
+            result = await dbContext.ExecuteTransactionAsync(statements);
+            Assert.IsTrue(result);
+            data = await dbContext.FetchDataAsync(verifyDMLExecution);
+            Assert.AreEqual(0, data.Count);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_ExecuteTransactionAsync_Incomplete_Transaction_Rollback_On_Error()
+        {
+            var insertSql = Queries.PostgreSQLQueries.TestDB.DML.InsertSql;
+            var updateSql = Queries.PostgreSQLQueries.TestDB.DML.UpdateSql;
+            var updateErrorSql = "UPDATE";
+            var verifyDMLExecution = Queries.PostgreSQLQueries.TestDB.DML.VerifyDMLExecution;
+
+            var statements = new List<string>
+            {
+                insertSql,
+                updateSql,
+                updateErrorSql
+            };
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+
+            // Insert & Update
+            var result = await dbContext.ExecuteTransactionAsync(statements);
+            Assert.IsFalse(result);
+            var data = await dbContext.FetchDataAsync(verifyDMLExecution);
+            Assert.AreEqual(0, data.Count);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_ExecuteTransactionAsync_DML_Unsupported_SELECT_Queries()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.DML.SelectSql;
+
+            // Select
+            try
+            {
+                var statements = new List<string>
+                {
+                    selectSql
+                };
+                var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+                var result = await dbContext.ExecuteTransactionAsync(statements);
+                Assert.Fail("No Exception");
+            }
+            catch (QueryDBException ex)
+            {
+                Assert.AreEqual("SELECT queries are not supported here.", ex.Message);
+                Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                Assert.AreEqual("'ExecuteTransaction' doesn't support SELECT queries.", ex.AdditionalInfo);
+            }
+        }
+
+        #endregion
+
         #endregion
 
     }
