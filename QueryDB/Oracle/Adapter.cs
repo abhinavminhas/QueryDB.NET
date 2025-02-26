@@ -429,7 +429,6 @@ namespace QueryDB.Oracle
                     return false;
                 }
             }
-
         }
 
         #endregion
