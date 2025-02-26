@@ -404,12 +404,12 @@ namespace QueryDB.PostgreSQL
                             await sqlCommand.ExecuteNonQueryAsync();
                         }
                     }
-                    transaction.Commit();
+                    await transaction.CommitAsync();
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    transaction.Rollback();
+                    await transaction.RollbackAsync();
                     Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
                     return false;
                 }
