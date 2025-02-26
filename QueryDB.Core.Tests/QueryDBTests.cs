@@ -35,7 +35,7 @@ namespace QueryDB.Core.Tests
         }
 
         [TestMethod]
-        [TestCategory(DB_TESTS), TestCategory(UNKNOW_DB_TESTS)]
+        [TestCategory(UNKNOW_DB_TESTS)]
         public void ExecuteTransaction_UnknownDB_ReturnsFalse()
         {
             var sqlStatements = new List<string>
@@ -46,11 +46,11 @@ namespace QueryDB.Core.Tests
             var dbContext = new DBContext((DB)999, "some_invalid_connection_string");
             var result = dbContext.ExecuteTransaction(sqlStatements);
 
-            Assert.IsFalse(result);
+            Assert.IsFalse(result.Success);
         }
 
         [TestMethod]
-        [TestCategory(DB_TESTS), TestCategory(UNKNOW_DB_TESTS)]
+        [TestCategory(UNKNOW_DB_TESTS)]
         public async Task ExecuteTransactionAsync_UnknownDB_ReturnsFalse()
         {
             var sqlStatements = new List<string>
@@ -61,7 +61,7 @@ namespace QueryDB.Core.Tests
             var dbContext = new DBContext((DB)999, "some_invalid_connection_string");
             var result = await dbContext.ExecuteTransactionAsync(sqlStatements);
 
-            Assert.IsFalse(result);
+            Assert.IsFalse(result.Success);
         }
 
         #endregion

@@ -1390,7 +1390,7 @@ namespace QueryDB.Core.Tests
             };
             var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
             var result = dbContext.ExecuteTransaction(statements);
-            Assert.IsTrue(result);
+            Assert.IsTrue(result.Success);
 
             var tableCount = dbContext
                 .FetchData(string.Format(dDLExecutionCheckSql, "public", "Employee"));
@@ -1403,7 +1403,7 @@ namespace QueryDB.Core.Tests
                 dropTableSql
             };
             result = dbContext.ExecuteTransaction(statements);
-            Assert.IsTrue(result);
+            Assert.IsTrue(result.Success);
 
             tableCount = dbContext
                 .FetchData(string.Format(dDLExecutionCheckSql, "public", "Employees"));
@@ -1428,7 +1428,7 @@ namespace QueryDB.Core.Tests
 
             // Insert & Update
             var result = dbContext.ExecuteTransaction(statements);
-            Assert.IsTrue(result);
+            Assert.IsTrue(result.Success);
             var data = dbContext.FetchData(verifyDMLExecution);
             Assert.AreEqual(1, data.Count);
             var agent = data.FirstOrDefault();
@@ -1445,7 +1445,7 @@ namespace QueryDB.Core.Tests
                 deleteSql
             };
             result = dbContext.ExecuteTransaction(statements);
-            Assert.IsTrue(result);
+            Assert.IsTrue(result.Success);
             data = dbContext.FetchData(verifyDMLExecution);
             Assert.AreEqual(0, data.Count);
         }
@@ -1469,7 +1469,8 @@ namespace QueryDB.Core.Tests
 
             // Insert & Update
             var result = dbContext.ExecuteTransaction(statements);
-            Assert.IsFalse(result);
+            Assert.IsFalse(result.Success);
+            Assert.AreEqual("42601: syntax error at end of input\r\n\r\nPOSITION: 7", result.Exception.Message);
             var data = dbContext.FetchData(verifyDMLExecution);
             Assert.AreEqual(0, data.Count);
         }
@@ -1523,7 +1524,7 @@ namespace QueryDB.Core.Tests
             };
             var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
             var result = await dbContext.ExecuteTransactionAsync(statements);
-            Assert.IsTrue(result);
+            Assert.IsTrue(result.Success);
 
             var tableCount = await dbContext
                 .FetchDataAsync(string.Format(dDLExecutionCheckSql, "public", "Employee"));
@@ -1536,7 +1537,7 @@ namespace QueryDB.Core.Tests
                 dropTableSql
             };
             result = await dbContext.ExecuteTransactionAsync(statements);
-            Assert.IsTrue(result);
+            Assert.IsTrue(result.Success);
 
             tableCount = await dbContext
                 .FetchDataAsync(string.Format(dDLExecutionCheckSql, "public", "Employees"));
@@ -1561,7 +1562,7 @@ namespace QueryDB.Core.Tests
 
             // Insert & Update
             var result = await dbContext.ExecuteTransactionAsync(statements);
-            Assert.IsTrue(result);
+            Assert.IsTrue(result.Success);
             var data = await dbContext.FetchDataAsync(verifyDMLExecution);
             Assert.AreEqual(1, data.Count);
             var agent = data.FirstOrDefault();
@@ -1578,7 +1579,7 @@ namespace QueryDB.Core.Tests
                 deleteSql
             };
             result = await dbContext.ExecuteTransactionAsync(statements);
-            Assert.IsTrue(result);
+            Assert.IsTrue(result.Success);
             data = await dbContext.FetchDataAsync(verifyDMLExecution);
             Assert.AreEqual(0, data.Count);
         }
@@ -1602,7 +1603,8 @@ namespace QueryDB.Core.Tests
 
             // Insert & Update
             var result = await dbContext.ExecuteTransactionAsync(statements);
-            Assert.IsFalse(result);
+            Assert.IsFalse(result.Success);
+            Assert.AreEqual("42601: syntax error at end of input\r\n\r\nPOSITION: 7", result.Exception.Message);
             var data = await dbContext.FetchDataAsync(verifyDMLExecution);
             Assert.AreEqual(0, data.Count);
         }

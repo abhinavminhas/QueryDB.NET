@@ -107,19 +107,23 @@ namespace QueryDB
         /// </summary>
         /// <param name="sqlStatements">A list of SQL statements to execute.</param>
         /// <returns>
-        /// Returns <c>true</c> if all statements are executed successfully and the transaction is committed;
-        /// <c>false</c> if any statement fails and the transaction is rolled back.
+        /// A <see cref="Result"/> object indicating the outcome of the transaction.
+        /// The <see cref="Result.Success"/> property is <c>true</c> if the transaction is committed successfully; 
+        /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
+        /// If an error occurs, the <see cref="Result.Exception"/> property contains the exception details.
         /// </returns>
-        bool ExecuteTransaction(List<string> sqlStatements);
+        Result ExecuteTransaction(List<string> sqlStatements);
 
         /// <summary>
         /// Asynchronously executes multiple SQL statements within a transaction, ensuring that all statements are executed together.
         /// </summary>
         /// <param name="sqlStatements">A list of SQL statements to execute.</param>
         /// <returns>
-        /// Returns <c>true</c> if all statements are executed successfully and the transaction is committed;
-        /// <c>false</c> if any statement fails and the transaction is rolled back.
+        /// A <see cref="Result"/> object indicating the outcome of the transaction.
+        /// The <see cref="Result.Success"/> property is <c>true</c> if the transaction is committed successfully; 
+        /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
+        /// If an error occurs, the <see cref="Result.Exception"/> property contains the exception details.
         /// </returns>
-        Task<bool> ExecuteTransactionAsync(List<string> sqlStatements);
+        Task<Result> ExecuteTransactionAsync(List<string> sqlStatements);
     }
 }

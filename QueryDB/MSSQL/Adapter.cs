@@ -189,13 +189,12 @@ namespace QueryDB.MSSQL
         /// <param name="sqlStatements">A list of SQL statements to execute.</param>
         /// <param name="connection">The <see cref="SqlConnection"/> object used to connect to the database.</param>
         /// <returns>
-        /// Returns <c>true</c> if the transaction is committed successfully; 
+        /// A <see cref="Result"/> object indicating the outcome of the transaction.
+        /// The <see cref="Result.Success"/> property is <c>true</c> if the transaction is committed successfully; 
         /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
+        /// If an error occurs, the <see cref="Result.Exception"/> property contains the exception details.
         /// </returns>
-        /// <exception cref="Exception">
-        /// Logs and handles exceptions if any SQL command execution fails.
-        /// </exception>
-        internal static bool ExecuteTransaction(List<string> sqlStatements, SqlConnection connection)
+        internal static Result ExecuteTransaction(List<string> sqlStatements, SqlConnection connection)
         {
             using (SqlTransaction transaction = GetSqlTransaction(connection))
             {
@@ -209,13 +208,12 @@ namespace QueryDB.MSSQL
                         }
                     }
                     transaction.Commit();
-                    return true;
+                    return new Result { Success = true };
                 }
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
-                    return false;
+                    return new Result { Success = false, Exception = ex };
                 }
             }
         }
@@ -385,13 +383,12 @@ namespace QueryDB.MSSQL
         /// <param name="sqlStatements">A list of SQL statements to execute.</param>
         /// <param name="connection">The <see cref="SqlConnection"/> object used to connect to the database.</param>
         /// <returns>
-        /// Returns <c>true</c> if the transaction is committed successfully; 
+        /// A <see cref="Result"/> object indicating the outcome of the transaction.
+        /// The <see cref="Result.Success"/> property is <c>true</c> if the transaction is committed successfully; 
         /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
+        /// If an error occurs, the <see cref="Result.Exception"/> property contains the exception details.
         /// </returns>
-        /// <exception cref="Exception">
-        /// Logs and handles exceptions if any SQL command execution fails.
-        /// </exception>
-        internal static async Task<bool> ExecuteTransactionAsync(List<string> sqlStatements, SqlConnection connection)
+        internal static async Task<Result> ExecuteTransactionAsync(List<string> sqlStatements, SqlConnection connection)
         {
             using (SqlTransaction transaction = await GetSqlTransactionAsync(connection))
             {
@@ -405,13 +402,12 @@ namespace QueryDB.MSSQL
                         }
                     }
                     transaction.Commit();
-                    return true;
+                    return new Result { Success = true};
                 }
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    Console.WriteLine($"Transaction rolled back due to error: {ex.Message}");
-                    return false;
+                    return new Result { Success = false, Exception = ex };
                 }
             }
         }

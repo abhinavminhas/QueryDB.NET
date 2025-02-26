@@ -535,11 +535,14 @@ namespace QueryDB
         /// </summary>
         /// <param name="sqlStatements">A list of SQL statements to execute.</param>
         /// <returns>
-        /// Returns <c>true</c> if all statements are executed successfully and the transaction is committed;
-        /// <c>false</c> if any statement fails and the transaction is rolled back.
+        /// A <see cref="Result"/> object indicating the outcome of the transaction.
+        /// The <see cref="Result.Success"/> property is <c>true</c> if the transaction is committed successfully; 
+        /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
+        /// If an error occurs, the <see cref="Result.Exception"/> property contains the exception details.
         /// </returns>
-        public bool ExecuteTransaction(List<string> sqlStatements)
+        public Result ExecuteTransaction(List<string> sqlStatements)
         {
+            var result = new Result();
             var selectExists = sqlStatements.Any(sqlStatement => Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)));
             if (selectExists)
                 throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteTransaction,
@@ -548,31 +551,31 @@ namespace QueryDB
             {
                 using (var msSqlDBConnection = GetSqlServerConnection())
                 {
-                    return MSSQL.Adapter.ExecuteTransaction(sqlStatements, msSqlDBConnection.SqlConnection);
+                    result = MSSQL.Adapter.ExecuteTransaction(sqlStatements, msSqlDBConnection.SqlConnection);
                 }
             }
             else if (Database.Equals(DB.MySQL))
             {
                 using (var mySqlDBConnection = GetMySqlConnection())
                 {
-                    return MySQL.Adapter.ExecuteTransaction(sqlStatements, mySqlDBConnection.MySqlConnection);
+                    result = MySQL.Adapter.ExecuteTransaction(sqlStatements, mySqlDBConnection.MySqlConnection);
                 }
             }
             else if (Database.Equals(DB.Oracle))
             {
                 using (var oracleDBConnection = GetOracleConnection())
                 {
-                    return Oracle.Adapter.ExecuteTransaction(sqlStatements, oracleDBConnection.OracleConnection);
+                    result = Oracle.Adapter.ExecuteTransaction(sqlStatements, oracleDBConnection.OracleConnection);
                 }
             }
             else if (Database.Equals(DB.PostgreSQL))
             {
                 using (var postgreSqlDBConnection = GetPostgreSqlConnection())
                 {
-                    return PostgreSQL.Adapter.ExecuteTransaction(sqlStatements, postgreSqlDBConnection.PostgreSQLConnection);
+                    result = PostgreSQL.Adapter.ExecuteTransaction(sqlStatements, postgreSqlDBConnection.PostgreSQLConnection);
                 }
             }
-            return false;
+            return result;
         }
 
         /// <summary>
@@ -580,11 +583,14 @@ namespace QueryDB
         /// </summary>
         /// <param name="sqlStatements">A list of SQL statements to execute.</param>
         /// <returns>
-        /// Returns <c>true</c> if all statements are executed successfully and the transaction is committed;
-        /// <c>false</c> if any statement fails and the transaction is rolled back.
+        /// A <see cref="Result"/> object indicating the outcome of the transaction.
+        /// The <see cref="Result.Success"/> property is <c>true</c> if the transaction is committed successfully; 
+        /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
+        /// If an error occurs, the <see cref="Result.Exception"/> property contains the exception details.
         /// </returns>
-        public async Task<bool> ExecuteTransactionAsync(List<string> sqlStatements)
+        public async Task<Result> ExecuteTransactionAsync(List<string> sqlStatements)
         {
+            var result = new Result();
             var selectExists = sqlStatements.Any(sqlStatement => Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)));
             if (selectExists)
                 throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteTransaction,
@@ -593,31 +599,31 @@ namespace QueryDB
             {
                 using (var msSqlDBConnection = GetSqlServerConnection())
                 {
-                    return await MSSQL.Adapter.ExecuteTransactionAsync(sqlStatements, msSqlDBConnection.SqlConnection);
+                    result = await MSSQL.Adapter.ExecuteTransactionAsync(sqlStatements, msSqlDBConnection.SqlConnection);
                 }
             }
             else if (Database.Equals(DB.MySQL))
             {
                 using (var mySqlDBConnection = GetMySqlConnection())
                 {
-                    return await MySQL.Adapter.ExecuteTransactionAsync(sqlStatements, mySqlDBConnection.MySqlConnection);
+                    result = await MySQL.Adapter.ExecuteTransactionAsync(sqlStatements, mySqlDBConnection.MySqlConnection);
                 }
             }
             else if (Database.Equals(DB.Oracle))
             {
                 using (var oracleDBConnection = GetOracleConnection())
                 {
-                    return await Oracle.Adapter.ExecuteTransactionAsync(sqlStatements, oracleDBConnection.OracleConnection);
+                    result = await Oracle.Adapter.ExecuteTransactionAsync(sqlStatements, oracleDBConnection.OracleConnection);
                 }
             }
             else if (Database.Equals(DB.PostgreSQL))
             {
                 using (var postgreSqlDBConnection = GetPostgreSqlConnection())
                 {
-                    return await PostgreSQL.Adapter.ExecuteTransactionAsync(sqlStatements, postgreSqlDBConnection.PostgreSQLConnection);
+                    result = await PostgreSQL.Adapter.ExecuteTransactionAsync(sqlStatements, postgreSqlDBConnection.PostgreSQLConnection);
                 }
             }
-            return false;
+            return result;
         }
 
         /// <summary>
