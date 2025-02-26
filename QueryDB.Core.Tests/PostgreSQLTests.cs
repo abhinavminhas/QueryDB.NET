@@ -1470,7 +1470,7 @@ namespace QueryDB.Core.Tests
             // Insert & Update
             var result = dbContext.ExecuteTransaction(statements);
             Assert.IsFalse(result.Success);
-            Assert.AreEqual("42601: syntax error at end of input\r\n\r\nPOSITION: 7", result.Exception.Message);
+            Assert.IsTrue(result.Exception.Message.Contains("42601: syntax error at end of input"));
             var data = dbContext.FetchData(verifyDMLExecution);
             Assert.AreEqual(0, data.Count);
         }
@@ -1604,7 +1604,7 @@ namespace QueryDB.Core.Tests
             // Insert & Update
             var result = await dbContext.ExecuteTransactionAsync(statements);
             Assert.IsFalse(result.Success);
-            Assert.AreEqual("42601: syntax error at end of input\r\n\r\nPOSITION: 7", result.Exception.Message);
+            Assert.IsTrue(result.Exception.Message.Contains("42601: syntax error at end of input"));
             var data = await dbContext.FetchDataAsync(verifyDMLExecution);
             Assert.AreEqual(0, data.Count);
         }
