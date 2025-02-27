@@ -32,17 +32,19 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
 - Execute scalar queries (returning a single value).
 - Execute non-query database commands (e.g. `INSERT`, `UPDATE`, `DELETE`).
 - Execute transactions while maintaining atomicity.
+- Support for Synchronous and Asynchronous operations.
 
 ## Getting Started
     
-- _**Setup `DBContext` with the database of your choice**_
+- _**Setup `DBContext` with the database of your choice :**_
 
     ```
     var dbContext = new DBContext(DB.<Database Type>, <Connection String>);
     ```
 
-- _**Execute `DBContext` commands**_
+- _**Execute `DBContext` commands :**_
 
+    > __Synchronous__  
     ```
     var result = dbContext.FetchData(<Sql Statement>);
     var result = dbContext.FetchData<T>(<Sql Statement>);
@@ -56,4 +58,10 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
     ```
     ```
     var result = dbContext.ExecuteTransaction(<List of Sql Statements>);
+    ```
+
+    > __Asynchronous__  
+     ```
+    var result = dbContext.FetchDataAsync(<Sql Statement>);
+    var result = dbContext.FetchDataAsync<T>(<Sql Statement>);
     ```
