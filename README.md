@@ -44,37 +44,9 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
 
 - _**Execute `DBContext` commands :**_
 
-    > __SYNCHRONOUS__  
-    ```
-    var result = dbContext.FetchData(<Sql Statement>);
-    ```
-    ```
-    var result = dbContext.FetchData<T>(<Sql Statement>);
-    ```
-    ```
-    var result = dbContext.ExecuteScalar(<Sql Statement>);
-    ```
-    ```
-    var result = dbContext.ExecuteScalar<T>(<Sql Statement>);
-    ```
-    ```
-    var result = dbContext.ExecuteCommand(<Sql Statement>);
-    ```
-    ```
-    var result = dbContext.ExecuteTransaction(<List of Sql Statements>);
-    ```
-
-    > __ASYNCHRONOUS__  
-     ```
-    var result = dbContext.FetchDataAsync(<Sql Statement>);
-    ```
-    ```
-    var result = dbContext.FetchDataAsync<T>(<Sql Statement>);
-    ```
-
     <details>
 
-    <summary>Run DBContext Commands Synchronously</summary>
+    <summary>Execute DBContext Commands Synchronously</summary>
 
     ```
     var result = dbContext.FetchData(<Sql Statement>);
@@ -99,7 +71,7 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
 
     <details>
 
-    <summary>Run DBContext Commands Asynchronously</summary>
+    <summary>Execute DBContext Commands Asynchronously</summary>
     
     ```
     var result = dbContext.FetchDataAsync(<Sql Statement>);
