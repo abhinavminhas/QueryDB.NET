@@ -47,10 +47,14 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
     > __Synchronous__  
     ```
     var result = dbContext.FetchData(<Sql Statement>);
+    ```
+    ```
     var result = dbContext.FetchData<T>(<Sql Statement>);
     ```
     ```
     var result = dbContext.ExecuteScalar(<Sql Statement>);
+    ```
+    ```
     var result = dbContext.ExecuteScalar<T>(<Sql Statement>);
     ```
     ```
@@ -63,5 +67,7 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
     > __Asynchronous__  
      ```
     var result = dbContext.FetchDataAsync(<Sql Statement>);
+    ```
+    ```
     var result = dbContext.FetchDataAsync<T>(<Sql Statement>);
     ```
