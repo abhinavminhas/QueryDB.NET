@@ -44,7 +44,7 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
 
 - _**Execute `DBContext` commands :**_
 
-    > __Synchronous__  
+    > __SYNCHRONOUS__  
     ```
     var result = dbContext.FetchData(<Sql Statement>);
     ```
@@ -64,7 +64,7 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
     var result = dbContext.ExecuteTransaction(<List of Sql Statements>);
     ```
 
-    > __Asynchronous__  
+    > __ASYNCHRONOUS__  
      ```
     var result = dbContext.FetchDataAsync(<Sql Statement>);
     ```
