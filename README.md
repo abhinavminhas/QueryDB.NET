@@ -51,7 +51,7 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
     ```
     var result = dbContext.FetchData(<Sql Statement>);
     ```
-     ```
+    ```
     var result = dbContext.FetchData<T>(<Sql Statement>);
     ```
     ```
@@ -71,7 +71,7 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
 
     <details>
 
-    <summary><b><tt>Execute DBContext Commands Asynchronously<tt><b></summary>
+    <summary><b><tt>Execute DBContext Commands Asynchronously<tt><b></summary><br>
     
     ```
     var result = dbContext.FetchDataAsync(<Sql Statement>);
