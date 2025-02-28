@@ -96,6 +96,7 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
 
 ## Examples
 
+> <b>Data Retrieval</b>
 ``` csharp
 public class Orders
 {
@@ -117,7 +118,20 @@ var sql = @"SELECT A.Agent_Code, A.Agent_Name, C.Cust_Code, C.Cust_Name, O.Ord_N
            Customer C ON C.Agent_Code = A.Agent_Code INNER JOIN 
            Orders O ON O.Cust_Code = C.Cust_Code AND O.Agent_Code = A.Agent_Code";
 
-var data = new DBContext(DB.<Database Type>, <Connection String>)
-            .FetchData<Orders>(selectSql);
-var agent = data.FirstOrDefault(X => X.Agent_Name == "Benjamin");
+var data = new DBContext(DB.<Database Type>, <Connection String>).FetchData<Orders>(selectSql);
+var agent = data.FirstOrDefault(X => X.Agent_Name == "Foo");
 ```
+
+> <b>Transaction</b>
+
+``` csharp
+// Create, Insert & Update
+var statements = new List<string>
+{
+    "CREATE TABLE Employee (EmployeeID INT PRIMARY KEY, FirstName NVARCHAR(50), LastName NVARCHAR(50))",
+    "INSERT INTO Employee VALUES ('E01', 'John', 'Wick')",
+    "UPDATE Employee SET FirstName = 'Jack' LastName = 'Reacher' WHERE EmployeeID = 'E01'"
+};
+var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+var result = dbContext.ExecuteTransaction(statements);
+---
