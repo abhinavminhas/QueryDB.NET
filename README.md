@@ -79,5 +79,17 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
     ```
     var result = dbContext.FetchDataAsync<T>(<Sql Statement>);
     ```
+    ```
+    var result = dbContext.ExecuteScalarAsync(<Sql Statement>);
+    ```
+    ```
+    var result = dbContext.ExecuteScalarAsync<T>(<Sql Statement>);
+    ```
+    ```
+    var result = dbContext.ExecuteCommandAsync(<Sql Statement>);
+    ```
+    ```
+    var result = dbContext.ExecuteTransactionAsync(<List of Sql Statements>);
+    ```
 
     </details>
