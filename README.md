@@ -38,7 +38,7 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
     
 - _**Setup `DBContext` with the database of your choice :**_
 
-    ```
+    ``` csharp
     var dbContext = new DBContext(DB.<Database Type>, <Connection String>);
     ```
 
@@ -48,22 +48,22 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
 
     <summary><b><tt>Execute DBContext Commands Synchronously</tt></b></summary></br>
 
-    ```
+    ``` csharp
     var result = dbContext.FetchData(<Sql Statement>);
     ```
-    ```
+    ``` csharp
     var result = dbContext.FetchData<T>(<Sql Statement>);
     ```
-    ```
+    ``` csharp
     var result = dbContext.ExecuteScalar(<Sql Statement>);
     ```
-    ```
+    ``` csharp
     var result = dbContext.ExecuteScalar<T>(<Sql Statement>);
     ```
-    ```
+    ``` csharp
     var result = dbContext.ExecuteCommand(<Sql Statement>);
     ```
-    ```
+    ``` csharp
     var result = dbContext.ExecuteTransaction(<List of Sql Statements>);
     ```
 
@@ -73,22 +73,22 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
 
     <summary><b><tt>Execute DBContext Commands Asynchronously</tt></b></summary></br>
     
-    ```
+    ``` csharp
     var result = dbContext.FetchDataAsync(<Sql Statement>);
     ```
-    ```
+    ``` csharp
     var result = dbContext.FetchDataAsync<T>(<Sql Statement>);
     ```
-    ```
+    ``` csharp
     var result = dbContext.ExecuteScalarAsync(<Sql Statement>);
     ```
-    ```
+    ``` csharp
     var result = dbContext.ExecuteScalarAsync<T>(<Sql Statement>);
     ```
-    ```
+    ``` csharp
     var result = dbContext.ExecuteCommandAsync(<Sql Statement>);
     ```
-    ```
+    ``` csharp
     var result = dbContext.ExecuteTransactionAsync(<List of Sql Statements>);
     ```
 
@@ -96,12 +96,12 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
 
 ## Examples
 
-```
-var sql = "SELECT A.Agent_Code, A.Agent_Name, C.Cust_Code, C.Cust_Name, O.Ord_Num, O.Ord_Amount, O.Advance_Amount, O.Ord_Date, O.Ord_Description FROM Agents A INNER JOIN 
+``` csharp
+var sql = @"SELECT A.Agent_Code, A.Agent_Name, C.Cust_Code, C.Cust_Name, O.Ord_Num, O.Ord_Amount, O.Advance_Amount, O.Ord_Date, O.Ord_Description FROM Agents A INNER JOIN 
            Customer C ON C.Agent_Code = A.Agent_Code INNER JOIN 
            Orders O ON O.Cust_Code = C.Cust_Code AND O.Agent_Code = A.Agent_Code";
 
 var data = new DBContext(DB.<Database Type>, <Connection String>)
-            .FetchData<Entities.MSSQL.Agents>(selectSql);
+            .FetchData<Orders>(selectSql);
 var agent = data.FirstOrDefault(X => X.Agent_Name == "Benjamin");
 ```
