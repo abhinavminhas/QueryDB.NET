@@ -121,7 +121,7 @@ var sql = @"SELECT A.Agent_Code, A.Agent_Name, C.Cust_Code, C.Cust_Name, O.Ord_N
 var data = new DBContext(DB.<Database Type>, <Connection String>).FetchData<Orders>(selectSql);
 var agent = data.FirstOrDefault(X => X.Agent_Name == "Foo");
 ```
-
+---
 > <b>Transaction</b>
 
 ``` csharp
