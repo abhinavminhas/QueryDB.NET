@@ -46,7 +46,7 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
 
     <details>
 
-    <summary><b><tt>Execute DBContext Commands Synchronously<tt><b></summary><br>
+    <summary><b><tt>Execute DBContext Commands Synchronously</tt></b></summary></br>
 
     ```
     var result = dbContext.FetchData(<Sql Statement>);
@@ -71,7 +71,7 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
 
     <details>
 
-    <summary><b><tt>Execute DBContext Commands Asynchronously<tt><b></summary><br>
+    <summary><b><tt>Execute DBContext Commands Asynchronously</tt></b></summary></br>
     
     ```
     var result = dbContext.FetchDataAsync(<Sql Statement>);
