@@ -93,3 +93,15 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
     ```
 
     </details>
+
+## Examples
+
+```
+var sql = "SELECT A.Agent_Code, A.Agent_Name, C.Cust_Code, C.Cust_Name, O.Ord_Num, O.Ord_Amount, O.Advance_Amount, O.Ord_Date, O.Ord_Description FROM Agents A INNER JOIN 
+           Customer C ON C.Agent_Code = A.Agent_Code INNER JOIN 
+           Orders O ON O.Cust_Code = C.Cust_Code AND O.Agent_Code = A.Agent_Code";
+
+var data = new DBContext(DB.<Database Type>, <Connection String>)
+            .FetchData<Entities.MSSQL.Agents>(selectSql);
+var agent = data.FirstOrDefault(X => X.Agent_Name == "Benjamin");
+```
