@@ -1,6 +1,7 @@
 ﻿using Oracle.ManagedDataAccess.Client;
 using System;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace QueryDB.Resources
 {
@@ -89,6 +90,34 @@ namespace QueryDB.Resources
         }
 
         /// <summary>
+        /// Asynchronously retrieves the content of a BFILE column from an Oracle data reader as a Base64-encoded string.
+        /// </summary>
+        /// <param name="reader">The Oracle data reader containing the BFILE column.</param>
+        /// <param name="columnIndex">The index of the BFILE column to read.</param>
+        /// <returns>Returns the BFILE content as a Base64-encoded string, or an empty string if the BFILE is null.</returns>
+        internal static async Task<string> GetBFileBase64ContentAsync(OracleDataReader reader, int columnIndex)
+        {
+            string content = string.Empty;
+            var bFile = reader.GetOracleBFile(columnIndex);
+            if (bFile != null && !await reader.IsDBNullAsync(columnIndex))
+            {
+                bFile.OpenFile();
+                byte[] buffer = new byte[bFile.Length];
+                int bytesReadTotal = 0;
+                while (bytesReadTotal < buffer.Length)
+                {
+                    int bytesRead = await bFile.ReadAsync(buffer, bytesReadTotal, buffer.Length - bytesReadTotal);
+                    if (bytesRead == 0)
+                        break;
+                    bytesReadTotal += bytesRead;
+                }
+                content = Convert.ToBase64String(buffer);
+                bFile.Close();
+            }
+            return content;
+        }
+
+        /// <summary>
         /// Retrieves the content of a BFILE column from an Oracle data reader as a byte array, using the column name.
         /// </summary>
         /// <param name="reader">The Oracle data reader containing the BFILE column.</param>
@@ -107,6 +136,34 @@ namespace QueryDB.Resources
                 while (bytesReadTotal < buffer.Length)
                 {
                     int bytesRead = bFile.Read(buffer, bytesReadTotal, buffer.Length - bytesReadTotal);
+                    if (bytesRead == 0)
+                        break;
+                    bytesReadTotal += bytesRead;
+                }
+                bFile.Close();
+            }
+            return buffer;
+        }
+
+        /// <summary>
+        /// Asynchronously retrieves the content of a BFILE column from an Oracle data reader as a byte array, using the column name.
+        /// </summary>
+        /// <param name="reader">The Oracle data reader containing the BFILE column.</param>
+        /// <param name="columnName">The name of the BFILE column to read.</param>
+        /// <returns>Returns the BFILE content as a byte array, or <c>null</c> if the BFILE is null or the column value is null.</returns>
+        internal static async Task<byte[]> GetBFileByteContentAsync(OracleDataReader reader, string columnName)
+        {
+            byte[] buffer = null;
+            int columnIndex = reader.GetOrdinal(columnName);
+            var bFile = reader.GetOracleBFile(columnIndex);
+            if (bFile != null && !await reader.IsDBNullAsync(columnIndex))
+            {
+                bFile.OpenFile();
+                buffer = new byte[bFile.Length];
+                int bytesReadTotal = 0;
+                while (bytesReadTotal < buffer.Length)
+                {
+                    int bytesRead = await bFile.ReadAsync(buffer, bytesReadTotal, buffer.Length - bytesReadTotal);
                     if (bytesRead == 0)
                         break;
                     bytesReadTotal += bytesRead;

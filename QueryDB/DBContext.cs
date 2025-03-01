@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace QueryDB
 {
@@ -56,13 +57,13 @@ namespace QueryDB
         }
 
         /// <summary>
-        /// Retrieves records for 'Select' queries from the database.
+        /// Executes and retrieves records for 'Select' queries from the database.
         /// Converts column names to keys holding values, with multiple database rows returned into a list.
         /// Note: Use aliases in query for similar column names.
         /// </summary>
         /// <param name="selectSql">'Select' query.</param>
-        /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase. Default - 'false'.</param>
-        /// <returns>List of data Dictionary with column names as keys holding values into a list for multiple rows of data.</returns>
+        /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase. Default - <c>false</c>.</param>
+        /// <returns>List of <see cref="DataDictionary"/> with column names as keys holding values into a list for multiple rows of data.</returns>
         public List<DataDictionary> FetchData(string selectSql, bool upperCaseKeys = false)
         {
             var dataList = new List<DataDictionary>();
@@ -102,12 +103,12 @@ namespace QueryDB
         }
 
         /// <summary>
-        ///  Retrieves records for 'Select' queries from the database.
+        /// Executes and retrieves records for 'Select' queries from the database.
         /// </summary>
         /// <typeparam name="T">Object entity to return data mapped into.</typeparam>
         /// <param name="selectSql">'Select' query.</param>
-        /// <param name="strict">Enables fetch data only for object <T> properties existing in database query result. Default - 'false'.</param>
-        /// <returns>List of data rows mapped into object entity into a list for multiple rows of data.</returns>
+        /// <param name="strict">Enables fetch data only for object type <typeparamref name="T"/> properties existing in database query result. Default - <c>false</c>.</param>
+        /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
         public List<T> FetchData<T>(string selectSql, bool strict = false) where T : new()
         {
             var dataList = new List<T>();
@@ -147,10 +148,105 @@ namespace QueryDB
         }
 
         /// <summary>
-        /// Executes a SQL query and returns the result as a string.
+        /// Asynchronously executes and retrieves records for 'Select' queries from the database.
+        /// Converts column names to keys holding values, with multiple database rows returned into a list.
+        /// Note: Use aliases in query for similar column names.
         /// </summary>
-        /// <param name="sqlStatement">The SQL query to execute.</param>
-        /// <returns>A string representing the result of the query. If the result is DBNull, an empty string is returned.</returns>
+        /// <param name="selectSql">'Select' query.</param>
+        /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase. Default - <c>false</c>.</param>
+        /// <returns>List of <see cref="DataDictionary"/> with column names as keys holding values into a list for multiple rows of data.</returns>
+        public async Task<List<DataDictionary>> FetchDataAsync(string selectSql, bool upperCaseKeys = false)
+        {
+            var dataList = new List<DataDictionary>();
+            if (Database.Equals(DB.MSSQL))
+            {
+                using (var msSqlDBConnection = GetSqlServerConnection())
+                {
+                    var _systemAdapter = new MSSQL.Adapter();
+                    dataList = await _systemAdapter.FetchDataAsync(selectSql, msSqlDBConnection.SqlConnection, upperCaseKeys);
+                }
+            }
+            else if (Database.Equals(DB.MySQL))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    var _systemAdapter = new MySQL.Adapter();
+                    dataList = await _systemAdapter.FetchDataAsync(selectSql, mySqlDBConnection.MySqlConnection, upperCaseKeys);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    var _systemAdapter = new Oracle.Adapter();
+                    dataList = await _systemAdapter.FetchDataAsync(selectSql, oracleDBConnection.OracleConnection, upperCaseKeys);
+                }
+            }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    var _systemAdapter = new PostgreSQL.Adapter();
+                    dataList = await _systemAdapter.FetchDataAsync(selectSql, postgreSqlDBConnection.PostgreSQLConnection, upperCaseKeys);
+                }
+            }
+            return dataList;
+        }
+
+        /// <summary>
+        /// Asynchronously executes and retrieves records for 'Select' queries from the database.
+        /// </summary>
+        /// <typeparam name="T">Object entity to return data mapped into.</typeparam>
+        /// <param name="selectSql">'Select' query.</param>
+        /// <param name="strict">Enables fetch data only for object type <typeparamref name="T"/> properties existing in database query result. Default - <c>false</c>.</param>
+        /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
+        public async Task<List<T>> FetchDataAsync<T>(string selectSql, bool strict = false) where T : new()
+        {
+            var dataList = new List<T>();
+            if (Database.Equals(DB.MSSQL))
+            {
+                using (var msSqlDBConnection = GetSqlServerConnection())
+                {
+                    var _systemAdapter = new MSSQL.Adapter();
+                    dataList = await _systemAdapter.FetchDataAsync<T>(selectSql, msSqlDBConnection.SqlConnection, strict);
+                }
+            }
+            else if (Database.Equals(DB.MySQL))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    var _systemAdapter = new MySQL.Adapter();
+                    dataList = await _systemAdapter.FetchDataAsync<T>(selectSql, mySqlDBConnection.MySqlConnection, strict);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    var _systemAdapter = new Oracle.Adapter();
+                    dataList = await _systemAdapter.FetchDataAsync<T>(selectSql, oracleDBConnection.OracleConnection, strict);
+                }
+            }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    var _systemAdapter = new PostgreSQL.Adapter();
+                    dataList = await _systemAdapter.FetchDataAsync<T>(selectSql, postgreSqlDBConnection.PostgreSQLConnection, strict);
+                }
+            }
+            return dataList;
+        }
+
+        /// <summary>
+        /// Executes the provided SQL statement and returns the first column of the first row in the result set.
+        /// If the result is DBNull, an empty string is returned.
+        /// </summary>
+        /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
+        /// <returns>
+        /// A <see cref="string"/> representing the value of the first column of the first row in the result set,
+        /// or an empty string if the result is DBNull.
+        /// </returns>
         public string ExecuteScalar(string sqlStatement)
         {
             if (!Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
@@ -193,11 +289,15 @@ namespace QueryDB
         }
 
         /// <summary>
-        /// Executes a SQL query and returns the result as the specified type.
+        /// Executes the provided SQL statement and returns the first column of the first row in the result set,
+        /// converted to the specified type <typeparamref name="T"/>. If the result is DBNull, the default value of <typeparamref name="T"/> is returned.
         /// </summary>
         /// <typeparam name="T">The type to which the result should be converted.</typeparam>
-        /// <param name="sqlStatement">The SQL query to execute.</param>
-        /// <returns>The result of the query, converted to the specified type. If the result is DBNull, the default value for the type is returned.</returns>
+        /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
+        /// <returns>
+        /// The value of the first column of the first row in the result set, converted to type <typeparamref name="T"/>,
+        /// or the default value of <typeparamref name="T"/> if the result is DBNull.
+        /// </returns>
         public T ExecuteScalar<T>(string sqlStatement)
         {
             if (!Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
@@ -240,10 +340,111 @@ namespace QueryDB
         }
 
         /// <summary>
-        /// Executes SQL commands.
+        /// Asynchronously executes the provided SQL statement and returns the first column of the first row in the result set.
+        /// If the result is DBNull, an empty string is returned.
         /// </summary>
-        /// <param name="sqlStatement">SQL statement as command.</param>
-        /// <returns>The number of rows affected.</returns>
+        /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
+        /// <returns>
+        /// A <see cref="string"/> representing the value of the first column of the first row in the result set,
+        /// or an empty string if the result is DBNull.
+        /// </returns>
+        public async Task<string> ExecuteScalarAsync(string sqlStatement)
+        {
+            if (!Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedExecuteScalarCommand,
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedExecuteScalarCommand);
+            var value = string.Empty;
+            if (Database.Equals(DB.MSSQL))
+            {
+                using (var msSqlDBConnection = GetSqlServerConnection())
+                {
+                    var _systemAdapter = new MSSQL.Adapter();
+                    value = await _systemAdapter.ExecuteScalarAsync(sqlStatement, msSqlDBConnection.SqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.MySQL))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    var _systemAdapter = new MySQL.Adapter();
+                    value = await _systemAdapter.ExecuteScalarAsync(sqlStatement, mySqlDBConnection.MySqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    var _systemAdapter = new Oracle.Adapter();
+                    value = await _systemAdapter.ExecuteScalarAsync(sqlStatement, oracleDBConnection.OracleConnection);
+                }
+            }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    var _systemAdapter = new PostgreSQL.Adapter();
+                    value = await _systemAdapter.ExecuteScalarAsync(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
+                }
+            }
+            return value;
+        }
+
+        /// <summary>
+        /// Asynchronously executes the provided SQL statement and returns the first column of the first row in the result set,
+        /// converted to the specified type <typeparamref name="T"/>. If the result is DBNull, the default value of <typeparamref name="T"/> is returned.
+        /// </summary>
+        /// <typeparam name="T">The type to which the result should be converted.</typeparam>
+        /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
+        /// <returns>
+        /// The value of the first column of the first row in the result set, converted to type <typeparamref name="T"/>,
+        /// or the default value of <typeparamref name="T"/> if the result is DBNull.
+        /// </returns>
+        public async Task<T> ExecuteScalarAsync<T>(string sqlStatement)
+        {
+            if (!Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedExecuteScalarCommand,
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedExecuteScalarCommand);
+            var value = default(T);
+            if (Database.Equals(DB.MSSQL))
+            {
+                using (var msSqlDBConnection = GetSqlServerConnection())
+                {
+                    var _systemAdapter = new MSSQL.Adapter();
+                    value = await _systemAdapter.ExecuteScalarAsync<T>(sqlStatement, msSqlDBConnection.SqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.MySQL))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    var _systemAdapter = new MySQL.Adapter();
+                    value = await _systemAdapter.ExecuteScalarAsync<T>(sqlStatement, mySqlDBConnection.MySqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    var _systemAdapter = new Oracle.Adapter();
+                    value = await _systemAdapter.ExecuteScalarAsync<T>(sqlStatement, oracleDBConnection.OracleConnection);
+                }
+            }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    var _systemAdapter = new PostgreSQL.Adapter();
+                    value = await _systemAdapter.ExecuteScalarAsync<T>(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
+                }
+            }
+            return value;
+        }
+
+        /// <summary>
+        /// Executes a SQL statement that does not return a result set.
+        /// </summary>
+        /// <param name="sqlStatement">SQL statement to execute.</param>
+        /// <returns>The number of rows affected by the execution of the SQL statement.</returns>
         public int ExecuteCommand(string sqlStatement)
         {
             if (Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
@@ -285,15 +486,63 @@ namespace QueryDB
         }
 
         /// <summary>
+        /// Asynchronously executes a SQL statement that does not return a result set.
+        /// </summary>
+        /// <param name="sqlStatement">SQL statement to execute.</param>
+        /// <returns>The number of rows affected by the execution of the SQL statement.</returns>
+        public async Task<int> ExecuteCommandAsync(string sqlStatement)
+        {
+            if (Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteCommand,
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedSelectExecuteCommand);
+            if (Database.Equals(DB.MSSQL))
+            {
+                using (var msSqlDBConnection = GetSqlServerConnection())
+                {
+                    var _systemAdapter = new MSSQL.Adapter();
+                    return await _systemAdapter.ExecuteCommandAsync(sqlStatement, msSqlDBConnection.SqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.MySQL))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    var _systemAdapter = new MySQL.Adapter();
+                    return await _systemAdapter.ExecuteCommandAsync(sqlStatement, mySqlDBConnection.MySqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    var _systemAdapter = new Oracle.Adapter();
+                    return await _systemAdapter.ExecuteCommandAsync(sqlStatement, oracleDBConnection.OracleConnection);
+                }
+            }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    var _systemAdapter = new PostgreSQL.Adapter();
+                    return await _systemAdapter.ExecuteCommandAsync(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
+                }
+            }
+            return -1;
+        }
+
+        /// <summary>
         /// Executes multiple SQL statements within a transaction, ensuring that all statements are executed together.
         /// </summary>
         /// <param name="sqlStatements">A list of SQL statements to execute.</param>
         /// <returns>
-        /// Returns <c>true</c> if all statements are executed successfully and the transaction is committed;
-        /// <c>false</c> if any statement fails and the transaction is rolled back.
+        /// A <see cref="Result"/> object indicating the outcome of the transaction.
+        /// The <see cref="Result.Success"/> property is <c>true</c> if the transaction is committed successfully; 
+        /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
+        /// If an error occurs, the <see cref="Result.Exception"/> property contains the exception details.
         /// </returns>
-        public bool ExecuteTransaction(List<string> sqlStatements)
+        public Result ExecuteTransaction(List<string> sqlStatements)
         {
+            var result = new Result();
             var selectExists = sqlStatements.Any(sqlStatement => Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)));
             if (selectExists)
                 throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteTransaction,
@@ -302,31 +551,79 @@ namespace QueryDB
             {
                 using (var msSqlDBConnection = GetSqlServerConnection())
                 {
-                    return MSSQL.Adapter.ExecuteTransaction(sqlStatements, msSqlDBConnection.SqlConnection);
+                    result = MSSQL.Adapter.ExecuteTransaction(sqlStatements, msSqlDBConnection.SqlConnection);
                 }
             }
             else if (Database.Equals(DB.MySQL))
             {
                 using (var mySqlDBConnection = GetMySqlConnection())
                 {
-                    return MySQL.Adapter.ExecuteTransaction(sqlStatements, mySqlDBConnection.MySqlConnection);
+                    result = MySQL.Adapter.ExecuteTransaction(sqlStatements, mySqlDBConnection.MySqlConnection);
                 }
             }
             else if (Database.Equals(DB.Oracle))
             {
                 using (var oracleDBConnection = GetOracleConnection())
                 {
-                    return Oracle.Adapter.ExecuteTransaction(sqlStatements, oracleDBConnection.OracleConnection);
+                    result = Oracle.Adapter.ExecuteTransaction(sqlStatements, oracleDBConnection.OracleConnection);
                 }
             }
             else if (Database.Equals(DB.PostgreSQL))
             {
                 using (var postgreSqlDBConnection = GetPostgreSqlConnection())
                 {
-                    return PostgreSQL.Adapter.ExecuteTransaction(sqlStatements, postgreSqlDBConnection.PostgreSQLConnection);
+                    result = PostgreSQL.Adapter.ExecuteTransaction(sqlStatements, postgreSqlDBConnection.PostgreSQLConnection);
                 }
             }
-            return false;
+            return result;
+        }
+
+        /// <summary>
+        /// Asynchronously executes multiple SQL statements within a transaction, ensuring that all statements are executed together.
+        /// </summary>
+        /// <param name="sqlStatements">A list of SQL statements to execute.</param>
+        /// <returns>
+        /// A <see cref="Result"/> object indicating the outcome of the transaction.
+        /// The <see cref="Result.Success"/> property is <c>true</c> if the transaction is committed successfully; 
+        /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
+        /// If an error occurs, the <see cref="Result.Exception"/> property contains the exception details.
+        /// </returns>
+        public async Task<Result> ExecuteTransactionAsync(List<string> sqlStatements)
+        {
+            var result = new Result();
+            var selectExists = sqlStatements.Any(sqlStatement => Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)));
+            if (selectExists)
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteTransaction,
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedSelectExecuteTransaction);
+            if (Database.Equals(DB.MSSQL))
+            {
+                using (var msSqlDBConnection = GetSqlServerConnection())
+                {
+                    result = await MSSQL.Adapter.ExecuteTransactionAsync(sqlStatements, msSqlDBConnection.SqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.MySQL))
+            {
+                using (var mySqlDBConnection = GetMySqlConnection())
+                {
+                    result = await MySQL.Adapter.ExecuteTransactionAsync(sqlStatements, mySqlDBConnection.MySqlConnection);
+                }
+            }
+            else if (Database.Equals(DB.Oracle))
+            {
+                using (var oracleDBConnection = GetOracleConnection())
+                {
+                    result = await Oracle.Adapter.ExecuteTransactionAsync(sqlStatements, oracleDBConnection.OracleConnection);
+                }
+            }
+            else if (Database.Equals(DB.PostgreSQL))
+            {
+                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                {
+                    result = await PostgreSQL.Adapter.ExecuteTransactionAsync(sqlStatements, postgreSqlDBConnection.PostgreSQLConnection);
+                }
+            }
+            return result;
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace QueryDB.Core.Tests
 {
@@ -23,17 +24,14 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(UNKNOW_DB_TESTS)]
-        public void ExecuteTransaction_UnknownDB_ReturnsFalse()
+        public async Task ExecuteCommandAsync_UnknownDB_ReturnsNegativeOne()
         {
-            var sqlStatements = new List<string>
-            {
-                "DELETE FROM users"
-            };
+            string sqlStatement = "DELETE FROM users";
 
             var dbContext = new DBContext((DB)999, "some_invalid_connection_string");
-            var result = dbContext.ExecuteTransaction(sqlStatements);
+            var result = await dbContext.ExecuteCommandAsync(sqlStatement);
 
-            Assert.IsFalse(result);
+            Assert.AreEqual(-1, result);
         }
 
         #endregion
