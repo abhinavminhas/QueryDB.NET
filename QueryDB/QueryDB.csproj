@@ -15,14 +15,16 @@ Features:
 - Retrieve data from the database.
 - Execute scalar queries (returning a single value).
 - Execute non-query database commands.
-- Execute transactions while maintaining atomicity.</Description>
+- Execute transactions while maintaining atomicity.
+- Support for Synchronous and Asynchronous operations.</Description>
     <PackageProjectUrl>https://github.com/abhinavminhas/QueryDB.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/abhinavminhas/QueryDB.NET</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>sql, query, rdbms, database, mssql, sqlserver, mysql, oracle, postgresql</PackageTags>
-    <PackageReleaseNotes>1. Execute scalar queries (returning a single value).</PackageReleaseNotes>
-    <Version>1.1.0</Version>
+    <PackageReleaseNotes>1. Asynchronous operations.
+2. Execute transaction to return transaction outcome and exception details in case of failures.</PackageReleaseNotes>
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

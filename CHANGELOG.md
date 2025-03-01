@@ -3,6 +3,16 @@ All notable changes to this project documented here.
 
 ## [Released]
 
+## [1.2.0](https://www.nuget.org/packages/QueryDB/1.2.0) - 2025-03-04
+### Added
+- Asynchronous operations
+    - `FetchDataAsync()`
+    - `ExecuteScalarAsync()`
+    - `ExecuteCommandAsync()`
+    - `ExecuteTransactionAsync()`
+### Changed
+-  Execute transaction to return transaction outcome and exception details in case of failure instead of logging into console.
+
 ## [1.1.0](https://www.nuget.org/packages/QueryDB/1.1.0) - 2025-02-20
 ### Added
 - Execute scalar queries (returning a single value).
