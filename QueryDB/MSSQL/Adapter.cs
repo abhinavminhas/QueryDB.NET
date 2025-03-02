@@ -10,7 +10,7 @@ namespace QueryDB.MSSQL
     /// <summary>
     /// 'SQL Server' adapter.
     /// </summary>
-    internal class Adapter
+    internal sealed class Adapter
     {
 
         #region Synchronous
