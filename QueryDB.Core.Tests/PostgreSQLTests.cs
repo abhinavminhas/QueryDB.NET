@@ -160,6 +160,43 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("123e4567-e89b-12d3-a456-426614174000", dataType.ReferenceData["uuid_column"]);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_FetchData_Dictionary_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.PostgreSQLQueries.TestDB.DDL.Create_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Alter_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Comment_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Truncate_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Drop_Table,
+
+                Queries.PostgreSQLQueries.TestDB.DML.InsertSql,
+                Queries.PostgreSQLQueries.TestDB.DML.UpdateSql,
+                Queries.PostgreSQLQueries.TestDB.DML.DeleteSql,
+
+                Queries.PostgreSQLQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.PostgreSQLQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+                    dbContext.FetchData(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'FetchData' only supports SELECT queries that return result set.", ex.AdditionalInfo);
+                }
+            }
+        }
+
         #endregion
 
         #region Fetch Data Async Tests - << Task<List<DataDictionary>> FetchDataAsync(string selectSql, bool upperCaseKeys = false) >>
@@ -290,6 +327,43 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("123e4567-e89b-12d3-a456-426614174000", dataType.ReferenceData["uuid_column"]);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_FetchDataAsync_Dictionary_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.PostgreSQLQueries.TestDB.DDL.Create_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Alter_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Comment_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Truncate_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Drop_Table,
+
+                Queries.PostgreSQLQueries.TestDB.DML.InsertSql,
+                Queries.PostgreSQLQueries.TestDB.DML.UpdateSql,
+                Queries.PostgreSQLQueries.TestDB.DML.DeleteSql,
+
+                Queries.PostgreSQLQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.PostgreSQLQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+                    await dbContext.FetchDataAsync(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'FetchData' only supports SELECT queries that return result set.", ex.AdditionalInfo);
+                }
+            }
+        }
+
         #endregion
 
         #region Fetch Data Tests - << List<T> FetchData<T>(string selectSql, bool strict = false) >>
@@ -414,6 +488,43 @@ namespace QueryDB.Core.Tests
             }
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_FetchData_Entity_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.PostgreSQLQueries.TestDB.DDL.Create_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Alter_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Comment_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Truncate_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Drop_Table,
+
+                Queries.PostgreSQLQueries.TestDB.DML.InsertSql,
+                Queries.PostgreSQLQueries.TestDB.DML.UpdateSql,
+                Queries.PostgreSQLQueries.TestDB.DML.DeleteSql,
+
+                Queries.PostgreSQLQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.PostgreSQLQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+                    dbContext.FetchData<Entities.MSSQL.Orders>(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'FetchData' only supports SELECT queries that return result set.", ex.AdditionalInfo);
+                }
+            }
+        }
+
         #endregion
 
         #region Fetch Data Async Tests - << Task<List<T>> FetchDataAsync<T>(string selectSql, bool strict = false) >>
@@ -535,6 +646,43 @@ namespace QueryDB.Core.Tests
             catch (IndexOutOfRangeException ex)
             {
                 Assert.AreEqual("Field not found in row: Agent_Name", ex.Message);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_FetchDataAsync_Entity_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.PostgreSQLQueries.TestDB.DDL.Create_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Alter_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Comment_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Truncate_Table,
+                Queries.PostgreSQLQueries.TestDB.DDL.Drop_Table,
+
+                Queries.PostgreSQLQueries.TestDB.DML.InsertSql,
+                Queries.PostgreSQLQueries.TestDB.DML.UpdateSql,
+                Queries.PostgreSQLQueries.TestDB.DML.DeleteSql,
+
+                Queries.PostgreSQLQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.PostgreSQLQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+                    await dbContext.FetchDataAsync<Entities.MSSQL.Orders>(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'FetchData' only supports SELECT queries that return result set.", ex.AdditionalInfo);
+                }
             }
         }
 

@@ -66,6 +66,9 @@ namespace QueryDB
         /// <returns>List of <see cref="DataDictionary"/> with column names as keys holding values into a list for multiple rows of data.</returns>
         public List<DataDictionary> FetchData(string selectSql, bool upperCaseKeys = false)
         {
+            if (!Regex.IsMatch(selectSql, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedFetchDataCommand,
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedFetchDataCommand);
             var dataList = new List<DataDictionary>();
             if (Database.Equals(DB.MSSQL))
             {
@@ -111,6 +114,9 @@ namespace QueryDB
         /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
         public List<T> FetchData<T>(string selectSql, bool strict = false) where T : new()
         {
+            if (!Regex.IsMatch(selectSql, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedFetchDataCommand,
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedFetchDataCommand);
             var dataList = new List<T>();
             if (Database.Equals(DB.MSSQL))
             {
@@ -157,6 +163,9 @@ namespace QueryDB
         /// <returns>List of <see cref="DataDictionary"/> with column names as keys holding values into a list for multiple rows of data.</returns>
         public async Task<List<DataDictionary>> FetchDataAsync(string selectSql, bool upperCaseKeys = false)
         {
+            if (!Regex.IsMatch(selectSql, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedFetchDataCommand,
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedFetchDataCommand);
             var dataList = new List<DataDictionary>();
             if (Database.Equals(DB.MSSQL))
             {
@@ -202,6 +211,9 @@ namespace QueryDB
         /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
         public async Task<List<T>> FetchDataAsync<T>(string selectSql, bool strict = false) where T : new()
         {
+            if (!Regex.IsMatch(selectSql, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedFetchDataCommand,
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedFetchDataCommand);
             var dataList = new List<T>();
             if (Database.Equals(DB.MSSQL))
             {
