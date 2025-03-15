@@ -125,7 +125,7 @@
                     internal static string CreateUserSql_User_Password = @"CREATE USER '{0}' IDENTIFIED BY '{1}'";
                     internal static string GrantSql_Command_Table_User = @"GRANT {0} ON {1} TO '{2}'";
                     internal static string RevokeSql_Command_Table_User = @"REVOKE {0} ON {1} FROM '{2}'";
-                    internal static string VerifyPermission_User = @"SHOW GRANTS FOR '{0}'";
+                    internal static string VerifyPermission_User = "SELECT PRIVILEGE_TYPE FROM INFORMATION_SCHEMA.TABLE_PRIVILEGES WHERE GRANTEE = \"'test_user'@'%'\"";
                     internal static string RemoveUserSql_User = "DROP USER '{0}'";
                 }
             }

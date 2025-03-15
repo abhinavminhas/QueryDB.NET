@@ -1325,7 +1325,11 @@ namespace QueryDB.Core.Tests
             var password = "Test@1234";
             var table = "Agents";
             var commands = "SELECT, UPDATE";
-            var checkCommand = "SELECT";
+            var checkCommands = new List<string>()
+            {
+                "SELECT",
+                "UPDATE"
+            };
 
             var createUser = string.Format(Queries.MySQLQueries.TestDB.DCL.CreateUserSql_User_Password, user, password);
             var grantSql = string.Format(Queries.MySQLQueries.TestDB.DCL.GrantSql_Command_Table_User, commands, table, user);
@@ -1341,22 +1345,25 @@ namespace QueryDB.Core.Tests
 
             // Existing Permissions
             var data = dbContext.FetchData(verifyPermissions);
-            Assert.AreEqual(1, data.Count);
-            Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+            Assert.AreEqual(0, data.Count);
+            foreach (var checkCommand in checkCommands)
+                Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
 
             // Grant
             result = dbContext.ExecuteCommand(grantSql);
             Assert.AreEqual(0, result);
             data = dbContext.FetchData(verifyPermissions);
             Assert.AreEqual(2, data.Count);
-            Assert.IsTrue(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+            foreach (var checkCommand in checkCommands)
+                Assert.IsTrue(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
 
             // Revoke
             result = dbContext.ExecuteCommand(revokeSql);
             Assert.AreEqual(0, result);
             data = dbContext.FetchData(verifyPermissions);
-            Assert.AreEqual(1, data.Count);
-            Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+            Assert.AreEqual(0, data.Count);
+            foreach (var checkCommand in checkCommands)
+                Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
 
             //Remove User
             result = dbContext.ExecuteCommand(removeUser);
@@ -1488,7 +1495,11 @@ namespace QueryDB.Core.Tests
             var password = "Test@1234";
             var table = "Agents";
             var commands = "SELECT, UPDATE";
-            var checkCommand = "SELECT";
+            var checkCommands = new List<string>()
+            {
+                "SELECT",
+                "UPDATE"
+            };
 
             var createUser = string.Format(Queries.MySQLQueries.TestDB.DCL.CreateUserSql_User_Password, user, password);
             var grantSql = string.Format(Queries.MySQLQueries.TestDB.DCL.GrantSql_Command_Table_User, commands, table, user);
@@ -1504,22 +1515,25 @@ namespace QueryDB.Core.Tests
 
             // Existing Permissions
             var data = await dbContext.FetchDataAsync(verifyPermissions);
-            Assert.AreEqual(1, data.Count);
-            Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+            Assert.AreEqual(0, data.Count);
+            foreach (var checkCommand in checkCommands)
+                Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
 
             // Grant
             result = await dbContext.ExecuteCommandAsync(grantSql);
             Assert.AreEqual(0, result);
             data = await dbContext.FetchDataAsync(verifyPermissions);
             Assert.AreEqual(2, data.Count);
-            Assert.IsTrue(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+            foreach (var checkCommand in checkCommands)
+                Assert.IsTrue(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
 
             // Revoke
             result = await dbContext.ExecuteCommandAsync(revokeSql);
             Assert.AreEqual(0, result);
             data = await dbContext.FetchDataAsync(verifyPermissions);
-            Assert.AreEqual(1, data.Count);
-            Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+            Assert.AreEqual(0, data.Count);
+            foreach (var checkCommand in checkCommands)
+                Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
 
             //Remove User
             result = await dbContext.ExecuteCommandAsync(removeUser);
