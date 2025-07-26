@@ -73,31 +73,31 @@ namespace QueryDB
             switch (Database)
             {
                 case DB.MSSQL:
-                    using (var msSqlDBConnection = GetSqlServerConnection())
+                    using (var connection = GetSqlServerConnection())
                     {
-                        var _systemAdapter = new MSSQL.Adapter();
-                        dataList = _systemAdapter.FetchData(selectSql, msSqlDBConnection.SqlConnection, upperCaseKeys);
+                        var adapter = new MSSQL.Adapter();
+                        dataList = adapter.FetchData(selectSql, connection.SqlConnection, upperCaseKeys);
                     }
                     break;
                 case DB.MySQL:
-                    using (var mySqlDBConnection = GetMySqlConnection())
+                    using (var connection = GetMySqlConnection())
                     {
-                        var _systemAdapter = new MySQL.Adapter();
-                        dataList = _systemAdapter.FetchData(selectSql, mySqlDBConnection.MySqlConnection, upperCaseKeys);
+                        var adapter = new MySQL.Adapter();
+                        dataList = adapter.FetchData(selectSql, connection.MySqlConnection, upperCaseKeys);
                     }
                     break;
                 case DB.Oracle:
-                    using (var oracleDBConnection = GetOracleConnection())
+                    using (var connection = GetOracleConnection())
                     {
-                        var _systemAdapter = new Oracle.Adapter();
-                        dataList = _systemAdapter.FetchData(selectSql, oracleDBConnection.OracleConnection, upperCaseKeys);
+                        var adapter = new Oracle.Adapter();
+                        dataList = adapter.FetchData(selectSql, connection.OracleConnection, upperCaseKeys);
                     }
                     break;
                 case DB.PostgreSQL:
-                    using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                    using (var connection = GetPostgreSqlConnection())
                     {
-                        var _systemAdapter = new PostgreSQL.Adapter();
-                        dataList = _systemAdapter.FetchData(selectSql, postgreSqlDBConnection.PostgreSQLConnection, upperCaseKeys);
+                        var adapter = new PostgreSQL.Adapter();
+                        dataList = adapter.FetchData(selectSql, connection.PostgreSQLConnection, upperCaseKeys);
                     }
                     break;
             }
@@ -120,31 +120,31 @@ namespace QueryDB
             switch (Database)
             {
                 case DB.MSSQL:
-                    using (var msSqlDBConnection = GetSqlServerConnection())
+                    using (var connection = GetSqlServerConnection())
                     {
-                        var _systemAdapter = new MSSQL.Adapter();
-                        dataList = _systemAdapter.FetchData<T>(selectSql, msSqlDBConnection.SqlConnection, strict);
+                        var adapter = new MSSQL.Adapter();
+                        dataList = adapter.FetchData<T>(selectSql, connection.SqlConnection, strict);
                     }
                     break;
                 case DB.MySQL:
-                    using (var mySqlDBConnection = GetMySqlConnection())
+                    using (var connection = GetMySqlConnection())
                     {
-                        var _systemAdapter = new MySQL.Adapter();
-                        dataList = _systemAdapter.FetchData<T>(selectSql, mySqlDBConnection.MySqlConnection, strict);
+                        var adapter = new MySQL.Adapter();
+                        dataList = adapter.FetchData<T>(selectSql, connection.MySqlConnection, strict);
                     }
                     break;
                 case DB.Oracle:
-                    using (var oracleDBConnection = GetOracleConnection())
+                    using (var connection = GetOracleConnection())
                     {
-                        var _systemAdapter = new Oracle.Adapter();
-                        dataList = _systemAdapter.FetchData<T>(selectSql, oracleDBConnection.OracleConnection, strict);
+                        var adapter = new Oracle.Adapter();
+                        dataList = adapter.FetchData<T>(selectSql, connection.OracleConnection, strict);
                     }
                     break;
                 case DB.PostgreSQL:
-                    using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                    using (var connection = GetPostgreSqlConnection())
                     {
-                        var _systemAdapter = new PostgreSQL.Adapter();
-                        dataList = _systemAdapter.FetchData<T>(selectSql, postgreSqlDBConnection.PostgreSQLConnection, strict);
+                        var adapter = new PostgreSQL.Adapter();
+                        dataList = adapter.FetchData<T>(selectSql, connection.PostgreSQLConnection, strict);
                     }
                     break;
             }
@@ -168,31 +168,31 @@ namespace QueryDB
             switch (Database)
             {
                 case DB.MSSQL:
-                    using (var msSqlDBConnection = GetSqlServerConnection())
+                    using (var connection = GetSqlServerConnection())
                     {
-                        var _systemAdapter = new MSSQL.Adapter();
-                        dataList = await _systemAdapter.FetchDataAsync(selectSql, msSqlDBConnection.SqlConnection, upperCaseKeys);
+                        var adapter = new MSSQL.Adapter();
+                        dataList = await adapter.FetchDataAsync(selectSql, connection.SqlConnection, upperCaseKeys);
                     }
                     break;
                 case DB.MySQL:
-                    using (var mySqlDBConnection = GetMySqlConnection())
+                    using (var connection = GetMySqlConnection())
                     {
-                        var _systemAdapter = new MySQL.Adapter();
-                        dataList = await _systemAdapter.FetchDataAsync(selectSql, mySqlDBConnection.MySqlConnection, upperCaseKeys);
+                        var adapter = new MySQL.Adapter();
+                        dataList = await adapter.FetchDataAsync(selectSql, connection.MySqlConnection, upperCaseKeys);
                     }
                     break;
                 case DB.Oracle:
-                    using (var oracleDBConnection = GetOracleConnection())
+                    using (var connection = GetOracleConnection())
                     {
-                        var _systemAdapter = new Oracle.Adapter();
-                        dataList = await _systemAdapter.FetchDataAsync(selectSql, oracleDBConnection.OracleConnection, upperCaseKeys);
+                        var adapter = new Oracle.Adapter();
+                        dataList = await adapter.FetchDataAsync(selectSql, connection.OracleConnection, upperCaseKeys);
                     }
                     break;
                 case DB.PostgreSQL:
-                    using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                    using (var connection = GetPostgreSqlConnection())
                     {
-                        var _systemAdapter = new PostgreSQL.Adapter();
-                        dataList = await _systemAdapter.FetchDataAsync(selectSql, postgreSqlDBConnection.PostgreSQLConnection, upperCaseKeys);
+                        var adapter = new PostgreSQL.Adapter();
+                        dataList = await adapter.FetchDataAsync(selectSql, connection.PostgreSQLConnection, upperCaseKeys);
                     }
                     break;
             }
@@ -215,31 +215,31 @@ namespace QueryDB
             switch (Database)
             {
                 case DB.MSSQL:
-                    using (var msSqlDBConnection = GetSqlServerConnection())
+                    using (var connection = GetSqlServerConnection())
                     {
-                        var _systemAdapter = new MSSQL.Adapter();
-                        dataList = await _systemAdapter.FetchDataAsync<T>(selectSql, msSqlDBConnection.SqlConnection, strict);
+                        var adapter = new MSSQL.Adapter();
+                        dataList = await adapter.FetchDataAsync<T>(selectSql, connection.SqlConnection, strict);
                     }
                     break;
                 case DB.MySQL:
-                    using (var mySqlDBConnection = GetMySqlConnection())
+                    using (var connection = GetMySqlConnection())
                     {
-                        var _systemAdapter = new MySQL.Adapter();
-                        dataList = await _systemAdapter.FetchDataAsync<T>(selectSql, mySqlDBConnection.MySqlConnection, strict);
+                        var adapter = new MySQL.Adapter();
+                        dataList = await adapter.FetchDataAsync<T>(selectSql, connection.MySqlConnection, strict);
                     }
                     break;
                 case DB.Oracle:
-                    using (var oracleDBConnection = GetOracleConnection())
+                    using (var connection = GetOracleConnection())
                     {
-                        var _systemAdapter = new Oracle.Adapter();
-                        dataList = await _systemAdapter.FetchDataAsync<T>(selectSql, oracleDBConnection.OracleConnection, strict);
+                        var adapter = new Oracle.Adapter();
+                        dataList = await adapter.FetchDataAsync<T>(selectSql, connection.OracleConnection, strict);
                     }
                     break;
                 case DB.PostgreSQL:
-                    using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                    using (var connection = GetPostgreSqlConnection())
                     {
-                        var _systemAdapter = new PostgreSQL.Adapter();
-                        dataList = await _systemAdapter.FetchDataAsync<T>(selectSql, postgreSqlDBConnection.PostgreSQLConnection, strict);
+                        var adapter = new PostgreSQL.Adapter();
+                        dataList = await adapter.FetchDataAsync<T>(selectSql, connection.PostgreSQLConnection, strict);
                     }
                     break;
             }
@@ -264,31 +264,31 @@ namespace QueryDB
             switch (Database)
             {
                 case DB.MSSQL:
-                    using (var msSqlDBConnection = GetSqlServerConnection())
+                    using (var connection = GetSqlServerConnection())
                     {
-                        var _systemAdapter = new MSSQL.Adapter();
-                        value = _systemAdapter.ExecuteScalar(sqlStatement, msSqlDBConnection.SqlConnection);
+                        var adapter = new MSSQL.Adapter();
+                        value = adapter.ExecuteScalar(sqlStatement, connection.SqlConnection);
                     }
                     break;
                 case DB.MySQL:
-                    using (var mySqlDBConnection = GetMySqlConnection())
+                    using (var connection = GetMySqlConnection())
                     {
-                        var _systemAdapter = new MySQL.Adapter();
-                        value = _systemAdapter.ExecuteScalar(sqlStatement, mySqlDBConnection.MySqlConnection);
+                        var adapter = new MySQL.Adapter();
+                        value = adapter.ExecuteScalar(sqlStatement, connection.MySqlConnection);
                     }
                     break;
                 case DB.Oracle:
-                    using (var oracleDBConnection = GetOracleConnection())
+                    using (var connection = GetOracleConnection())
                     {
-                        var _systemAdapter = new Oracle.Adapter();
-                        value = _systemAdapter.ExecuteScalar(sqlStatement, oracleDBConnection.OracleConnection);
+                        var adapter = new Oracle.Adapter();
+                        value = adapter.ExecuteScalar(sqlStatement, connection.OracleConnection);
                     }
                     break;
                 case DB.PostgreSQL:
-                    using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                    using (var connection = GetPostgreSqlConnection())
                     {
-                        var _systemAdapter = new PostgreSQL.Adapter();
-                        value = _systemAdapter.ExecuteScalar(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
+                        var adapter = new PostgreSQL.Adapter();
+                        value = adapter.ExecuteScalar(sqlStatement, connection.PostgreSQLConnection);
                     }
                     break;
             }
@@ -314,31 +314,31 @@ namespace QueryDB
             switch (Database)
             {
                 case DB.MSSQL:
-                    using (var msSqlDBConnection = GetSqlServerConnection())
+                    using (var connection = GetSqlServerConnection())
                     {
-                        var _systemAdapter = new MSSQL.Adapter();
-                        value = _systemAdapter.ExecuteScalar<T>(sqlStatement, msSqlDBConnection.SqlConnection);
+                        var adapter = new MSSQL.Adapter();
+                        value = adapter.ExecuteScalar<T>(sqlStatement, connection.SqlConnection);
                     }
                     break;
                 case DB.MySQL:
-                    using (var mySqlDBConnection = GetMySqlConnection())
+                    using (var connection = GetMySqlConnection())
                     {
-                        var _systemAdapter = new MySQL.Adapter();
-                        value = _systemAdapter.ExecuteScalar<T>(sqlStatement, mySqlDBConnection.MySqlConnection);
+                        var adapter = new MySQL.Adapter();
+                        value = adapter.ExecuteScalar<T>(sqlStatement, connection.MySqlConnection);
                     }
                     break;
                 case DB.Oracle:
-                    using (var oracleDBConnection = GetOracleConnection())
+                    using (var connection = GetOracleConnection())
                     {
-                        var _systemAdapter = new Oracle.Adapter();
-                        value = _systemAdapter.ExecuteScalar<T>(sqlStatement, oracleDBConnection.OracleConnection);
+                        var adapter = new Oracle.Adapter();
+                        value = adapter.ExecuteScalar<T>(sqlStatement, connection.OracleConnection);
                     }
                     break;
                 case DB.PostgreSQL:
-                    using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                    using (var connection = GetPostgreSqlConnection())
                     {
-                        var _systemAdapter = new PostgreSQL.Adapter();
-                        value = _systemAdapter.ExecuteScalar<T>(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
+                        var adapter = new PostgreSQL.Adapter();
+                        value = adapter.ExecuteScalar<T>(sqlStatement, connection.PostgreSQLConnection);
                     }
                     break;
             }
@@ -363,31 +363,31 @@ namespace QueryDB
             switch (Database)
             {
                 case DB.MSSQL:
-                    using (var msSqlDBConnection = GetSqlServerConnection())
+                    using (var connection = GetSqlServerConnection())
                     {
-                        var _systemAdapter = new MSSQL.Adapter();
-                        value = await _systemAdapter.ExecuteScalarAsync(sqlStatement, msSqlDBConnection.SqlConnection);
+                        var adapter = new MSSQL.Adapter();
+                        value = await adapter.ExecuteScalarAsync(sqlStatement, connection.SqlConnection);
                     }
                     break;
                 case DB.MySQL:
-                    using (var mySqlDBConnection = GetMySqlConnection())
+                    using (var connection = GetMySqlConnection())
                     {
-                        var _systemAdapter = new MySQL.Adapter();
-                        value = await _systemAdapter.ExecuteScalarAsync(sqlStatement, mySqlDBConnection.MySqlConnection);
+                        var adapter = new MySQL.Adapter();
+                        value = await adapter.ExecuteScalarAsync(sqlStatement, connection.MySqlConnection);
                     }
                     break;
                 case DB.Oracle:
-                    using (var oracleDBConnection = GetOracleConnection())
+                    using (var connection = GetOracleConnection())
                     {
-                        var _systemAdapter = new Oracle.Adapter();
-                        value = await _systemAdapter.ExecuteScalarAsync(sqlStatement, oracleDBConnection.OracleConnection);
+                        var adapter = new Oracle.Adapter();
+                        value = await adapter.ExecuteScalarAsync(sqlStatement, connection.OracleConnection);
                     }
                     break;
                 case DB.PostgreSQL:
-                    using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                    using (var connection = GetPostgreSqlConnection())
                     {
-                        var _systemAdapter = new PostgreSQL.Adapter();
-                        value = await _systemAdapter.ExecuteScalarAsync(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
+                        var adapter = new PostgreSQL.Adapter();
+                        value = await adapter.ExecuteScalarAsync(sqlStatement, connection.PostgreSQLConnection);
                     }
                     break;
             }
@@ -413,31 +413,31 @@ namespace QueryDB
             switch (Database)
             {
                 case DB.MSSQL:
-                    using (var msSqlDBConnection = GetSqlServerConnection())
+                    using (var connection = GetSqlServerConnection())
                     {
-                        var _systemAdapter = new MSSQL.Adapter();
-                        value = await _systemAdapter.ExecuteScalarAsync<T>(sqlStatement, msSqlDBConnection.SqlConnection);
+                        var adapter = new MSSQL.Adapter();
+                        value = await adapter.ExecuteScalarAsync<T>(sqlStatement, connection.SqlConnection);
                     }
                     break;
                 case DB.MySQL:
-                    using (var mySqlDBConnection = GetMySqlConnection())
+                    using (var connection = GetMySqlConnection())
                     {
-                        var _systemAdapter = new MySQL.Adapter();
-                        value = await _systemAdapter.ExecuteScalarAsync<T>(sqlStatement, mySqlDBConnection.MySqlConnection);
+                        var adapter = new MySQL.Adapter();
+                        value = await adapter.ExecuteScalarAsync<T>(sqlStatement, connection.MySqlConnection);
                     }
                     break;
                 case DB.Oracle:
-                    using (var oracleDBConnection = GetOracleConnection())
+                    using (var connection = GetOracleConnection())
                     {
-                        var _systemAdapter = new Oracle.Adapter();
-                        value = await _systemAdapter.ExecuteScalarAsync<T>(sqlStatement, oracleDBConnection.OracleConnection);
+                        var adapter = new Oracle.Adapter();
+                        value = await adapter.ExecuteScalarAsync<T>(sqlStatement, connection.OracleConnection);
                     }
                     break;
                 case DB.PostgreSQL:
-                    using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                    using (var connection = GetPostgreSqlConnection())
                     {
-                        var _systemAdapter = new PostgreSQL.Adapter();
-                        value = await _systemAdapter.ExecuteScalarAsync<T>(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
+                        var adapter = new PostgreSQL.Adapter();
+                        value = await adapter.ExecuteScalarAsync<T>(sqlStatement, connection.PostgreSQLConnection);
                     }
                     break;
             }
@@ -457,28 +457,28 @@ namespace QueryDB
             switch (Database)
             {
                 case DB.MSSQL:
-                    using (var msSqlDBConnection = GetSqlServerConnection())
+                    using (var connection = GetSqlServerConnection())
                     {
-                        var _systemAdapter = new MSSQL.Adapter();
-                        return _systemAdapter.ExecuteCommand(sqlStatement, msSqlDBConnection.SqlConnection);
+                        var adapter = new MSSQL.Adapter();
+                        return adapter.ExecuteCommand(sqlStatement, connection.SqlConnection);
                     }
                 case DB.MySQL:
-                    using (var mySqlDBConnection = GetMySqlConnection())
+                    using (var connection = GetMySqlConnection())
                     {
-                        var _systemAdapter = new MySQL.Adapter();
-                        return _systemAdapter.ExecuteCommand(sqlStatement, mySqlDBConnection.MySqlConnection);
+                        var adapter = new MySQL.Adapter();
+                        return adapter.ExecuteCommand(sqlStatement, connection.MySqlConnection);
                     }
                 case DB.Oracle:
-                    using (var oracleDBConnection = GetOracleConnection())
+                    using (var connection = GetOracleConnection())
                     {
-                        var _systemAdapter = new Oracle.Adapter();
-                        return _systemAdapter.ExecuteCommand(sqlStatement, oracleDBConnection.OracleConnection);
+                        var adapter = new Oracle.Adapter();
+                        return adapter.ExecuteCommand(sqlStatement, connection.OracleConnection);
                     }
                 case DB.PostgreSQL:
-                    using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                    using (var connection = GetPostgreSqlConnection())
                     {
-                        var _systemAdapter = new PostgreSQL.Adapter();
-                        return _systemAdapter.ExecuteCommand(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
+                        var adapter = new PostgreSQL.Adapter();
+                        return adapter.ExecuteCommand(sqlStatement, connection.PostgreSQLConnection);
                     }
                 default:
                     return -1;
@@ -498,28 +498,28 @@ namespace QueryDB
             switch (Database)
             {
                 case DB.MSSQL:
-                    using (var msSqlDBConnection = GetSqlServerConnection())
+                    using (var connection = GetSqlServerConnection())
                     {
-                        var _systemAdapter = new MSSQL.Adapter();
-                        return await _systemAdapter.ExecuteCommandAsync(sqlStatement, msSqlDBConnection.SqlConnection);
+                        var adapter = new MSSQL.Adapter();
+                        return await adapter.ExecuteCommandAsync(sqlStatement, connection.SqlConnection);
                     }
                 case DB.MySQL:
-                    using (var mySqlDBConnection = GetMySqlConnection())
+                    using (var connection = GetMySqlConnection())
                     {
-                        var _systemAdapter = new MySQL.Adapter();
-                        return await _systemAdapter.ExecuteCommandAsync(sqlStatement, mySqlDBConnection.MySqlConnection);
+                        var adapter = new MySQL.Adapter();
+                        return await adapter.ExecuteCommandAsync(sqlStatement, connection.MySqlConnection);
                     }
                 case DB.Oracle:
-                    using (var oracleDBConnection = GetOracleConnection())
+                    using (var connection = GetOracleConnection())
                     {
-                        var _systemAdapter = new Oracle.Adapter();
-                        return await _systemAdapter.ExecuteCommandAsync(sqlStatement, oracleDBConnection.OracleConnection);
+                        var adapter = new Oracle.Adapter();
+                        return await adapter.ExecuteCommandAsync(sqlStatement, connection.OracleConnection);
                     }
                 case DB.PostgreSQL:
-                    using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                    using (var connection = GetPostgreSqlConnection())
                     {
-                        var _systemAdapter = new PostgreSQL.Adapter();
-                        return await _systemAdapter.ExecuteCommandAsync(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
+                        var adapter = new PostgreSQL.Adapter();
+                        return await adapter.ExecuteCommandAsync(sqlStatement, connection.PostgreSQLConnection);
                     }
                 default:
                     return -1;
@@ -546,27 +546,27 @@ namespace QueryDB
             switch (Database)
             {
                 case DB.MSSQL:
-                    using (var msSqlDBConnection = GetSqlServerConnection())
+                    using (var connection = GetSqlServerConnection())
                     {
-                        result = MSSQL.Adapter.ExecuteTransaction(sqlStatements, msSqlDBConnection.SqlConnection);
+                        result = MSSQL.Adapter.ExecuteTransaction(sqlStatements, connection.SqlConnection);
                     }
                     break;
                 case DB.MySQL:
-                    using (var mySqlDBConnection = GetMySqlConnection())
+                    using (var connection = GetMySqlConnection())
                     {
-                        result = MySQL.Adapter.ExecuteTransaction(sqlStatements, mySqlDBConnection.MySqlConnection);
+                        result = MySQL.Adapter.ExecuteTransaction(sqlStatements, connection.MySqlConnection);
                     }
                     break;
                 case DB.Oracle:
-                    using (var oracleDBConnection = GetOracleConnection())
+                    using (var connection = GetOracleConnection())
                     {
-                        result = Oracle.Adapter.ExecuteTransaction(sqlStatements, oracleDBConnection.OracleConnection);
+                        result = Oracle.Adapter.ExecuteTransaction(sqlStatements, connection.OracleConnection);
                     }
                     break;
                 case DB.PostgreSQL:
-                    using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                    using (var connection = GetPostgreSqlConnection())
                     {
-                        result = PostgreSQL.Adapter.ExecuteTransaction(sqlStatements, postgreSqlDBConnection.PostgreSQLConnection);
+                        result = PostgreSQL.Adapter.ExecuteTransaction(sqlStatements, connection.PostgreSQLConnection);
                     }
                     break;
             }
@@ -593,27 +593,27 @@ namespace QueryDB
             switch (Database)
             {
                 case DB.MSSQL:
-                    using (var msSqlDBConnection = GetSqlServerConnection())
+                    using (var connection = GetSqlServerConnection())
                     {
-                        result = await MSSQL.Adapter.ExecuteTransactionAsync(sqlStatements, msSqlDBConnection.SqlConnection);
+                        result = await MSSQL.Adapter.ExecuteTransactionAsync(sqlStatements, connection.SqlConnection);
                     }
                     break;
                 case DB.MySQL:
-                    using (var mySqlDBConnection = GetMySqlConnection())
+                    using (var connection = GetMySqlConnection())
                     {
-                        result = await MySQL.Adapter.ExecuteTransactionAsync(sqlStatements, mySqlDBConnection.MySqlConnection);
+                        result = await MySQL.Adapter.ExecuteTransactionAsync(sqlStatements, connection.MySqlConnection);
                     }
                     break;
                 case DB.Oracle:
-                    using (var oracleDBConnection = GetOracleConnection())
+                    using (var connection = GetOracleConnection())
                     {
-                        result = await Oracle.Adapter.ExecuteTransactionAsync(sqlStatements, oracleDBConnection.OracleConnection);
+                        result = await Oracle.Adapter.ExecuteTransactionAsync(sqlStatements, connection.OracleConnection);
                     }
                     break;
                 case DB.PostgreSQL:
-                    using (var postgreSqlDBConnection = GetPostgreSqlConnection())
+                    using (var connection = GetPostgreSqlConnection())
                     {
-                        result = await PostgreSQL.Adapter.ExecuteTransactionAsync(sqlStatements, postgreSqlDBConnection.PostgreSQLConnection);
+                        result = await PostgreSQL.Adapter.ExecuteTransactionAsync(sqlStatements, connection.PostgreSQLConnection);
                     }
                     break;
             }
