@@ -28,11 +28,11 @@ The package is available and can be downloaded using [nuget.org](https://www.nug
 Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0#tabpanel_1_net-standard-2-0:~:text=Select%20.NET%20Standard%20version) )
 
 ## Features
-- Retrieve data from the database.
+- Retrieve data efficiently from the database.
 - Execute scalar queries (returning a single value).
-- Execute non-query database commands (e.g. `INSERT`, `UPDATE`, `DELETE`).
+- Execute non-query commands (e.g. `INSERT`, `UPDATE`, `DELETE`).
 - Execute transactions while maintaining atomicity.
-- Support for Synchronous and Asynchronous operations.
+- Support for both Synchronous and Asynchronous operations.
 
 ## Getting Started
     
