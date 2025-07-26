@@ -94,7 +94,7 @@ Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsof
 
     </details>
 
-## Examples
+## 🧠 Examples
 
 > <b>Data Retrieval</b>
 ``` csharp
