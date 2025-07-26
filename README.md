@@ -13,28 +13,28 @@
 
 QueryDB is a flexible database query framework designed to simplify querying and executing transactions across multiple database systems.
 
-## Supported Databases
+## 🌐 Supported Databases
 - [MSSQL](https://www.microsoft.com/en-us/sql-server)
 - [MySQL](https://www.mysql.com/)
 - [Oracle](https://www.oracle.com/)
 - [PostgreSQL](https://www.postgresql.org/)
 
-## Download
+## 📥 Download
 The package is available and can be downloaded using [nuget.org](https://www.nuget.org/) package manager.  
 - Package Name - [QueryDB](https://www.nuget.org/packages/QueryDB).
 
-## .NET Supported Versions
+## 🎯 .NET Supported Versions
 
 Built on **.NET Standard 2.0** - ( [_Supported Versions_](https://learn.microsoft.com/en-us/dotnet/standard/net-standard?tabs=net-standard-2-0#tabpanel_1_net-standard-2-0:~:text=Select%20.NET%20Standard%20version) )
 
-## Features
-- Retrieve data efficiently from the database.
-- Execute scalar queries (returning a single value).
-- Execute non-query commands (e.g. `INSERT`, `UPDATE`, `DELETE`).
-- Execute transactions while maintaining atomicity.
-- Support for both Synchronous and Asynchronous operations.
+## ✨ Key Features
+- 🔍 Efficient data retrieval using query and command execution.
+- ➕ Execute scalar queries for single-value results.
+- ✏️ Execute non-query commands (e.g. `INSERT`, `UPDATE`, `DELETE`).
+- 🔄 Perform multi-command transactions while maintaining atomicity.
+- 🔁 Support for both Synchronous and Asynchronous operations.
 
-## Getting Started
+## 🚀 Getting Started
     
 - _**Setup `DBContext` with the database of your choice :**_
 
