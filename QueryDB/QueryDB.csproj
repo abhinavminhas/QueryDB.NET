@@ -11,20 +11,19 @@ Supported Databases:
 - Oracle
 - PostgreSQL
 
-Features:
-- Retrieve data from the database.
-- Execute scalar queries (returning a single value).
-- Execute non-query database commands.
-- Execute transactions while maintaining atomicity.
-- Support for Synchronous and Asynchronous operations.</Description>
+Key Features:
+- Efficient data retrieval using query and command execution.
+- Execute scalar queries for single-value results.
+- Execute non-query commands.
+- Perform multi-command transactions while maintaining atomicity.
+- Support for both Synchronous and Asynchronous operations.</Description>
     <PackageProjectUrl>https://github.com/abhinavminhas/QueryDB.NET</PackageProjectUrl>
     <RepositoryUrl>https://github.com/abhinavminhas/QueryDB.NET</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageTags>sql, query, rdbms, database, mssql, sqlserver, mysql, oracle, postgresql</PackageTags>
-    <PackageReleaseNotes>1. Asynchronous operations.
-2. Execute transaction to return transaction outcome and exception details in case of failures.</PackageReleaseNotes>
-    <Version>1.2.0</Version>
+    <PackageReleaseNotes>1. Restrict fetch data to SELECT commands.</PackageReleaseNotes>
+    <Version>1.3.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
