@@ -62,6 +62,16 @@ namespace QueryDB.Exceptions
         internal static class ErrorMessage
         {
             /// <summary>
+            /// Error message indicating that SELECT queries are only supported in 'FetchData'.
+            /// </summary>
+            internal static readonly string UnsupportedFetchDataCommand = "Only SELECT queries are supported here.";
+
+            /// <summary>
+            /// Error message indicating that SELECT queries are only supported in 'ExecuteScalar'.
+            /// </summary>
+            internal static readonly string UnsupportedExecuteScalarCommand = "Only SELECT queries are supported here.";
+
+            /// <summary>
             /// Error message indicating that SELECT queries are not supported in 'ExecuteCommand'.
             /// </summary>
             internal static readonly string UnsupportedSelectExecuteCommand = "SELECT queries are not supported here.";
@@ -70,11 +80,6 @@ namespace QueryDB.Exceptions
             /// Error message indicating that SELECT queries are not supported in 'ExecuteTransaction'.
             /// </summary>
             internal static readonly string UnsupportedSelectExecuteTransaction = "SELECT queries are not supported here.";
-
-            /// <summary>
-            /// Error message indicating that SELECT queries are only supported in 'ExecuteScalar'.
-            /// </summary>
-            internal static readonly string UnsupportedExecuteScalarCommand = "Only SELECT queries are supported here.";
         }
 
         /// <summary>
@@ -82,6 +87,16 @@ namespace QueryDB.Exceptions
         /// </summary>
         internal static class AdditionalInfo
         {
+            /// <summary>
+            /// Error message indicating that SELECT queries are only supported in 'FetchData'.
+            /// </summary>
+            internal static readonly string UnsupportedFetchDataCommand = "'FetchData' only supports SELECT queries that return result set.";
+
+            /// <summary>
+            /// Error message indicating that SELECT queries are only supported in 'ExecuteScalar'.
+            /// </summary>
+            internal static readonly string UnsupportedExecuteScalarCommand = "'ExecuteScalar' only supports SELECT queries that have a scalar (single value) return.";
+
             /// <summary>
             /// Additional information about unsupported SELECT queries in 'ExecuteCommand'.
             /// </summary>
@@ -91,11 +106,6 @@ namespace QueryDB.Exceptions
             /// Additional information about unsupported SELECT queries in 'ExecuteTransaction'.
             /// </summary>
             internal static readonly string UnsupportedSelectExecuteTransaction = "'ExecuteTransaction' doesn't support SELECT queries.";
-
-            /// <summary>
-            /// Error message indicating that SELECT queries are only supported in 'ExecuteScalar'.
-            /// </summary>
-            internal static readonly string UnsupportedExecuteScalarCommand = "'ExecuteScalar' only supports SELECT queries that have a scalar (single value) return.";
         }
     }
 }

@@ -173,6 +173,43 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("<root><element>XmlData</element></root>", dataType.ReferenceData["Xml_Column"]);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_FetchData_Dictionary_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.MSSQLQueries.TestDB.DDL.Create_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Alter_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Comment_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Truncate_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Drop_Table,
+
+                Queries.MSSQLQueries.TestDB.DML.InsertSql,
+                Queries.MSSQLQueries.TestDB.DML.UpdateSql,
+                Queries.MSSQLQueries.TestDB.DML.DeleteSql,
+
+                Queries.MSSQLQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.MSSQLQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+                    dbContext.FetchData(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'FetchData' only supports SELECT queries that return result set.", ex.AdditionalInfo);
+                }
+            }
+        }
+
         #endregion
 
         #region Fetch Data Async Tests - << Task<List<DataDictionary>> FetchDataAsync(string selectSql, bool upperCaseKeys = false) >>
@@ -316,6 +353,43 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("<root><element>XmlData</element></root>", dataType.ReferenceData["Xml_Column"]);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public async Task Test_MSSQL_FetchDataAsync_Dictionary_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.MSSQLQueries.TestDB.DDL.Create_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Alter_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Comment_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Truncate_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Drop_Table,
+
+                Queries.MSSQLQueries.TestDB.DML.InsertSql,
+                Queries.MSSQLQueries.TestDB.DML.UpdateSql,
+                Queries.MSSQLQueries.TestDB.DML.DeleteSql,
+
+                Queries.MSSQLQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.MSSQLQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+                    await dbContext.FetchDataAsync(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'FetchData' only supports SELECT queries that return result set.", ex.AdditionalInfo);
+                }
+            }
+        }
+
         #endregion
 
         #region Fetch Data Tests - << List<T> FetchData<T>(string selectSql, bool strict = false) >>
@@ -453,6 +527,43 @@ namespace QueryDB.Core.Tests
             }
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public void Test_MSSQL_FetchData_Entity_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.MSSQLQueries.TestDB.DDL.Create_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Alter_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Comment_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Truncate_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Drop_Table,
+
+                Queries.MSSQLQueries.TestDB.DML.InsertSql,
+                Queries.MSSQLQueries.TestDB.DML.UpdateSql,
+                Queries.MSSQLQueries.TestDB.DML.DeleteSql,
+
+                Queries.MSSQLQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.MSSQLQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+                    dbContext.FetchData<Entities.MSSQL.Orders>(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'FetchData' only supports SELECT queries that return result set.", ex.AdditionalInfo);
+                }
+            }
+        }
+
         #endregion
 
         #region Fetch Data Async Tests - << Task<List<T>> FetchDataAsync<T>(string selectSql, bool strict = false) >>
@@ -587,6 +698,43 @@ namespace QueryDB.Core.Tests
             catch (IndexOutOfRangeException ex)
             {
                 Assert.AreEqual("Agent_Name", ex.Message);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MSSQL_TESTS)]
+        public async Task Test_MSSQL_FetchDataAsync_Entity_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.MSSQLQueries.TestDB.DDL.Create_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Alter_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Comment_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Truncate_Table,
+                Queries.MSSQLQueries.TestDB.DDL.Drop_Table,
+
+                Queries.MSSQLQueries.TestDB.DML.InsertSql,
+                Queries.MSSQLQueries.TestDB.DML.UpdateSql,
+                Queries.MSSQLQueries.TestDB.DML.DeleteSql,
+
+                Queries.MSSQLQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.MSSQLQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.MSSQL, MSSQLConnectionString);
+                    await dbContext.FetchDataAsync<Entities.MSSQL.Orders>(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'FetchData' only supports SELECT queries that return result set.", ex.AdditionalInfo);
+                }
             }
         }
 

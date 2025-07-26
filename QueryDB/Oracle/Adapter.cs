@@ -10,7 +10,7 @@ namespace QueryDB.Oracle
     /// <summary>
     /// 'Oracle' adapter.
     /// </summary>
-    internal class Adapter
+    internal sealed class Adapter
     {
 
         #region Synchronous

@@ -164,6 +164,43 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("Sample VARCHAR2 data", dataType.ReferenceData["VARCHAR2_COLUMN"]);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public void Test_Oracle_FetchData_Dictionary_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.OracleQueries.TestDB.DDL.Create_Table,
+                Queries.OracleQueries.TestDB.DDL.Alter_Table,
+                Queries.OracleQueries.TestDB.DDL.Comment_Table,
+                Queries.OracleQueries.TestDB.DDL.Truncate_Table,
+                Queries.OracleQueries.TestDB.DDL.Drop_Table,
+
+                Queries.OracleQueries.TestDB.DML.InsertSql,
+                Queries.OracleQueries.TestDB.DML.UpdateSql,
+                Queries.OracleQueries.TestDB.DML.DeleteSql,
+
+                Queries.OracleQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.OracleQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
+                    dbContext.FetchData(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'FetchData' only supports SELECT queries that return result set.", ex.AdditionalInfo);
+                }
+            }
+        }
+
         #endregion
 
         #region Fetch Data Async Tests - << List<DataDictionary> FetchData(string selectSql, bool upperCaseKeys = false) >>
@@ -298,6 +335,43 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("Sample VARCHAR2 data", dataType.ReferenceData["VARCHAR2_COLUMN"]);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public async Task Test_Oracle_FetchDataAsync_Dictionary_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.OracleQueries.TestDB.DDL.Create_Table,
+                Queries.OracleQueries.TestDB.DDL.Alter_Table,
+                Queries.OracleQueries.TestDB.DDL.Comment_Table,
+                Queries.OracleQueries.TestDB.DDL.Truncate_Table,
+                Queries.OracleQueries.TestDB.DDL.Drop_Table,
+
+                Queries.OracleQueries.TestDB.DML.InsertSql,
+                Queries.OracleQueries.TestDB.DML.UpdateSql,
+                Queries.OracleQueries.TestDB.DML.DeleteSql,
+
+                Queries.OracleQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.OracleQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
+                    await dbContext.FetchDataAsync(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'FetchData' only supports SELECT queries that return result set.", ex.AdditionalInfo);
+                }
+            }
+        }
+
         #endregion
 
         #region Fetch Data Tests - << List<T> FetchData<T>(string selectSql, bool strict = false) >>
@@ -426,6 +500,43 @@ namespace QueryDB.Core.Tests
             }
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public void Test_Oracle_FetchData_Entity_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.OracleQueries.TestDB.DDL.Create_Table,
+                Queries.OracleQueries.TestDB.DDL.Alter_Table,
+                Queries.OracleQueries.TestDB.DDL.Comment_Table,
+                Queries.OracleQueries.TestDB.DDL.Truncate_Table,
+                Queries.OracleQueries.TestDB.DDL.Drop_Table,
+
+                Queries.OracleQueries.TestDB.DML.InsertSql,
+                Queries.OracleQueries.TestDB.DML.UpdateSql,
+                Queries.OracleQueries.TestDB.DML.DeleteSql,
+
+                Queries.OracleQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.OracleQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
+                    dbContext.FetchData<Entities.MSSQL.Orders>(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'FetchData' only supports SELECT queries that return result set.", ex.AdditionalInfo);
+                }
+            }
+        }
+
         #endregion
 
         #region Fetch Data Async Tests - << List<T> FetchData<T>(string selectSql, bool strict = false) >>
@@ -551,6 +662,43 @@ namespace QueryDB.Core.Tests
             catch (IndexOutOfRangeException ex)
             {
                 Assert.AreEqual("Unable to find specified column in result set", ex.Message);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(ORACLE_TESTS)]
+        public async Task Test_Oracle_FetchDataAsync_Entity_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.OracleQueries.TestDB.DDL.Create_Table,
+                Queries.OracleQueries.TestDB.DDL.Alter_Table,
+                Queries.OracleQueries.TestDB.DDL.Comment_Table,
+                Queries.OracleQueries.TestDB.DDL.Truncate_Table,
+                Queries.OracleQueries.TestDB.DDL.Drop_Table,
+
+                Queries.OracleQueries.TestDB.DML.InsertSql,
+                Queries.OracleQueries.TestDB.DML.UpdateSql,
+                Queries.OracleQueries.TestDB.DML.DeleteSql,
+
+                Queries.OracleQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.OracleQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.Oracle, OracleConnectionString);
+                    await dbContext.FetchDataAsync<Entities.MSSQL.Orders>(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'FetchData' only supports SELECT queries that return result set.", ex.AdditionalInfo);
+                }
             }
         }
 

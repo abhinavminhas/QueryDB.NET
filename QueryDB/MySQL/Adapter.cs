@@ -10,7 +10,7 @@ namespace QueryDB.MySQL
     /// <summary>
     /// 'MySQL' adapter.
     /// </summary>
-    internal class Adapter
+    internal sealed class Adapter
     {
 
         #region Synchronous

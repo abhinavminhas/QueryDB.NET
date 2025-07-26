@@ -46,14 +46,21 @@ namespace QueryDB
         public DBContext(DB database, string connectionString)
         {
             Database = database;
-            if (Database.Equals(DB.MSSQL))
-                SqlConnectionString = connectionString;
-            else if (Database.Equals(DB.MySQL))
-                MySqlConnectionString = connectionString;
-            else if(Database.Equals(DB.Oracle))
-                OracleConnectionString = connectionString;
-            else if (Database.Equals(DB.PostgreSQL))
-                PostgreSqlConnectionString = connectionString;
+            switch (Database)
+            {
+                case DB.MSSQL:
+                    SqlConnectionString = connectionString;
+                    break;
+                case DB.MySQL:
+                    MySqlConnectionString = connectionString;
+                    break;
+                case DB.Oracle:
+                    OracleConnectionString = connectionString;
+                    break;
+                case DB.PostgreSQL:
+                    PostgreSqlConnectionString = connectionString;
+                    break;
+            }
         }
 
         /// <summary>
@@ -66,38 +73,40 @@ namespace QueryDB
         /// <returns>List of <see cref="DataDictionary"/> with column names as keys holding values into a list for multiple rows of data.</returns>
         public List<DataDictionary> FetchData(string selectSql, bool upperCaseKeys = false)
         {
+            if (!Regex.IsMatch(selectSql, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedFetchDataCommand,
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedFetchDataCommand);
             var dataList = new List<DataDictionary>();
-            if (Database.Equals(DB.MSSQL))
+            switch (Database)
             {
-                using (var msSqlDBConnection = GetSqlServerConnection())
-                {
-                    var _systemAdapter = new MSSQL.Adapter();
-                    dataList = _systemAdapter.FetchData(selectSql, msSqlDBConnection.SqlConnection, upperCaseKeys);
-                }
-            }
-            else if (Database.Equals(DB.MySQL))
-            {
-                using (var mySqlDBConnection = GetMySqlConnection())
-                {
-                    var _systemAdapter = new MySQL.Adapter();
-                    dataList = _systemAdapter.FetchData(selectSql, mySqlDBConnection.MySqlConnection, upperCaseKeys);
-                }
-            }
-            else if (Database.Equals(DB.Oracle))
-            {
-                using (var oracleDBConnection = GetOracleConnection())
-                {
-                    var _systemAdapter = new Oracle.Adapter();
-                    dataList = _systemAdapter.FetchData(selectSql, oracleDBConnection.OracleConnection, upperCaseKeys);
-                }
-            }
-            else if (Database.Equals(DB.PostgreSQL))
-            {
-                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
-                {
-                    var _systemAdapter = new PostgreSQL.Adapter();
-                    dataList = _systemAdapter.FetchData(selectSql, postgreSqlDBConnection.PostgreSQLConnection, upperCaseKeys);
-                }
+                case DB.MSSQL:
+                    using (var connection = GetSqlServerConnection())
+                    {
+                        var adapter = new MSSQL.Adapter();
+                        dataList = adapter.FetchData(selectSql, connection.SqlConnection, upperCaseKeys);
+                    }
+                    break;
+                case DB.MySQL:
+                    using (var connection = GetMySqlConnection())
+                    {
+                        var adapter = new MySQL.Adapter();
+                        dataList = adapter.FetchData(selectSql, connection.MySqlConnection, upperCaseKeys);
+                    }
+                    break;
+                case DB.Oracle:
+                    using (var connection = GetOracleConnection())
+                    {
+                        var adapter = new Oracle.Adapter();
+                        dataList = adapter.FetchData(selectSql, connection.OracleConnection, upperCaseKeys);
+                    }
+                    break;
+                case DB.PostgreSQL:
+                    using (var connection = GetPostgreSqlConnection())
+                    {
+                        var adapter = new PostgreSQL.Adapter();
+                        dataList = adapter.FetchData(selectSql, connection.PostgreSQLConnection, upperCaseKeys);
+                    }
+                    break;
             }
             return dataList;
         }
@@ -111,38 +120,40 @@ namespace QueryDB
         /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
         public List<T> FetchData<T>(string selectSql, bool strict = false) where T : new()
         {
+            if (!Regex.IsMatch(selectSql, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedFetchDataCommand,
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedFetchDataCommand);
             var dataList = new List<T>();
-            if (Database.Equals(DB.MSSQL))
+            switch (Database)
             {
-                using (var msSqlDBConnection = GetSqlServerConnection())
-                {
-                    var _systemAdapter = new MSSQL.Adapter();
-                    dataList = _systemAdapter.FetchData<T>(selectSql, msSqlDBConnection.SqlConnection, strict);
-                }
-            }
-            else if (Database.Equals(DB.MySQL))
-            {
-                using (var mySqlDBConnection = GetMySqlConnection())
-                {
-                    var _systemAdapter = new MySQL.Adapter();
-                    dataList = _systemAdapter.FetchData<T>(selectSql, mySqlDBConnection.MySqlConnection, strict);
-                }
-            }
-            else if (Database.Equals(DB.Oracle))
-            {
-                using (var oracleDBConnection = GetOracleConnection())
-                {
-                    var _systemAdapter = new Oracle.Adapter();
-                    dataList = _systemAdapter.FetchData<T>(selectSql, oracleDBConnection.OracleConnection, strict);
-                }
-            }
-            else if (Database.Equals(DB.PostgreSQL))
-            {
-                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
-                {
-                    var _systemAdapter = new PostgreSQL.Adapter();
-                    dataList = _systemAdapter.FetchData<T>(selectSql, postgreSqlDBConnection.PostgreSQLConnection, strict);
-                }
+                case DB.MSSQL:
+                    using (var connection = GetSqlServerConnection())
+                    {
+                        var adapter = new MSSQL.Adapter();
+                        dataList = adapter.FetchData<T>(selectSql, connection.SqlConnection, strict);
+                    }
+                    break;
+                case DB.MySQL:
+                    using (var connection = GetMySqlConnection())
+                    {
+                        var adapter = new MySQL.Adapter();
+                        dataList = adapter.FetchData<T>(selectSql, connection.MySqlConnection, strict);
+                    }
+                    break;
+                case DB.Oracle:
+                    using (var connection = GetOracleConnection())
+                    {
+                        var adapter = new Oracle.Adapter();
+                        dataList = adapter.FetchData<T>(selectSql, connection.OracleConnection, strict);
+                    }
+                    break;
+                case DB.PostgreSQL:
+                    using (var connection = GetPostgreSqlConnection())
+                    {
+                        var adapter = new PostgreSQL.Adapter();
+                        dataList = adapter.FetchData<T>(selectSql, connection.PostgreSQLConnection, strict);
+                    }
+                    break;
             }
             return dataList;
         }
@@ -157,38 +168,40 @@ namespace QueryDB
         /// <returns>List of <see cref="DataDictionary"/> with column names as keys holding values into a list for multiple rows of data.</returns>
         public async Task<List<DataDictionary>> FetchDataAsync(string selectSql, bool upperCaseKeys = false)
         {
+            if (!Regex.IsMatch(selectSql, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedFetchDataCommand, 
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedFetchDataCommand);
             var dataList = new List<DataDictionary>();
-            if (Database.Equals(DB.MSSQL))
+            switch (Database)
             {
-                using (var msSqlDBConnection = GetSqlServerConnection())
-                {
-                    var _systemAdapter = new MSSQL.Adapter();
-                    dataList = await _systemAdapter.FetchDataAsync(selectSql, msSqlDBConnection.SqlConnection, upperCaseKeys);
-                }
-            }
-            else if (Database.Equals(DB.MySQL))
-            {
-                using (var mySqlDBConnection = GetMySqlConnection())
-                {
-                    var _systemAdapter = new MySQL.Adapter();
-                    dataList = await _systemAdapter.FetchDataAsync(selectSql, mySqlDBConnection.MySqlConnection, upperCaseKeys);
-                }
-            }
-            else if (Database.Equals(DB.Oracle))
-            {
-                using (var oracleDBConnection = GetOracleConnection())
-                {
-                    var _systemAdapter = new Oracle.Adapter();
-                    dataList = await _systemAdapter.FetchDataAsync(selectSql, oracleDBConnection.OracleConnection, upperCaseKeys);
-                }
-            }
-            else if (Database.Equals(DB.PostgreSQL))
-            {
-                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
-                {
-                    var _systemAdapter = new PostgreSQL.Adapter();
-                    dataList = await _systemAdapter.FetchDataAsync(selectSql, postgreSqlDBConnection.PostgreSQLConnection, upperCaseKeys);
-                }
+                case DB.MSSQL:
+                    using (var connection = GetSqlServerConnection())
+                    {
+                        var adapter = new MSSQL.Adapter();
+                        dataList = await adapter.FetchDataAsync(selectSql, connection.SqlConnection, upperCaseKeys);
+                    }
+                    break;
+                case DB.MySQL:
+                    using (var connection = GetMySqlConnection())
+                    {
+                        var adapter = new MySQL.Adapter();
+                        dataList = await adapter.FetchDataAsync(selectSql, connection.MySqlConnection, upperCaseKeys);
+                    }
+                    break;
+                case DB.Oracle:
+                    using (var connection = GetOracleConnection())
+                    {
+                        var adapter = new Oracle.Adapter();
+                        dataList = await adapter.FetchDataAsync(selectSql, connection.OracleConnection, upperCaseKeys);
+                    }
+                    break;
+                case DB.PostgreSQL:
+                    using (var connection = GetPostgreSqlConnection())
+                    {
+                        var adapter = new PostgreSQL.Adapter();
+                        dataList = await adapter.FetchDataAsync(selectSql, connection.PostgreSQLConnection, upperCaseKeys);
+                    }
+                    break;
             }
             return dataList;
         }
@@ -202,38 +215,40 @@ namespace QueryDB
         /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
         public async Task<List<T>> FetchDataAsync<T>(string selectSql, bool strict = false) where T : new()
         {
+            if (!Regex.IsMatch(selectSql, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedFetchDataCommand, 
+                    QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedFetchDataCommand);
             var dataList = new List<T>();
-            if (Database.Equals(DB.MSSQL))
+            switch (Database)
             {
-                using (var msSqlDBConnection = GetSqlServerConnection())
-                {
-                    var _systemAdapter = new MSSQL.Adapter();
-                    dataList = await _systemAdapter.FetchDataAsync<T>(selectSql, msSqlDBConnection.SqlConnection, strict);
-                }
-            }
-            else if (Database.Equals(DB.MySQL))
-            {
-                using (var mySqlDBConnection = GetMySqlConnection())
-                {
-                    var _systemAdapter = new MySQL.Adapter();
-                    dataList = await _systemAdapter.FetchDataAsync<T>(selectSql, mySqlDBConnection.MySqlConnection, strict);
-                }
-            }
-            else if (Database.Equals(DB.Oracle))
-            {
-                using (var oracleDBConnection = GetOracleConnection())
-                {
-                    var _systemAdapter = new Oracle.Adapter();
-                    dataList = await _systemAdapter.FetchDataAsync<T>(selectSql, oracleDBConnection.OracleConnection, strict);
-                }
-            }
-            else if (Database.Equals(DB.PostgreSQL))
-            {
-                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
-                {
-                    var _systemAdapter = new PostgreSQL.Adapter();
-                    dataList = await _systemAdapter.FetchDataAsync<T>(selectSql, postgreSqlDBConnection.PostgreSQLConnection, strict);
-                }
+                case DB.MSSQL:
+                    using (var connection = GetSqlServerConnection())
+                    {
+                        var adapter = new MSSQL.Adapter();
+                        dataList = await adapter.FetchDataAsync<T>(selectSql, connection.SqlConnection, strict);
+                    }
+                    break;
+                case DB.MySQL:
+                    using (var connection = GetMySqlConnection())
+                    {
+                        var adapter = new MySQL.Adapter();
+                        dataList = await adapter.FetchDataAsync<T>(selectSql, connection.MySqlConnection, strict);
+                    }
+                    break;
+                case DB.Oracle:
+                    using (var connection = GetOracleConnection())
+                    {
+                        var adapter = new Oracle.Adapter();
+                        dataList = await adapter.FetchDataAsync<T>(selectSql, connection.OracleConnection, strict);
+                    }
+                    break;
+                case DB.PostgreSQL:
+                    using (var connection = GetPostgreSqlConnection())
+                    {
+                        var adapter = new PostgreSQL.Adapter();
+                        dataList = await adapter.FetchDataAsync<T>(selectSql, connection.PostgreSQLConnection, strict);
+                    }
+                    break;
             }
             return dataList;
         }
@@ -250,40 +265,39 @@ namespace QueryDB
         public string ExecuteScalar(string sqlStatement)
         {
             if (!Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
-                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedExecuteScalarCommand,
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedExecuteScalarCommand, 
                     QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedExecuteScalarCommand);
             var value = string.Empty;
-            if (Database.Equals(DB.MSSQL))
+            switch (Database)
             {
-                using (var msSqlDBConnection = GetSqlServerConnection())
-                {
-                    var _systemAdapter = new MSSQL.Adapter();
-                    value = _systemAdapter.ExecuteScalar(sqlStatement, msSqlDBConnection.SqlConnection);
-                }
-            }
-            else if (Database.Equals(DB.MySQL))
-            {
-                using (var mySqlDBConnection = GetMySqlConnection())
-                {
-                    var _systemAdapter = new MySQL.Adapter();
-                    value = _systemAdapter.ExecuteScalar(sqlStatement, mySqlDBConnection.MySqlConnection);
-                }
-            }
-            else if (Database.Equals(DB.Oracle))
-            {
-                using (var oracleDBConnection = GetOracleConnection())
-                {
-                    var _systemAdapter = new Oracle.Adapter();
-                    value = _systemAdapter.ExecuteScalar(sqlStatement, oracleDBConnection.OracleConnection);
-                }
-            }
-            else if (Database.Equals(DB.PostgreSQL))
-            {
-                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
-                {
-                    var _systemAdapter = new PostgreSQL.Adapter();
-                    value = _systemAdapter.ExecuteScalar(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
-                }
+                case DB.MSSQL:
+                    using (var connection = GetSqlServerConnection())
+                    {
+                        var adapter = new MSSQL.Adapter();
+                        value = adapter.ExecuteScalar(sqlStatement, connection.SqlConnection);
+                    }
+                    break;
+                case DB.MySQL:
+                    using (var connection = GetMySqlConnection())
+                    {
+                        var adapter = new MySQL.Adapter();
+                        value = adapter.ExecuteScalar(sqlStatement, connection.MySqlConnection);
+                    }
+                    break;
+                case DB.Oracle:
+                    using (var connection = GetOracleConnection())
+                    {
+                        var adapter = new Oracle.Adapter();
+                        value = adapter.ExecuteScalar(sqlStatement, connection.OracleConnection);
+                    }
+                    break;
+                case DB.PostgreSQL:
+                    using (var connection = GetPostgreSqlConnection())
+                    {
+                        var adapter = new PostgreSQL.Adapter();
+                        value = adapter.ExecuteScalar(sqlStatement, connection.PostgreSQLConnection);
+                    }
+                    break;
             }
             return value;
         }
@@ -301,40 +315,39 @@ namespace QueryDB
         public T ExecuteScalar<T>(string sqlStatement)
         {
             if (!Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
-                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedExecuteScalarCommand,
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedExecuteScalarCommand, 
                     QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedExecuteScalarCommand);
             var value = default(T);
-            if (Database.Equals(DB.MSSQL))
+            switch (Database)
             {
-                using (var msSqlDBConnection = GetSqlServerConnection())
-                {
-                    var _systemAdapter = new MSSQL.Adapter();
-                    value = _systemAdapter.ExecuteScalar<T>(sqlStatement, msSqlDBConnection.SqlConnection);
-                }
-            }
-            else if (Database.Equals(DB.MySQL))
-            {
-                using (var mySqlDBConnection = GetMySqlConnection())
-                {
-                    var _systemAdapter = new MySQL.Adapter();
-                    value = _systemAdapter.ExecuteScalar<T>(sqlStatement, mySqlDBConnection.MySqlConnection);
-                }
-            }
-            else if (Database.Equals(DB.Oracle))
-            {
-                using (var oracleDBConnection = GetOracleConnection())
-                {
-                    var _systemAdapter = new Oracle.Adapter();
-                    value = _systemAdapter.ExecuteScalar<T>(sqlStatement, oracleDBConnection.OracleConnection);
-                }
-            }
-            else if (Database.Equals(DB.PostgreSQL))
-            {
-                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
-                {
-                    var _systemAdapter = new PostgreSQL.Adapter();
-                    value = _systemAdapter.ExecuteScalar<T>(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
-                }
+                case DB.MSSQL:
+                    using (var connection = GetSqlServerConnection())
+                    {
+                        var adapter = new MSSQL.Adapter();
+                        value = adapter.ExecuteScalar<T>(sqlStatement, connection.SqlConnection);
+                    }
+                    break;
+                case DB.MySQL:
+                    using (var connection = GetMySqlConnection())
+                    {
+                        var adapter = new MySQL.Adapter();
+                        value = adapter.ExecuteScalar<T>(sqlStatement, connection.MySqlConnection);
+                    }
+                    break;
+                case DB.Oracle:
+                    using (var connection = GetOracleConnection())
+                    {
+                        var adapter = new Oracle.Adapter();
+                        value = adapter.ExecuteScalar<T>(sqlStatement, connection.OracleConnection);
+                    }
+                    break;
+                case DB.PostgreSQL:
+                    using (var connection = GetPostgreSqlConnection())
+                    {
+                        var adapter = new PostgreSQL.Adapter();
+                        value = adapter.ExecuteScalar<T>(sqlStatement, connection.PostgreSQLConnection);
+                    }
+                    break;
             }
             return value;
         }
@@ -351,40 +364,39 @@ namespace QueryDB
         public async Task<string> ExecuteScalarAsync(string sqlStatement)
         {
             if (!Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
-                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedExecuteScalarCommand,
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedExecuteScalarCommand, 
                     QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedExecuteScalarCommand);
             var value = string.Empty;
-            if (Database.Equals(DB.MSSQL))
+            switch (Database)
             {
-                using (var msSqlDBConnection = GetSqlServerConnection())
-                {
-                    var _systemAdapter = new MSSQL.Adapter();
-                    value = await _systemAdapter.ExecuteScalarAsync(sqlStatement, msSqlDBConnection.SqlConnection);
-                }
-            }
-            else if (Database.Equals(DB.MySQL))
-            {
-                using (var mySqlDBConnection = GetMySqlConnection())
-                {
-                    var _systemAdapter = new MySQL.Adapter();
-                    value = await _systemAdapter.ExecuteScalarAsync(sqlStatement, mySqlDBConnection.MySqlConnection);
-                }
-            }
-            else if (Database.Equals(DB.Oracle))
-            {
-                using (var oracleDBConnection = GetOracleConnection())
-                {
-                    var _systemAdapter = new Oracle.Adapter();
-                    value = await _systemAdapter.ExecuteScalarAsync(sqlStatement, oracleDBConnection.OracleConnection);
-                }
-            }
-            else if (Database.Equals(DB.PostgreSQL))
-            {
-                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
-                {
-                    var _systemAdapter = new PostgreSQL.Adapter();
-                    value = await _systemAdapter.ExecuteScalarAsync(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
-                }
+                case DB.MSSQL:
+                    using (var connection = GetSqlServerConnection())
+                    {
+                        var adapter = new MSSQL.Adapter();
+                        value = await adapter.ExecuteScalarAsync(sqlStatement, connection.SqlConnection);
+                    }
+                    break;
+                case DB.MySQL:
+                    using (var connection = GetMySqlConnection())
+                    {
+                        var adapter = new MySQL.Adapter();
+                        value = await adapter.ExecuteScalarAsync(sqlStatement, connection.MySqlConnection);
+                    }
+                    break;
+                case DB.Oracle:
+                    using (var connection = GetOracleConnection())
+                    {
+                        var adapter = new Oracle.Adapter();
+                        value = await adapter.ExecuteScalarAsync(sqlStatement, connection.OracleConnection);
+                    }
+                    break;
+                case DB.PostgreSQL:
+                    using (var connection = GetPostgreSqlConnection())
+                    {
+                        var adapter = new PostgreSQL.Adapter();
+                        value = await adapter.ExecuteScalarAsync(sqlStatement, connection.PostgreSQLConnection);
+                    }
+                    break;
             }
             return value;
         }
@@ -402,40 +414,39 @@ namespace QueryDB
         public async Task<T> ExecuteScalarAsync<T>(string sqlStatement)
         {
             if (!Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
-                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedExecuteScalarCommand,
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedExecuteScalarCommand, 
                     QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedExecuteScalarCommand);
             var value = default(T);
-            if (Database.Equals(DB.MSSQL))
+            switch (Database)
             {
-                using (var msSqlDBConnection = GetSqlServerConnection())
-                {
-                    var _systemAdapter = new MSSQL.Adapter();
-                    value = await _systemAdapter.ExecuteScalarAsync<T>(sqlStatement, msSqlDBConnection.SqlConnection);
-                }
-            }
-            else if (Database.Equals(DB.MySQL))
-            {
-                using (var mySqlDBConnection = GetMySqlConnection())
-                {
-                    var _systemAdapter = new MySQL.Adapter();
-                    value = await _systemAdapter.ExecuteScalarAsync<T>(sqlStatement, mySqlDBConnection.MySqlConnection);
-                }
-            }
-            else if (Database.Equals(DB.Oracle))
-            {
-                using (var oracleDBConnection = GetOracleConnection())
-                {
-                    var _systemAdapter = new Oracle.Adapter();
-                    value = await _systemAdapter.ExecuteScalarAsync<T>(sqlStatement, oracleDBConnection.OracleConnection);
-                }
-            }
-            else if (Database.Equals(DB.PostgreSQL))
-            {
-                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
-                {
-                    var _systemAdapter = new PostgreSQL.Adapter();
-                    value = await _systemAdapter.ExecuteScalarAsync<T>(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
-                }
+                case DB.MSSQL:
+                    using (var connection = GetSqlServerConnection())
+                    {
+                        var adapter = new MSSQL.Adapter();
+                        value = await adapter.ExecuteScalarAsync<T>(sqlStatement, connection.SqlConnection);
+                    }
+                    break;
+                case DB.MySQL:
+                    using (var connection = GetMySqlConnection())
+                    {
+                        var adapter = new MySQL.Adapter();
+                        value = await adapter.ExecuteScalarAsync<T>(sqlStatement, connection.MySqlConnection);
+                    }
+                    break;
+                case DB.Oracle:
+                    using (var connection = GetOracleConnection())
+                    {
+                        var adapter = new Oracle.Adapter();
+                        value = await adapter.ExecuteScalarAsync<T>(sqlStatement, connection.OracleConnection);
+                    }
+                    break;
+                case DB.PostgreSQL:
+                    using (var connection = GetPostgreSqlConnection())
+                    {
+                        var adapter = new PostgreSQL.Adapter();
+                        value = await adapter.ExecuteScalarAsync<T>(sqlStatement, connection.PostgreSQLConnection);
+                    }
+                    break;
             }
             return value;
         }
@@ -448,41 +459,37 @@ namespace QueryDB
         public int ExecuteCommand(string sqlStatement)
         {
             if (Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
-                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteCommand,
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteCommand, 
                     QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedSelectExecuteCommand);
-            if (Database.Equals(DB.MSSQL))
+            switch (Database)
             {
-                using (var msSqlDBConnection = GetSqlServerConnection())
-                {
-                    var _systemAdapter = new MSSQL.Adapter();
-                    return _systemAdapter.ExecuteCommand(sqlStatement, msSqlDBConnection.SqlConnection);
-                }
+                case DB.MSSQL:
+                    using (var connection = GetSqlServerConnection())
+                    {
+                        var adapter = new MSSQL.Adapter();
+                        return adapter.ExecuteCommand(sqlStatement, connection.SqlConnection);
+                    }
+                case DB.MySQL:
+                    using (var connection = GetMySqlConnection())
+                    {
+                        var adapter = new MySQL.Adapter();
+                        return adapter.ExecuteCommand(sqlStatement, connection.MySqlConnection);
+                    }
+                case DB.Oracle:
+                    using (var connection = GetOracleConnection())
+                    {
+                        var adapter = new Oracle.Adapter();
+                        return adapter.ExecuteCommand(sqlStatement, connection.OracleConnection);
+                    }
+                case DB.PostgreSQL:
+                    using (var connection = GetPostgreSqlConnection())
+                    {
+                        var adapter = new PostgreSQL.Adapter();
+                        return adapter.ExecuteCommand(sqlStatement, connection.PostgreSQLConnection);
+                    }
+                default:
+                    return -1;
             }
-            else if (Database.Equals(DB.MySQL))
-            {
-                using (var mySqlDBConnection = GetMySqlConnection())
-                {
-                    var _systemAdapter = new MySQL.Adapter();
-                    return _systemAdapter.ExecuteCommand(sqlStatement, mySqlDBConnection.MySqlConnection);
-                }
-            }
-            else if (Database.Equals(DB.Oracle))
-            {
-                using (var oracleDBConnection = GetOracleConnection())
-                {
-                    var _systemAdapter = new Oracle.Adapter();
-                    return _systemAdapter.ExecuteCommand(sqlStatement, oracleDBConnection.OracleConnection);
-                }
-            }
-            else if (Database.Equals(DB.PostgreSQL))
-            {
-                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
-                {
-                    var _systemAdapter = new PostgreSQL.Adapter();
-                    return _systemAdapter.ExecuteCommand(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
-                }
-            }
-            return -1;
         }
 
         /// <summary>
@@ -493,41 +500,37 @@ namespace QueryDB
         public async Task<int> ExecuteCommandAsync(string sqlStatement)
         {
             if (Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
-                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteCommand,
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteCommand, 
                     QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedSelectExecuteCommand);
-            if (Database.Equals(DB.MSSQL))
+            switch (Database)
             {
-                using (var msSqlDBConnection = GetSqlServerConnection())
-                {
-                    var _systemAdapter = new MSSQL.Adapter();
-                    return await _systemAdapter.ExecuteCommandAsync(sqlStatement, msSqlDBConnection.SqlConnection);
-                }
+                case DB.MSSQL:
+                    using (var connection = GetSqlServerConnection())
+                    {
+                        var adapter = new MSSQL.Adapter();
+                        return await adapter.ExecuteCommandAsync(sqlStatement, connection.SqlConnection);
+                    }
+                case DB.MySQL:
+                    using (var connection = GetMySqlConnection())
+                    {
+                        var adapter = new MySQL.Adapter();
+                        return await adapter.ExecuteCommandAsync(sqlStatement, connection.MySqlConnection);
+                    }
+                case DB.Oracle:
+                    using (var connection = GetOracleConnection())
+                    {
+                        var adapter = new Oracle.Adapter();
+                        return await adapter.ExecuteCommandAsync(sqlStatement, connection.OracleConnection);
+                    }
+                case DB.PostgreSQL:
+                    using (var connection = GetPostgreSqlConnection())
+                    {
+                        var adapter = new PostgreSQL.Adapter();
+                        return await adapter.ExecuteCommandAsync(sqlStatement, connection.PostgreSQLConnection);
+                    }
+                default:
+                    return -1;
             }
-            else if (Database.Equals(DB.MySQL))
-            {
-                using (var mySqlDBConnection = GetMySqlConnection())
-                {
-                    var _systemAdapter = new MySQL.Adapter();
-                    return await _systemAdapter.ExecuteCommandAsync(sqlStatement, mySqlDBConnection.MySqlConnection);
-                }
-            }
-            else if (Database.Equals(DB.Oracle))
-            {
-                using (var oracleDBConnection = GetOracleConnection())
-                {
-                    var _systemAdapter = new Oracle.Adapter();
-                    return await _systemAdapter.ExecuteCommandAsync(sqlStatement, oracleDBConnection.OracleConnection);
-                }
-            }
-            else if (Database.Equals(DB.PostgreSQL))
-            {
-                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
-                {
-                    var _systemAdapter = new PostgreSQL.Adapter();
-                    return await _systemAdapter.ExecuteCommandAsync(sqlStatement, postgreSqlDBConnection.PostgreSQLConnection);
-                }
-            }
-            return -1;
         }
 
         /// <summary>
@@ -545,35 +548,34 @@ namespace QueryDB
             var result = new Result();
             var selectExists = sqlStatements.Any(sqlStatement => Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)));
             if (selectExists)
-                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteTransaction,
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteTransaction, 
                     QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedSelectExecuteTransaction);
-            if (Database.Equals(DB.MSSQL))
+            switch (Database)
             {
-                using (var msSqlDBConnection = GetSqlServerConnection())
-                {
-                    result = MSSQL.Adapter.ExecuteTransaction(sqlStatements, msSqlDBConnection.SqlConnection);
-                }
-            }
-            else if (Database.Equals(DB.MySQL))
-            {
-                using (var mySqlDBConnection = GetMySqlConnection())
-                {
-                    result = MySQL.Adapter.ExecuteTransaction(sqlStatements, mySqlDBConnection.MySqlConnection);
-                }
-            }
-            else if (Database.Equals(DB.Oracle))
-            {
-                using (var oracleDBConnection = GetOracleConnection())
-                {
-                    result = Oracle.Adapter.ExecuteTransaction(sqlStatements, oracleDBConnection.OracleConnection);
-                }
-            }
-            else if (Database.Equals(DB.PostgreSQL))
-            {
-                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
-                {
-                    result = PostgreSQL.Adapter.ExecuteTransaction(sqlStatements, postgreSqlDBConnection.PostgreSQLConnection);
-                }
+                case DB.MSSQL:
+                    using (var connection = GetSqlServerConnection())
+                    {
+                        result = MSSQL.Adapter.ExecuteTransaction(sqlStatements, connection.SqlConnection);
+                    }
+                    break;
+                case DB.MySQL:
+                    using (var connection = GetMySqlConnection())
+                    {
+                        result = MySQL.Adapter.ExecuteTransaction(sqlStatements, connection.MySqlConnection);
+                    }
+                    break;
+                case DB.Oracle:
+                    using (var connection = GetOracleConnection())
+                    {
+                        result = Oracle.Adapter.ExecuteTransaction(sqlStatements, connection.OracleConnection);
+                    }
+                    break;
+                case DB.PostgreSQL:
+                    using (var connection = GetPostgreSqlConnection())
+                    {
+                        result = PostgreSQL.Adapter.ExecuteTransaction(sqlStatements, connection.PostgreSQLConnection);
+                    }
+                    break;
             }
             return result;
         }
@@ -593,35 +595,34 @@ namespace QueryDB
             var result = new Result();
             var selectExists = sqlStatements.Any(sqlStatement => Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)));
             if (selectExists)
-                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteTransaction,
+                throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteTransaction, 
                     QueryDBExceptions.ErrorType.UnsupportedCommand, QueryDBExceptions.AdditionalInfo.UnsupportedSelectExecuteTransaction);
-            if (Database.Equals(DB.MSSQL))
+            switch (Database)
             {
-                using (var msSqlDBConnection = GetSqlServerConnection())
-                {
-                    result = await MSSQL.Adapter.ExecuteTransactionAsync(sqlStatements, msSqlDBConnection.SqlConnection);
-                }
-            }
-            else if (Database.Equals(DB.MySQL))
-            {
-                using (var mySqlDBConnection = GetMySqlConnection())
-                {
-                    result = await MySQL.Adapter.ExecuteTransactionAsync(sqlStatements, mySqlDBConnection.MySqlConnection);
-                }
-            }
-            else if (Database.Equals(DB.Oracle))
-            {
-                using (var oracleDBConnection = GetOracleConnection())
-                {
-                    result = await Oracle.Adapter.ExecuteTransactionAsync(sqlStatements, oracleDBConnection.OracleConnection);
-                }
-            }
-            else if (Database.Equals(DB.PostgreSQL))
-            {
-                using (var postgreSqlDBConnection = GetPostgreSqlConnection())
-                {
-                    result = await PostgreSQL.Adapter.ExecuteTransactionAsync(sqlStatements, postgreSqlDBConnection.PostgreSQLConnection);
-                }
+                case DB.MSSQL:
+                    using (var connection = GetSqlServerConnection())
+                    {
+                        result = await MSSQL.Adapter.ExecuteTransactionAsync(sqlStatements, connection.SqlConnection);
+                    }
+                    break;
+                case DB.MySQL:
+                    using (var connection = GetMySqlConnection())
+                    {
+                        result = await MySQL.Adapter.ExecuteTransactionAsync(sqlStatements, connection.MySqlConnection);
+                    }
+                    break;
+                case DB.Oracle:
+                    using (var connection = GetOracleConnection())
+                    {
+                        result = await Oracle.Adapter.ExecuteTransactionAsync(sqlStatements, connection.OracleConnection);
+                    }
+                    break;
+                case DB.PostgreSQL:
+                    using (var connection = GetPostgreSqlConnection())
+                    {
+                        result = await PostgreSQL.Adapter.ExecuteTransactionAsync(sqlStatements, connection.PostgreSQLConnection);
+                    }
+                    break;
             }
             return result;
         }

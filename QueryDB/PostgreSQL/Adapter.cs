@@ -10,7 +10,7 @@ namespace QueryDB.PostgreSQL
     /// <summary>
     /// 'PostgreSQL' adapter.
     /// </summary>
-    internal class Adapter
+    internal sealed class Adapter
     {
 
         #region Synchronous

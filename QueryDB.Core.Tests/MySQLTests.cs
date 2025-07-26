@@ -163,6 +163,43 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("This is a varchar", dataType.ReferenceData["VarChar_Column"]);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
+        public void Test_MySQL_FetchData_Dictionary_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.MySQLQueries.TestDB.DDL.Create_Table,
+                Queries.MySQLQueries.TestDB.DDL.Alter_Table,
+                Queries.MySQLQueries.TestDB.DDL.Comment_Table,
+                Queries.MySQLQueries.TestDB.DDL.Truncate_Table,
+                Queries.MySQLQueries.TestDB.DDL.Drop_Table,
+
+                Queries.MySQLQueries.TestDB.DML.InsertSql,
+                Queries.MySQLQueries.TestDB.DML.UpdateSql,
+                Queries.MySQLQueries.TestDB.DML.DeleteSql,
+
+                Queries.MySQLQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.MySQLQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.MySQL, MySQLConnectionString);
+                    dbContext.FetchData(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'FetchData' only supports SELECT queries that return result set.", ex.AdditionalInfo);
+                }
+            }
+        }
+
         #endregion
 
         #region Fetch Data Async Tests - << Task<List<DataDictionary>> FetchDataAsync(string selectSql, bool upperCaseKeys = false) >>
@@ -296,6 +333,43 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("This is a varchar", dataType.ReferenceData["VarChar_Column"]);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
+        public async Task Test_MySQL_FetchDataAsync_Dictionary_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.MySQLQueries.TestDB.DDL.Create_Table,
+                Queries.MySQLQueries.TestDB.DDL.Alter_Table,
+                Queries.MySQLQueries.TestDB.DDL.Comment_Table,
+                Queries.MySQLQueries.TestDB.DDL.Truncate_Table,
+                Queries.MySQLQueries.TestDB.DDL.Drop_Table,
+
+                Queries.MySQLQueries.TestDB.DML.InsertSql,
+                Queries.MySQLQueries.TestDB.DML.UpdateSql,
+                Queries.MySQLQueries.TestDB.DML.DeleteSql,
+
+                Queries.MySQLQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.MySQLQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.MySQL, MySQLConnectionString);
+                    await dbContext.FetchDataAsync(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'FetchData' only supports SELECT queries that return result set.", ex.AdditionalInfo);
+                }
+            }
+        }
+
         #endregion
 
         #region Fetch Data Tests - << List<T> FetchData<T>(string selectSql, bool strict = false) >>
@@ -423,6 +497,43 @@ namespace QueryDB.Core.Tests
             }
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
+        public void Test_MySQL_FetchData_Entity_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.MySQLQueries.TestDB.DDL.Create_Table,
+                Queries.MySQLQueries.TestDB.DDL.Alter_Table,
+                Queries.MySQLQueries.TestDB.DDL.Comment_Table,
+                Queries.MySQLQueries.TestDB.DDL.Truncate_Table,
+                Queries.MySQLQueries.TestDB.DDL.Drop_Table,
+
+                Queries.MySQLQueries.TestDB.DML.InsertSql,
+                Queries.MySQLQueries.TestDB.DML.UpdateSql,
+                Queries.MySQLQueries.TestDB.DML.DeleteSql,
+
+                Queries.MySQLQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.MySQLQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.MySQL, MySQLConnectionString);
+                    dbContext.FetchData<Entities.MSSQL.Orders>(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'FetchData' only supports SELECT queries that return result set.", ex.AdditionalInfo);
+                }
+            }
+        }
+
         #endregion
 
         #region Fetch Data Async Tests - << List<T> FetchData<T>(string selectSql, bool strict = false) >>
@@ -547,6 +658,43 @@ namespace QueryDB.Core.Tests
             catch (IndexOutOfRangeException ex)
             {
                 Assert.AreEqual("Could not find specified column in results: Agent_Name", ex.Message);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(MYSQL_TESTS)]
+        public async Task Test_MySQL_FetchDataAsync_Entity_UnsupportedCommands()
+        {
+            var sqlStatements = new List<string>
+            {
+                Queries.MySQLQueries.TestDB.DDL.Create_Table,
+                Queries.MySQLQueries.TestDB.DDL.Alter_Table,
+                Queries.MySQLQueries.TestDB.DDL.Comment_Table,
+                Queries.MySQLQueries.TestDB.DDL.Truncate_Table,
+                Queries.MySQLQueries.TestDB.DDL.Drop_Table,
+
+                Queries.MySQLQueries.TestDB.DML.InsertSql,
+                Queries.MySQLQueries.TestDB.DML.UpdateSql,
+                Queries.MySQLQueries.TestDB.DML.DeleteSql,
+
+                Queries.MySQLQueries.TestDB.DCL.GrantSql_Command_Table_User,
+                Queries.MySQLQueries.TestDB.DCL.RevokeSql_Command_Table_User
+            };
+
+            foreach (var sqlStatement in sqlStatements)
+            {
+                try
+                {
+                    var dbContext = new DBContext(DB.MySQL, MySQLConnectionString);
+                    await dbContext.FetchDataAsync<Entities.MSSQL.Orders>(sqlStatement);
+                    Assert.Fail("No Exception");
+                }
+                catch (QueryDBException ex)
+                {
+                    Assert.AreEqual("Only SELECT queries are supported here.", ex.Message);
+                    Assert.AreEqual("UnsupportedCommand", ex.ErrorType);
+                    Assert.AreEqual("'FetchData' only supports SELECT queries that return result set.", ex.AdditionalInfo);
+                }
             }
         }
 
@@ -1177,7 +1325,11 @@ namespace QueryDB.Core.Tests
             var password = "Test@1234";
             var table = "Agents";
             var commands = "SELECT, UPDATE";
-            var checkCommand = "SELECT";
+            var checkCommands = new List<string>()
+            {
+                "SELECT",
+                "UPDATE"
+            };
 
             var createUser = string.Format(Queries.MySQLQueries.TestDB.DCL.CreateUserSql_User_Password, user, password);
             var grantSql = string.Format(Queries.MySQLQueries.TestDB.DCL.GrantSql_Command_Table_User, commands, table, user);
@@ -1193,22 +1345,25 @@ namespace QueryDB.Core.Tests
 
             // Existing Permissions
             var data = dbContext.FetchData(verifyPermissions);
-            Assert.AreEqual(1, data.Count);
-            Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+            Assert.AreEqual(0, data.Count);
+            foreach (var checkCommand in checkCommands)
+                Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
 
             // Grant
             result = dbContext.ExecuteCommand(grantSql);
             Assert.AreEqual(0, result);
             data = dbContext.FetchData(verifyPermissions);
             Assert.AreEqual(2, data.Count);
-            Assert.IsTrue(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+            foreach (var checkCommand in checkCommands)
+                Assert.IsTrue(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
 
             // Revoke
             result = dbContext.ExecuteCommand(revokeSql);
             Assert.AreEqual(0, result);
             data = dbContext.FetchData(verifyPermissions);
-            Assert.AreEqual(1, data.Count);
-            Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+            Assert.AreEqual(0, data.Count);
+            foreach (var checkCommand in checkCommands)
+                Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
 
             //Remove User
             result = dbContext.ExecuteCommand(removeUser);
@@ -1340,7 +1495,11 @@ namespace QueryDB.Core.Tests
             var password = "Test@1234";
             var table = "Agents";
             var commands = "SELECT, UPDATE";
-            var checkCommand = "SELECT";
+            var checkCommands = new List<string>()
+            {
+                "SELECT",
+                "UPDATE"
+            };
 
             var createUser = string.Format(Queries.MySQLQueries.TestDB.DCL.CreateUserSql_User_Password, user, password);
             var grantSql = string.Format(Queries.MySQLQueries.TestDB.DCL.GrantSql_Command_Table_User, commands, table, user);
@@ -1356,22 +1515,25 @@ namespace QueryDB.Core.Tests
 
             // Existing Permissions
             var data = await dbContext.FetchDataAsync(verifyPermissions);
-            Assert.AreEqual(1, data.Count);
-            Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+            Assert.AreEqual(0, data.Count);
+            foreach (var checkCommand in checkCommands)
+                Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
 
             // Grant
             result = await dbContext.ExecuteCommandAsync(grantSql);
             Assert.AreEqual(0, result);
             data = await dbContext.FetchDataAsync(verifyPermissions);
             Assert.AreEqual(2, data.Count);
-            Assert.IsTrue(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+            foreach (var checkCommand in checkCommands)
+                Assert.IsTrue(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
 
             // Revoke
             result = await dbContext.ExecuteCommandAsync(revokeSql);
             Assert.AreEqual(0, result);
             data = await dbContext.FetchDataAsync(verifyPermissions);
-            Assert.AreEqual(1, data.Count);
-            Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
+            Assert.AreEqual(0, data.Count);
+            foreach (var checkCommand in checkCommands)
+                Assert.IsFalse(data.Any(data => data.ReferenceData.Values.Any(value => value.Contains(checkCommand))));
 
             //Remove User
             result = await dbContext.ExecuteCommandAsync(removeUser);
