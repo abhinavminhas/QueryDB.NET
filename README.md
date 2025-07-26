@@ -1,4 +1,4 @@
-# QueryDB
+# ⚡QueryDB
 *QueryDB solution in .NET*. </br></br>
 [![Build / Test](https://github.com/abhinavminhas/QueryDB.NET/actions/workflows/build.yml/badge.svg)](https://github.com/abhinavminhas/QueryDB.NET/actions/workflows/build.yml)
 [![codecov](https://codecov.io/gh/abhinavminhas/QueryDB.NET/graph/badge.svg?token=L21DM7HZ46)](https://codecov.io/gh/abhinavminhas/QueryDB.NET)
