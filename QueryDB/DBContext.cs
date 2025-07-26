@@ -46,14 +46,21 @@ namespace QueryDB
         public DBContext(DB database, string connectionString)
         {
             Database = database;
-            if (Database.Equals(DB.MSSQL))
-                SqlConnectionString = connectionString;
-            else if (Database.Equals(DB.MySQL))
-                MySqlConnectionString = connectionString;
-            else if(Database.Equals(DB.Oracle))
-                OracleConnectionString = connectionString;
-            else if (Database.Equals(DB.PostgreSQL))
-                PostgreSqlConnectionString = connectionString;
+            switch (Database)
+            {
+                case DB.MSSQL:
+                    SqlConnectionString = connectionString;
+                    break;
+                case DB.MySQL:
+                    MySqlConnectionString = connectionString;
+                    break;
+                case DB.Oracle:
+                    OracleConnectionString = connectionString;
+                    break;
+                case DB.PostgreSQL:
+                    PostgreSqlConnectionString = connectionString;
+                    break;
+            }
         }
 
         /// <summary>
