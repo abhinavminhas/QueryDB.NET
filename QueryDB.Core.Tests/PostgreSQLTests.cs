@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QueryDB.Exceptions;
+using QueryDB.Resources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -158,6 +159,64 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual("12:34:56", dataType.ReferenceData["time_column"]);
             Assert.AreEqual("09/21/2024 14:34:56", ConvertToUSFormat(dataType.ReferenceData["timestamp_column"]));
             Assert.AreEqual("123e4567-e89b-12d3-a456-426614174000", dataType.ReferenceData["uuid_column"]);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_FetchData_Dictionary_SqlParameters()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SQLParameters.SelectSql;
+            // Object as SQL Parameters
+            var customerData = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData(selectSql, parameters:
+            new { CustCode = "C00001", CustName = "Micheal", Grade = 2, OutstandingAmt = 6000.00 }
+            );
+            Assert.AreEqual(1, customerData.Count);
+            var customers = new List<DataDictionary>() { customerData.FirstOrDefault() };
+            // Dictionary as SQL Parameters
+            customerData = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData(selectSql, parameters:
+            new Dictionary<string, object> { { "CustCode", "C00001" }, { "CustName", "Micheal" }, { "Grade", 2 }, { "OutstandingAmt", 6000.00 } }
+            );
+            Assert.AreEqual(1, customerData.Count);
+            customers.Add(customerData.FirstOrDefault());
+            foreach (var customer in customers)
+            {
+                Assert.AreEqual("C00001", customer.ReferenceData["cust_code"]);
+                Assert.AreEqual("Micheal", customer.ReferenceData["cust_name"]);
+                Assert.AreEqual("New York", customer.ReferenceData["cust_city"]);
+                Assert.AreEqual("New York", customer.ReferenceData["working_area"]);
+                Assert.AreEqual("USA", customer.ReferenceData["cust_country"]);
+                Assert.AreEqual("2", customer.ReferenceData["grade"]);
+                Assert.AreEqual("3000.00", customer.ReferenceData["opening_amt"]);
+                Assert.AreEqual("5000.00", customer.ReferenceData["recieve_amt"]);
+                Assert.AreEqual("2000.00", customer.ReferenceData["payment_amt"]);
+                Assert.AreEqual("6000.00", customer.ReferenceData["outstanding_amt"]);
+                Assert.AreEqual("CCCCCCC", customer.ReferenceData["phone_no"]);
+                Assert.AreEqual("A008", customer.ReferenceData["agent_code"]);
+            }
+
+            var selectSqlJoin = Queries.PostgreSQLQueries.TestDB.SQLParameters.SelectSql_Join;
+            // Object as SQL Parameters
+            var orderData = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData(selectSqlJoin, parameters:
+            new { AgentCode = "A004", CustCode = "C00006", OrdNum = 200104, AdvanceAmt = 500.00 });
+            Assert.AreEqual(1, orderData.Count);
+            var orders = new List<DataDictionary>() { orderData.FirstOrDefault() };
+            // Dictionary as SQL Parameters
+            orderData = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData(selectSqlJoin, parameters:
+            new Dictionary<string, object> { { "AgentCode", "A004" }, { "CustCode", "C00006" }, { "OrdNum", 200104 }, { "AdvanceAmt", 500.00 } });
+            Assert.AreEqual(1, orderData.Count);
+            orders.Add(orderData.FirstOrDefault());
+            foreach (var order in orders)
+            {
+                Assert.AreEqual("A004", order.ReferenceData["agent_code"]);
+                Assert.AreEqual("Ivan", order.ReferenceData["agent_name"]);
+                Assert.AreEqual("C00006", order.ReferenceData["cust_code"]);
+                Assert.AreEqual("Shilton", order.ReferenceData["cust_name"]);
+                Assert.AreEqual("200104", order.ReferenceData["ord_num"]);
+                Assert.AreEqual("1500.00", order.ReferenceData["ord_amount"]);
+                Assert.AreEqual("500.00", order.ReferenceData["advance_amount"]);
+                Assert.AreEqual("13/03/2008 12:00:00 AM", order.ReferenceData["ord_date"]);
+                Assert.AreEqual("SOD", order.ReferenceData["ord_description"]);
+            }
         }
 
         [TestMethod]
@@ -329,6 +388,64 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_FetchDataAsync_Dictionary_SqlParameters()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SQLParameters.SelectSql;
+            // Object as SQL Parameters
+            var customerData = await new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync(selectSql, parameters:
+            new { CustCode = "C00001", CustName = "Micheal", Grade = 2, OutstandingAmt = 6000.00 }
+            );
+            Assert.AreEqual(1, customerData.Count);
+            var customers = new List<DataDictionary>() { customerData.FirstOrDefault() };
+            // Dictionary as SQL Parameters
+            customerData = await new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync(selectSql, parameters:
+            new Dictionary<string, object> { { "CustCode", "C00001" }, { "CustName", "Micheal" }, { "Grade", 2 }, { "OutstandingAmt", 6000.00 } }
+            );
+            Assert.AreEqual(1, customerData.Count);
+            customers.Add(customerData.FirstOrDefault());
+            foreach (var customer in customers)
+            {
+                Assert.AreEqual("C00001", customer.ReferenceData["cust_code"]);
+                Assert.AreEqual("Micheal", customer.ReferenceData["cust_name"]);
+                Assert.AreEqual("New York", customer.ReferenceData["cust_city"]);
+                Assert.AreEqual("New York", customer.ReferenceData["working_area"]);
+                Assert.AreEqual("USA", customer.ReferenceData["cust_country"]);
+                Assert.AreEqual("2", customer.ReferenceData["grade"]);
+                Assert.AreEqual("3000.00", customer.ReferenceData["opening_amt"]);
+                Assert.AreEqual("5000.00", customer.ReferenceData["recieve_amt"]);
+                Assert.AreEqual("2000.00", customer.ReferenceData["payment_amt"]);
+                Assert.AreEqual("6000.00", customer.ReferenceData["outstanding_amt"]);
+                Assert.AreEqual("CCCCCCC", customer.ReferenceData["phone_no"]);
+                Assert.AreEqual("A008", customer.ReferenceData["agent_code"]);
+            }
+
+            var selectSqlJoin = Queries.PostgreSQLQueries.TestDB.SQLParameters.SelectSql_Join;
+            // Object as SQL Parameters
+            var orderData = await new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync(selectSqlJoin, parameters:
+            new { AgentCode = "A004", CustCode = "C00006", OrdNum = 200104, AdvanceAmt = 500.00 });
+            Assert.AreEqual(1, orderData.Count);
+            var orders = new List<DataDictionary>() { orderData.FirstOrDefault() };
+            // Dictionary as SQL Parameters
+            orderData = await new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync(selectSqlJoin, parameters:
+            new Dictionary<string, object> { { "AgentCode", "A004" }, { "CustCode", "C00006" }, { "OrdNum", 200104 }, { "AdvanceAmt", 500.00 } });
+            Assert.AreEqual(1, orderData.Count);
+            orders.Add(orderData.FirstOrDefault());
+            foreach (var order in orders)
+            {
+                Assert.AreEqual("A004", order.ReferenceData["agent_code"]);
+                Assert.AreEqual("Ivan", order.ReferenceData["agent_name"]);
+                Assert.AreEqual("C00006", order.ReferenceData["cust_code"]);
+                Assert.AreEqual("Shilton", order.ReferenceData["cust_name"]);
+                Assert.AreEqual("200104", order.ReferenceData["ord_num"]);
+                Assert.AreEqual("1500.00", order.ReferenceData["ord_amount"]);
+                Assert.AreEqual("500.00", order.ReferenceData["advance_amount"]);
+                Assert.AreEqual("13/03/2008 12:00:00 AM", order.ReferenceData["ord_date"]);
+                Assert.AreEqual("SOD", order.ReferenceData["ord_description"]);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
         public async Task Test_PostgreSQL_FetchDataAsync_Dictionary_UnsupportedCommands()
         {
             var sqlStatements = new List<string>
@@ -490,6 +607,63 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_FetchData_Entity_SqlParameters()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SQLParameters.SelectSql;
+            // Object as SQL Parameters
+            var customerData = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData<Entities.PostgreSQL.Customers>(selectSql, parameters:
+            new { CustCode = "C00001", CustName = "Micheal", Grade = 2, OutstandingAmt = 6000.00 }
+            );
+            Assert.AreEqual(1, customerData.Count);
+            var customers = new List<Entities.PostgreSQL.Customers>() { customerData.FirstOrDefault() };
+            // Dictionary as SQL Parameters
+            customerData = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData<Entities.PostgreSQL.Customers>(selectSql, parameters:
+            new Dictionary<string, object> { { "CustCode", "C00001" }, { "CustName", "Micheal" }, { "Grade", 2 }, { "OutstandingAmt", 6000.00 } }
+            );
+            Assert.AreEqual(1, customerData.Count);
+            customers.Add(customerData.FirstOrDefault());
+            foreach (var customer in customers)
+            {
+                Assert.AreEqual("C00001", customer.Cust_Code);
+                Assert.AreEqual("Micheal", customer.Cust_Name);
+                Assert.AreEqual("New York", customer.Cust_City);
+                Assert.AreEqual("New York", customer.Working_Area);
+                Assert.AreEqual("USA", customer.Cust_Country);
+                Assert.AreEqual(2, customer.Grade);
+                Assert.AreEqual((decimal)3000.00, customer.Opening_Amt);
+                Assert.AreEqual((decimal)5000.00, customer.Recieve_Amt);
+                Assert.AreEqual((decimal)2000.00, customer.Payment_Amt);
+                Assert.AreEqual((decimal)6000.00, customer.Outstanding_Amt);
+                Assert.AreEqual("CCCCCCC", customer.Phone_No);
+                Assert.AreEqual("A008", customer.Agent_Code);
+            }
+
+            var selectSqlJoin = Queries.PostgreSQLQueries.TestDB.SQLParameters.SelectSql_Join;
+            // Object as SQL Parameters
+            var orderData = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData<Entities.PostgreSQL.Orders>(selectSqlJoin, parameters:
+            new { AgentCode = "A004", CustCode = "C00006", OrdNum = 200104, AdvanceAmt = 500.00 });
+            Assert.AreEqual(1, orderData.Count);
+            var orders = new List<Entities.PostgreSQL.Orders>() { orderData.FirstOrDefault() };
+            // Dictionary as SQL Parameters
+            orderData = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchData<Entities.PostgreSQL.Orders>(selectSqlJoin, parameters:
+            new Dictionary<string, object> { { "AgentCode", "A004" }, { "CustCode", "C00006" }, { "OrdNum", 200104 }, { "AdvanceAmt", 500.00 } });
+            Assert.AreEqual(1, orderData.Count);
+            orders.Add(orderData.FirstOrDefault());
+            foreach (var order in orders)
+            {
+                Assert.AreEqual("A004", order.Agent_Code);
+                Assert.AreEqual("Ivan", order.Agent_Name);
+                Assert.AreEqual("C00006", order.Cust_Code);
+                Assert.AreEqual("Shilton", order.Cust_Name);
+                Assert.AreEqual(200104, order.Ord_Num);
+                Assert.AreEqual((decimal)1500.00, order.Ord_Amount);
+                Assert.AreEqual((decimal)500.00, order.Advance_Amount);
+                Assert.AreEqual("SOD", order.Ord_Description);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
         public void Test_PostgreSQL_FetchData_Entity_UnsupportedCommands()
         {
             var sqlStatements = new List<string>
@@ -513,7 +687,7 @@ namespace QueryDB.Core.Tests
                 try
                 {
                     var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
-                    dbContext.FetchData<Entities.MSSQL.Orders>(sqlStatement);
+                    dbContext.FetchData<Entities.PostgreSQL.Orders>(sqlStatement);
                     Assert.Fail("No Exception");
                 }
                 catch (QueryDBException ex)
@@ -651,6 +825,63 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_FetchDataAsync_Entity_SqlParameters()
+        {
+            var selectSql = Queries.PostgreSQLQueries.TestDB.SQLParameters.SelectSql;
+            // Object as SQL Parameters
+            var customerData = await new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync<Entities.PostgreSQL.Customers>(selectSql, parameters:
+            new { CustCode = "C00001", CustName = "Micheal", Grade = 2, OutstandingAmt = 6000.00 }
+            );
+            Assert.AreEqual(1, customerData.Count);
+            var customers = new List<Entities.PostgreSQL.Customers>() { customerData.FirstOrDefault() };
+            // Dictionary as SQL Parameters
+            customerData = await new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync<Entities.PostgreSQL.Customers>(selectSql, parameters:
+            new Dictionary<string, object> { { "CustCode", "C00001" }, { "CustName", "Micheal" }, { "Grade", 2 }, { "OutstandingAmt", 6000.00 } }
+            );
+            Assert.AreEqual(1, customerData.Count);
+            customers.Add(customerData.FirstOrDefault());
+            foreach (var customer in customers)
+            {
+                Assert.AreEqual("C00001", customer.Cust_Code);
+                Assert.AreEqual("Micheal", customer.Cust_Name);
+                Assert.AreEqual("New York", customer.Cust_City);
+                Assert.AreEqual("New York", customer.Working_Area);
+                Assert.AreEqual("USA", customer.Cust_Country);
+                Assert.AreEqual(2, customer.Grade);
+                Assert.AreEqual((decimal)3000.00, customer.Opening_Amt);
+                Assert.AreEqual((decimal)5000.00, customer.Recieve_Amt);
+                Assert.AreEqual((decimal)2000.00, customer.Payment_Amt);
+                Assert.AreEqual((decimal)6000.00, customer.Outstanding_Amt);
+                Assert.AreEqual("CCCCCCC", customer.Phone_No);
+                Assert.AreEqual("A008", customer.Agent_Code);
+            }
+
+            var selectSqlJoin = Queries.PostgreSQLQueries.TestDB.SQLParameters.SelectSql_Join;
+            // Object as SQL Parameters
+            var orderData = await new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync<Entities.PostgreSQL.Orders>(selectSqlJoin, parameters:
+            new { AgentCode = "A004", CustCode = "C00006", OrdNum = 200104, AdvanceAmt = 500.00 });
+            Assert.AreEqual(1, orderData.Count);
+            var orders = new List<Entities.PostgreSQL.Orders>() { orderData.FirstOrDefault() };
+            // Dictionary as SQL Parameters
+            orderData = await new DBContext(DB.PostgreSQL, PostgreSQLConnectionString).FetchDataAsync<Entities.PostgreSQL.Orders>(selectSqlJoin, parameters:
+            new Dictionary<string, object> { { "AgentCode", "A004" }, { "CustCode", "C00006" }, { "OrdNum", 200104 }, { "AdvanceAmt", 500.00 } });
+            Assert.AreEqual(1, orderData.Count);
+            orders.Add(orderData.FirstOrDefault());
+            foreach (var order in orders)
+            {
+                Assert.AreEqual("A004", order.Agent_Code);
+                Assert.AreEqual("Ivan", order.Agent_Name);
+                Assert.AreEqual("C00006", order.Cust_Code);
+                Assert.AreEqual("Shilton", order.Cust_Name);
+                Assert.AreEqual(200104, order.Ord_Num);
+                Assert.AreEqual((decimal)1500.00, order.Ord_Amount);
+                Assert.AreEqual((decimal)500.00, order.Advance_Amount);
+                Assert.AreEqual("SOD", order.Ord_Description);
+            }
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
         public async Task Test_PostgreSQL_FetchDataAsync_Entity_UnsupportedCommands()
         {
             var sqlStatements = new List<string>
@@ -674,7 +905,7 @@ namespace QueryDB.Core.Tests
                 try
                 {
                     var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
-                    await dbContext.FetchDataAsync<Entities.MSSQL.Orders>(sqlStatement);
+                    await dbContext.FetchDataAsync<Entities.PostgreSQL.Orders>(sqlStatement);
                     Assert.Fail("No Exception");
                 }
                 catch (QueryDBException ex)
@@ -733,6 +964,24 @@ namespace QueryDB.Core.Tests
             result = dbContext.ExecuteScalar(dBNullValue);
             Assert.IsInstanceOfType<string>(result);
             Assert.AreEqual(string.Empty, result);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_ExecuteScalar_As_StringReturn_SqlParameters()
+        {
+            var singleValueSelect = Queries.PostgreSQLQueries.TestDB.SQLParameters.Single_Value_Select;
+
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+
+            // Object as SQL Parameters
+            var singleValue = dbContext.ExecuteScalar(singleValueSelect, parameters:
+            new { CustCode = "C00001" });
+            Assert.AreEqual("2", singleValue);
+            // Dictionary as SQL Parameters
+            singleValue = dbContext.ExecuteScalar(singleValueSelect, parameters:
+            new Dictionary<string, object> { { "CustCode", "C00001" } });
+            Assert.AreEqual("2", singleValue);
         }
 
         [TestMethod]
@@ -819,6 +1068,24 @@ namespace QueryDB.Core.Tests
             result = await dbContext.ExecuteScalarAsync(dBNullValue);
             Assert.IsInstanceOfType<string>(result);
             Assert.AreEqual(string.Empty, result);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_ExecuteScalarAsync_As_StringReturn_SqlParameters()
+        {
+            var singleValueSelect = Queries.PostgreSQLQueries.TestDB.SQLParameters.Single_Value_Select;
+
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+
+            // Object as SQL Parameters
+            var singleValue = await dbContext.ExecuteScalarAsync(singleValueSelect, parameters:
+            new { CustCode = "C00001" });
+            Assert.AreEqual("2", singleValue);
+            // Dictionary as SQL Parameters
+            singleValue = await dbContext.ExecuteScalarAsync(singleValueSelect, parameters:
+            new Dictionary<string, object> { { "CustCode", "C00001" } });
+            Assert.AreEqual("2", singleValue);
         }
 
         [TestMethod]
@@ -988,6 +1255,24 @@ namespace QueryDB.Core.Tests
 
         [TestMethod]
         [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_ExecuteScalar_As_TypedReturn_SqlParameters()
+        {
+            var singleValueSelect = Queries.PostgreSQLQueries.TestDB.SQLParameters.Single_Value_Select;
+
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+
+            // Object as SQL Parameters
+            var singleValue = dbContext.ExecuteScalar<string>(singleValueSelect, parameters:
+            new { CustCode = "C00001" });
+            Assert.AreEqual("2", singleValue);
+            // Dictionary as SQL Parameters
+            singleValue = dbContext.ExecuteScalar<string>(singleValueSelect, parameters:
+            new Dictionary<string, object> { { "CustCode", "C00001" } });
+            Assert.AreEqual("2", singleValue);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
         public void Test_PostgreSQL_ExecuteScalar_As_TypedReturn_UnsupportedCommands()
         {
             var sqlStatements = new List<string>
@@ -1149,6 +1434,24 @@ namespace QueryDB.Core.Tests
             result = await dbContext.ExecuteScalarAsync<DateTime?>(dBNullValue);
             Assert.IsNull(result);
             Assert.AreEqual(default(DateTime?), result);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_ExecuteScalarAsync_As_TypedReturn_SqlParameters()
+        {
+            var singleValueSelect = Queries.PostgreSQLQueries.TestDB.SQLParameters.Single_Value_Select;
+
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+
+            // Object as SQL Parameters
+            var singleValue = await dbContext.ExecuteScalarAsync<string>(singleValueSelect, parameters:
+            new { CustCode = "C00001" });
+            Assert.AreEqual("2", singleValue);
+            // Dictionary as SQL Parameters
+            singleValue = await dbContext.ExecuteScalarAsync<string>(singleValueSelect, parameters:
+            new Dictionary<string, object> { { "CustCode", "C00001" } });
+            Assert.AreEqual("2", singleValue);
         }
 
         [TestMethod]
@@ -1351,6 +1654,96 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual(-1, result);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_ExecuteCommand_SqlParameters()
+        {
+            var insertSql = Queries.PostgreSQLQueries.TestDB.SQLParameters.InsertSql;
+            var updateSql = Queries.PostgreSQLQueries.TestDB.SQLParameters.UpdateSql;
+            var deleteSql = Queries.PostgreSQLQueries.TestDB.SQLParameters.DeleteSql;
+            var verifyDMLExecution = Queries.PostgreSQLQueries.TestDB.SQLParameters.VerifyDMLExecution;
+
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+
+            // Object as SQL Parameters
+            // Insert
+            var rows = dbContext.ExecuteCommand(insertSql, parameters:
+            new { AgentCode = "A020", AgentName = "John", WorkingArea = "Wick", Commission = 0.11, PhoneNo = "010-44536178", Country = "" });
+            Assert.AreEqual(1, rows);
+            var data = dbContext.FetchData(verifyDMLExecution, parameters:
+            new { AgentCode = "A020" });
+            Assert.AreEqual(1, data.Count);
+            var agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["agent_code"]);
+            Assert.AreEqual("John", agent.ReferenceData["agent_name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["working_area"]);
+            Assert.AreEqual("0.11", agent.ReferenceData["commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["phone_no"]);
+            Assert.AreEqual("", agent.ReferenceData["country"]);
+
+            // Update
+            rows = dbContext.ExecuteCommand(updateSql, parameters:
+            new { NewCommission = 0.15, AgentCode = "A020" });
+            Assert.AreEqual(1, rows);
+            data = dbContext.FetchData(verifyDMLExecution, parameters:
+            new { AgentCode = "A020" });
+            Assert.AreEqual(1, data.Count);
+            agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["agent_code"]);
+            Assert.AreEqual("John", agent.ReferenceData["agent_name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["working_area"]);
+            Assert.AreEqual("0.15", agent.ReferenceData["commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["phone_no"]);
+            Assert.AreEqual("", agent.ReferenceData["country"]);
+
+            // Delete
+            rows = dbContext.ExecuteCommand(deleteSql, parameters:
+            new { AgentCode = "A020" });
+            Assert.AreEqual(1, rows);
+            data = dbContext.FetchData(verifyDMLExecution, parameters:
+            new { AgentCode = "A020" });
+            Assert.AreEqual(0, data.Count);
+
+            // Dictionary as SQL Parameters
+            // Insert
+            rows = dbContext.ExecuteCommand(insertSql, parameters:
+            new Dictionary<string, object> { { "AgentCode", "A020" }, { "AgentName", "John" }, { "WorkingArea", "Wick" }, { "Commission", 0.11 }, { "PhoneNo", "010-44536178" }, { "Country", "" } });
+            Assert.AreEqual(1, rows);
+            data = dbContext.FetchData(verifyDMLExecution, parameters:
+            new Dictionary<string, object> { { "AgentCode", "A020" } });
+            Assert.AreEqual(1, data.Count);
+            agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["agent_code"]);
+            Assert.AreEqual("John", agent.ReferenceData["agent_name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["working_area"]);
+            Assert.AreEqual("0.11", agent.ReferenceData["commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["phone_no"]);
+            Assert.AreEqual("", agent.ReferenceData["country"]);
+
+            // Update
+            rows = dbContext.ExecuteCommand(updateSql, parameters:
+            new Dictionary<string, object> { { "NewCommission", 0.15 }, { "AgentCode", "A020" } });
+            Assert.AreEqual(1, rows);
+            data = dbContext.FetchData(verifyDMLExecution, parameters:
+            new Dictionary<string, object> { { "AgentCode", "A020" } });
+            Assert.AreEqual(1, data.Count);
+            agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["agent_code"]);
+            Assert.AreEqual("John", agent.ReferenceData["agent_name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["working_area"]);
+            Assert.AreEqual("0.15", agent.ReferenceData["commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["phone_no"]);
+            Assert.AreEqual("", agent.ReferenceData["country"]);
+
+            // Delete
+            rows = dbContext.ExecuteCommand(deleteSql, parameters:
+            new Dictionary<string, object> { { "AgentCode", "A020" } });
+            Assert.AreEqual(1, rows);
+            data = dbContext.FetchData(verifyDMLExecution, parameters:
+            new Dictionary<string, object> { { "AgentCode", "A020" } });
+            Assert.AreEqual(0, data.Count);
+        }
+
         #endregion
 
         #region Execute Command Async Tests - << Task<int> ExecuteCommandAsync(string sqlStatement) >>
@@ -1514,6 +1907,96 @@ namespace QueryDB.Core.Tests
             Assert.AreEqual(-1, result);
         }
 
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_ExecuteCommandAsync_SqlParameters()
+        {
+            var insertSql = Queries.PostgreSQLQueries.TestDB.SQLParameters.InsertSql;
+            var updateSql = Queries.PostgreSQLQueries.TestDB.SQLParameters.UpdateSql;
+            var deleteSql = Queries.PostgreSQLQueries.TestDB.SQLParameters.DeleteSql;
+            var verifyDMLExecution = Queries.PostgreSQLQueries.TestDB.SQLParameters.VerifyDMLExecution;
+
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+
+            // Object as SQL Parameters
+            // Insert
+            var rows = await dbContext.ExecuteCommandAsync(insertSql, parameters:
+            new { AgentCode = "A020", AgentName = "John", WorkingArea = "Wick", Commission = 0.11, PhoneNo = "010-44536178", Country = "" });
+            Assert.AreEqual(1, rows);
+            var data = await dbContext.FetchDataAsync(verifyDMLExecution, parameters:
+            new { AgentCode = "A020" });
+            Assert.AreEqual(1, data.Count);
+            var agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["agent_code"]);
+            Assert.AreEqual("John", agent.ReferenceData["agent_name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["working_area"]);
+            Assert.AreEqual("0.11", agent.ReferenceData["commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["phone_no"]);
+            Assert.AreEqual("", agent.ReferenceData["country"]);
+
+            // Update
+            rows = await dbContext.ExecuteCommandAsync(updateSql, parameters:
+            new { NewCommission = 0.15, AgentCode = "A020" });
+            Assert.AreEqual(1, rows);
+            data = await dbContext.FetchDataAsync(verifyDMLExecution, parameters:
+            new { AgentCode = "A020" });
+            Assert.AreEqual(1, data.Count);
+            agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["agent_code"]);
+            Assert.AreEqual("John", agent.ReferenceData["agent_name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["working_area"]);
+            Assert.AreEqual("0.15", agent.ReferenceData["commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["phone_no"]);
+            Assert.AreEqual("", agent.ReferenceData["country"]);
+
+            // Delete
+            rows = await dbContext.ExecuteCommandAsync(deleteSql, parameters:
+            new { AgentCode = "A020" });
+            Assert.AreEqual(1, rows);
+            data = await dbContext.FetchDataAsync(verifyDMLExecution, parameters:
+            new { AgentCode = "A020" });
+            Assert.AreEqual(0, data.Count);
+
+            // Dictionary as SQL Parameters
+            // Insert
+            rows = await dbContext.ExecuteCommandAsync(insertSql, parameters:
+            new Dictionary<string, object> { { "AgentCode", "A020" }, { "AgentName", "John" }, { "WorkingArea", "Wick" }, { "Commission", 0.11 }, { "PhoneNo", "010-44536178" }, { "Country", "" } });
+            Assert.AreEqual(1, rows);
+            data = await dbContext.FetchDataAsync(verifyDMLExecution, parameters:
+            new Dictionary<string, object> { { "AgentCode", "A020" } });
+            Assert.AreEqual(1, data.Count);
+            agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["agent_code"]);
+            Assert.AreEqual("John", agent.ReferenceData["agent_name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["working_area"]);
+            Assert.AreEqual("0.11", agent.ReferenceData["commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["phone_no"]);
+            Assert.AreEqual("", agent.ReferenceData["country"]);
+
+            // Update
+            rows = await dbContext.ExecuteCommandAsync(updateSql, parameters:
+            new Dictionary<string, object> { { "NewCommission", 0.15 }, { "AgentCode", "A020" } });
+            Assert.AreEqual(1, rows);
+            data = await dbContext.FetchDataAsync(verifyDMLExecution, parameters:
+            new Dictionary<string, object> { { "AgentCode", "A020" } });
+            Assert.AreEqual(1, data.Count);
+            agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["agent_code"]);
+            Assert.AreEqual("John", agent.ReferenceData["agent_name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["working_area"]);
+            Assert.AreEqual("0.15", agent.ReferenceData["commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["phone_no"]);
+            Assert.AreEqual("", agent.ReferenceData["country"]);
+
+            // Delete
+            rows = await dbContext.ExecuteCommandAsync(deleteSql, parameters:
+            new Dictionary<string, object> { { "AgentCode", "A020" } });
+            Assert.AreEqual(1, rows);
+            data = await dbContext.FetchDataAsync(verifyDMLExecution, parameters:
+            new Dictionary<string, object> { { "AgentCode", "A020" } });
+            Assert.AreEqual(0, data.Count);
+        }
+
         #endregion
 
         #region Execute Transaction Tests - << bool ExecuteTransaction(List<string> sqlStatements) >>
@@ -1620,6 +2103,96 @@ namespace QueryDB.Core.Tests
             Assert.IsFalse(result.Success);
             Assert.IsTrue(result.Exception.Message.Contains("42601: syntax error at end of input"));
             var data = dbContext.FetchData(verifyDMLExecution);
+            Assert.AreEqual(0, data.Count);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public void Test_PostgreSQL_ExecuteTransaction_SqlParameters()
+        {
+            var insertSql = Queries.PostgreSQLQueries.TestDB.SQLParameters.InsertSql;
+            var updateSql = Queries.PostgreSQLQueries.TestDB.SQLParameters.UpdateSql;
+            var deleteSql = Queries.PostgreSQLQueries.TestDB.SQLParameters.DeleteSql;
+            var verifyDMLExecution = Queries.PostgreSQLQueries.TestDB.SQLParameters.VerifyDMLExecution;
+
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+
+            // Object as SQL Parameters
+            // Insert & Update
+            var statements = new List<string>
+            {
+                insertSql,
+                updateSql
+            };
+            var objParams = new
+            {
+                AgentCode = "A020",
+                AgentName = "John",
+                WorkingArea = "Wick",
+                Commission = 0.11,
+                PhoneNo = "010-44536178",
+                Country = "",
+                NewCommission = 0.15
+            };
+            var result = dbContext.ExecuteTransaction(statements, objParams);
+            Assert.IsTrue(result.Success);
+            var data = dbContext.FetchData(verifyDMLExecution, parameters: objParams);
+            Assert.AreEqual(1, data.Count);
+            var agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["agent_code"]);
+            Assert.AreEqual("John", agent.ReferenceData["agent_name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["working_area"]);
+            Assert.AreEqual("0.15", agent.ReferenceData["commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["phone_no"]);
+            Assert.AreEqual("", agent.ReferenceData["country"]);
+
+            // Delete
+            statements = new List<string>
+            {
+                deleteSql
+            };
+            result = dbContext.ExecuteTransaction(statements, objParams);
+            Assert.IsTrue(result.Success);
+            data = dbContext.FetchData(verifyDMLExecution, parameters: objParams);
+            Assert.AreEqual(0, data.Count);
+
+            // Dictionary as SQL Parameters
+            // Insert & Update
+            statements = new List<string>
+            {
+                insertSql,
+                updateSql
+            };
+            var dictParams = new Dictionary<string, object>
+            {
+                { "AgentCode", "A020" },
+                { "AgentName", "John" },
+                { "WorkingArea", "Wick" },
+                { "Commission", 0.11 },
+                { "PhoneNo", "010-44536178" },
+                { "Country", "" },
+                { "NewCommission", 0.15 }
+            };
+            result = dbContext.ExecuteTransaction(statements, dictParams);
+            Assert.IsTrue(result.Success);
+            data = dbContext.FetchData(verifyDMLExecution, parameters: dictParams);
+            Assert.AreEqual(1, data.Count);
+            agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["agent_code"]);
+            Assert.AreEqual("John", agent.ReferenceData["agent_name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["working_area"]);
+            Assert.AreEqual("0.15", agent.ReferenceData["commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["phone_no"]);
+            Assert.AreEqual("", agent.ReferenceData["country"]);
+
+            // Delete
+            statements = new List<string>
+            {
+                deleteSql
+            };
+            result = dbContext.ExecuteTransaction(statements, dictParams);
+            Assert.IsTrue(result.Success);
+            data = dbContext.FetchData(verifyDMLExecution, parameters: dictParams);
             Assert.AreEqual(0, data.Count);
         }
 
@@ -1754,6 +2327,96 @@ namespace QueryDB.Core.Tests
             Assert.IsFalse(result.Success);
             Assert.IsTrue(result.Exception.Message.Contains("42601: syntax error at end of input"));
             var data = await dbContext.FetchDataAsync(verifyDMLExecution);
+            Assert.AreEqual(0, data.Count);
+        }
+
+        [TestMethod]
+        [TestCategory(DB_TESTS), TestCategory(POSTGRESQL_TESTS)]
+        public async Task Test_PostgreSQL_ExecuteTransactionAsync_SqlParameters()
+        {
+            var insertSql = Queries.PostgreSQLQueries.TestDB.SQLParameters.InsertSql;
+            var updateSql = Queries.PostgreSQLQueries.TestDB.SQLParameters.UpdateSql;
+            var deleteSql = Queries.PostgreSQLQueries.TestDB.SQLParameters.DeleteSql;
+            var verifyDMLExecution = Queries.PostgreSQLQueries.TestDB.SQLParameters.VerifyDMLExecution;
+
+            var dbContext = new DBContext(DB.PostgreSQL, PostgreSQLConnectionString);
+
+            // Object as SQL Parameters
+            // Insert & Update
+            var statements = new List<string>
+            {
+                insertSql,
+                updateSql
+            };
+            var objParams = new
+            {
+                AgentCode = "A020",
+                AgentName = "John",
+                WorkingArea = "Wick",
+                Commission = 0.11,
+                PhoneNo = "010-44536178",
+                Country = "",
+                NewCommission = 0.15
+            };
+            var result = await dbContext.ExecuteTransactionAsync(statements, objParams);
+            Assert.IsTrue(result.Success);
+            var data = await dbContext.FetchDataAsync(verifyDMLExecution, parameters: objParams);
+            Assert.AreEqual(1, data.Count);
+            var agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["agent_code"]);
+            Assert.AreEqual("John", agent.ReferenceData["agent_name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["working_area"]);
+            Assert.AreEqual("0.15", agent.ReferenceData["commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["phone_no"]);
+            Assert.AreEqual("", agent.ReferenceData["country"]);
+
+            // Delete
+            statements = new List<string>
+            {
+                deleteSql
+            };
+            result = await dbContext.ExecuteTransactionAsync(statements, objParams);
+            Assert.IsTrue(result.Success);
+            data = await dbContext.FetchDataAsync(verifyDMLExecution, parameters: objParams);
+            Assert.AreEqual(0, data.Count);
+
+            // Dictionary as SQL Parameters
+            // Insert & Update
+            statements = new List<string>
+            {
+                insertSql,
+                updateSql
+            };
+            var dictParams = new Dictionary<string, object>
+            {
+                { "AgentCode", "A020" },
+                { "AgentName", "John" },
+                { "WorkingArea", "Wick" },
+                { "Commission", 0.11 },
+                { "PhoneNo", "010-44536178" },
+                { "Country", "" },
+                { "NewCommission", 0.15 }
+            };
+            result = await dbContext.ExecuteTransactionAsync(statements, dictParams);
+            Assert.IsTrue(result.Success);
+            data = await dbContext.FetchDataAsync(verifyDMLExecution, parameters: dictParams);
+            Assert.AreEqual(1, data.Count);
+            agent = data.FirstOrDefault();
+            Assert.AreEqual("A020", agent.ReferenceData["agent_code"]);
+            Assert.AreEqual("John", agent.ReferenceData["agent_name"]);
+            Assert.AreEqual("Wick", agent.ReferenceData["working_area"]);
+            Assert.AreEqual("0.15", agent.ReferenceData["commission"]);
+            Assert.AreEqual("010-44536178", agent.ReferenceData["phone_no"]);
+            Assert.AreEqual("", agent.ReferenceData["country"]);
+
+            // Delete
+            statements = new List<string>
+            {
+                deleteSql
+            };
+            result = await dbContext.ExecuteTransactionAsync(statements, dictParams);
+            Assert.IsTrue(result.Success);
+            data = await dbContext.FetchDataAsync(verifyDMLExecution, parameters: dictParams);
             Assert.AreEqual(0, data.Count);
         }
 

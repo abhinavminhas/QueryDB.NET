@@ -15,6 +15,21 @@ namespace QueryDB.Core.Tests
                 public string Phone_No { get; set; }
                 public string Country { get; set; }
             }
+            public class Customers
+            {
+                public string Cust_Code { get; set; }
+                public string Cust_Name { get; set; }
+                public string Cust_City { get; set; }
+                public string Working_Area { get; set; }
+                public string Cust_Country { get; set; }
+                public int Grade { get; set; }
+                public decimal Opening_Amt { get; set; }
+                public decimal Recieve_Amt { get; set; }
+                public decimal Payment_Amt { get; set; }
+                public decimal Outstanding_Amt { get; set; }
+                public string Phone_No { get; set; }
+                public string Agent_Code { get; set; }
+            }
             public class Orders
             {
                 public string Agent_Code { get; set; }
@@ -84,6 +99,21 @@ namespace QueryDB.Core.Tests
                 public string Phone_No { get; set; }
                 public string Country { get; set; }
             }
+            public class Customers
+            {
+                public string Cust_Code { get; set; }
+                public string Cust_Name { get; set; }
+                public string Cust_City { get; set; }
+                public string Working_Area { get; set; }
+                public string Cust_Country { get; set; }
+                public int Grade { get; set; }
+                public decimal Opening_Amt { get; set; }
+                public decimal Recieve_Amt { get; set; }
+                public decimal Payment_Amt { get; set; }
+                public decimal Outstanding_Amt { get; set; }
+                public string Phone_No { get; set; }
+                public string Agent_Code { get; set; }
+            }
             public class Orders
             {
                 public string Agent_Code { get; set; }
@@ -141,6 +171,21 @@ namespace QueryDB.Core.Tests
                 public double Commission { get; set; }
                 public string Phone_No { get; set; }
                 public string Country { get; set; }
+            }
+            public class Customers
+            {
+                public string Cust_Code { get; set; }
+                public string Cust_Name { get; set; }
+                public string Cust_City { get; set; }
+                public string Working_Area { get; set; }
+                public string Cust_Country { get; set; }
+                public decimal Grade { get; set; }
+                public double Opening_Amt { get; set; }
+                public double Recieve_Amt { get; set; }
+                public double Payment_Amt { get; set; }
+                public double Outstanding_Amt { get; set; }
+                public string Phone_No { get; set; }
+                public string Agent_Code { get; set; }
             }
             public class Orders
             {
@@ -200,6 +245,21 @@ namespace QueryDB.Core.Tests
                 public decimal Commission { get; set; }
                 public string Phone_No { get; set; }
                 public string Country { get; set; }
+            }
+            public class Customers
+            {
+                public string Cust_Code { get; set; }
+                public string Cust_Name { get; set; }
+                public string Cust_City { get; set; }
+                public string Working_Area { get; set; }
+                public string Cust_Country { get; set; }
+                public int Grade { get; set; }
+                public decimal Opening_Amt { get; set; }
+                public decimal Recieve_Amt { get; set; }
+                public decimal Payment_Amt { get; set; }
+                public decimal Outstanding_Amt { get; set; }
+                public string Phone_No { get; set; }
+                public string Agent_Code { get; set; }
             }
             public class Orders
             {

@@ -70,8 +70,9 @@ namespace QueryDB
         /// </summary>
         /// <param name="selectSql">'Select' query.</param>
         /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase. Default - <c>false</c>.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>List of <see cref="DataDictionary"/> with column names as keys holding values into a list for multiple rows of data.</returns>
-        public List<DataDictionary> FetchData(string selectSql, bool upperCaseKeys = false)
+        public List<DataDictionary> FetchData(string selectSql, bool upperCaseKeys = false, object parameters = null)
         {
             if (!Regex.IsMatch(selectSql, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
                 throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedFetchDataCommand,
@@ -83,28 +84,28 @@ namespace QueryDB
                     using (var connection = GetSqlServerConnection())
                     {
                         var adapter = new MSSQL.Adapter();
-                        dataList = adapter.FetchData(selectSql, connection.SqlConnection, upperCaseKeys);
+                        dataList = adapter.FetchData(selectSql, connection.SqlConnection, upperCaseKeys, parameters);
                     }
                     break;
                 case DB.MySQL:
                     using (var connection = GetMySqlConnection())
                     {
                         var adapter = new MySQL.Adapter();
-                        dataList = adapter.FetchData(selectSql, connection.MySqlConnection, upperCaseKeys);
+                        dataList = adapter.FetchData(selectSql, connection.MySqlConnection, upperCaseKeys, parameters);
                     }
                     break;
                 case DB.Oracle:
                     using (var connection = GetOracleConnection())
                     {
                         var adapter = new Oracle.Adapter();
-                        dataList = adapter.FetchData(selectSql, connection.OracleConnection, upperCaseKeys);
+                        dataList = adapter.FetchData(selectSql, connection.OracleConnection, upperCaseKeys, parameters);
                     }
                     break;
                 case DB.PostgreSQL:
                     using (var connection = GetPostgreSqlConnection())
                     {
                         var adapter = new PostgreSQL.Adapter();
-                        dataList = adapter.FetchData(selectSql, connection.PostgreSQLConnection, upperCaseKeys);
+                        dataList = adapter.FetchData(selectSql, connection.PostgreSQLConnection, upperCaseKeys, parameters);
                     }
                     break;
             }
@@ -117,8 +118,9 @@ namespace QueryDB
         /// <typeparam name="T">Object entity to return data mapped into.</typeparam>
         /// <param name="selectSql">'Select' query.</param>
         /// <param name="strict">Enables fetch data only for object type <typeparamref name="T"/> properties existing in database query result. Default - <c>false</c>.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
-        public List<T> FetchData<T>(string selectSql, bool strict = false) where T : new()
+        public List<T> FetchData<T>(string selectSql, bool strict = false, object parameters = null) where T : new()
         {
             if (!Regex.IsMatch(selectSql, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
                 throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedFetchDataCommand,
@@ -130,28 +132,28 @@ namespace QueryDB
                     using (var connection = GetSqlServerConnection())
                     {
                         var adapter = new MSSQL.Adapter();
-                        dataList = adapter.FetchData<T>(selectSql, connection.SqlConnection, strict);
+                        dataList = adapter.FetchData<T>(selectSql, connection.SqlConnection, strict, parameters);
                     }
                     break;
                 case DB.MySQL:
                     using (var connection = GetMySqlConnection())
                     {
                         var adapter = new MySQL.Adapter();
-                        dataList = adapter.FetchData<T>(selectSql, connection.MySqlConnection, strict);
+                        dataList = adapter.FetchData<T>(selectSql, connection.MySqlConnection, strict, parameters);
                     }
                     break;
                 case DB.Oracle:
                     using (var connection = GetOracleConnection())
                     {
                         var adapter = new Oracle.Adapter();
-                        dataList = adapter.FetchData<T>(selectSql, connection.OracleConnection, strict);
+                        dataList = adapter.FetchData<T>(selectSql, connection.OracleConnection, strict, parameters);
                     }
                     break;
                 case DB.PostgreSQL:
                     using (var connection = GetPostgreSqlConnection())
                     {
                         var adapter = new PostgreSQL.Adapter();
-                        dataList = adapter.FetchData<T>(selectSql, connection.PostgreSQLConnection, strict);
+                        dataList = adapter.FetchData<T>(selectSql, connection.PostgreSQLConnection, strict, parameters);
                     }
                     break;
             }
@@ -165,8 +167,9 @@ namespace QueryDB
         /// </summary>
         /// <param name="selectSql">'Select' query.</param>
         /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase. Default - <c>false</c>.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>List of <see cref="DataDictionary"/> with column names as keys holding values into a list for multiple rows of data.</returns>
-        public async Task<List<DataDictionary>> FetchDataAsync(string selectSql, bool upperCaseKeys = false)
+        public async Task<List<DataDictionary>> FetchDataAsync(string selectSql, bool upperCaseKeys = false, object parameters = null)
         {
             if (!Regex.IsMatch(selectSql, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
                 throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedFetchDataCommand, 
@@ -178,28 +181,28 @@ namespace QueryDB
                     using (var connection = GetSqlServerConnection())
                     {
                         var adapter = new MSSQL.Adapter();
-                        dataList = await adapter.FetchDataAsync(selectSql, connection.SqlConnection, upperCaseKeys);
+                        dataList = await adapter.FetchDataAsync(selectSql, connection.SqlConnection, upperCaseKeys, parameters);
                     }
                     break;
                 case DB.MySQL:
                     using (var connection = GetMySqlConnection())
                     {
                         var adapter = new MySQL.Adapter();
-                        dataList = await adapter.FetchDataAsync(selectSql, connection.MySqlConnection, upperCaseKeys);
+                        dataList = await adapter.FetchDataAsync(selectSql, connection.MySqlConnection, upperCaseKeys, parameters);
                     }
                     break;
                 case DB.Oracle:
                     using (var connection = GetOracleConnection())
                     {
                         var adapter = new Oracle.Adapter();
-                        dataList = await adapter.FetchDataAsync(selectSql, connection.OracleConnection, upperCaseKeys);
+                        dataList = await adapter.FetchDataAsync(selectSql, connection.OracleConnection, upperCaseKeys, parameters);
                     }
                     break;
                 case DB.PostgreSQL:
                     using (var connection = GetPostgreSqlConnection())
                     {
                         var adapter = new PostgreSQL.Adapter();
-                        dataList = await adapter.FetchDataAsync(selectSql, connection.PostgreSQLConnection, upperCaseKeys);
+                        dataList = await adapter.FetchDataAsync(selectSql, connection.PostgreSQLConnection, upperCaseKeys, parameters);
                     }
                     break;
             }
@@ -212,8 +215,9 @@ namespace QueryDB
         /// <typeparam name="T">Object entity to return data mapped into.</typeparam>
         /// <param name="selectSql">'Select' query.</param>
         /// <param name="strict">Enables fetch data only for object type <typeparamref name="T"/> properties existing in database query result. Default - <c>false</c>.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
-        public async Task<List<T>> FetchDataAsync<T>(string selectSql, bool strict = false) where T : new()
+        public async Task<List<T>> FetchDataAsync<T>(string selectSql, bool strict = false, object parameters = null) where T : new()
         {
             if (!Regex.IsMatch(selectSql, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
                 throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedFetchDataCommand, 
@@ -225,28 +229,28 @@ namespace QueryDB
                     using (var connection = GetSqlServerConnection())
                     {
                         var adapter = new MSSQL.Adapter();
-                        dataList = await adapter.FetchDataAsync<T>(selectSql, connection.SqlConnection, strict);
+                        dataList = await adapter.FetchDataAsync<T>(selectSql, connection.SqlConnection, strict, parameters);
                     }
                     break;
                 case DB.MySQL:
                     using (var connection = GetMySqlConnection())
                     {
                         var adapter = new MySQL.Adapter();
-                        dataList = await adapter.FetchDataAsync<T>(selectSql, connection.MySqlConnection, strict);
+                        dataList = await adapter.FetchDataAsync<T>(selectSql, connection.MySqlConnection, strict, parameters);
                     }
                     break;
                 case DB.Oracle:
                     using (var connection = GetOracleConnection())
                     {
                         var adapter = new Oracle.Adapter();
-                        dataList = await adapter.FetchDataAsync<T>(selectSql, connection.OracleConnection, strict);
+                        dataList = await adapter.FetchDataAsync<T>(selectSql, connection.OracleConnection, strict, parameters);
                     }
                     break;
                 case DB.PostgreSQL:
                     using (var connection = GetPostgreSqlConnection())
                     {
                         var adapter = new PostgreSQL.Adapter();
-                        dataList = await adapter.FetchDataAsync<T>(selectSql, connection.PostgreSQLConnection, strict);
+                        dataList = await adapter.FetchDataAsync<T>(selectSql, connection.PostgreSQLConnection, strict, parameters);
                     }
                     break;
             }
@@ -258,11 +262,12 @@ namespace QueryDB
         /// If the result is DBNull, an empty string is returned.
         /// </summary>
         /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// A <see cref="string"/> representing the value of the first column of the first row in the result set,
         /// or an empty string if the result is DBNull.
         /// </returns>
-        public string ExecuteScalar(string sqlStatement)
+        public string ExecuteScalar(string sqlStatement, object parameters = null)
         {
             if (!Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
                 throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedExecuteScalarCommand, 
@@ -274,28 +279,28 @@ namespace QueryDB
                     using (var connection = GetSqlServerConnection())
                     {
                         var adapter = new MSSQL.Adapter();
-                        value = adapter.ExecuteScalar(sqlStatement, connection.SqlConnection);
+                        value = adapter.ExecuteScalar(sqlStatement, connection.SqlConnection, parameters);
                     }
                     break;
                 case DB.MySQL:
                     using (var connection = GetMySqlConnection())
                     {
                         var adapter = new MySQL.Adapter();
-                        value = adapter.ExecuteScalar(sqlStatement, connection.MySqlConnection);
+                        value = adapter.ExecuteScalar(sqlStatement, connection.MySqlConnection, parameters);
                     }
                     break;
                 case DB.Oracle:
                     using (var connection = GetOracleConnection())
                     {
                         var adapter = new Oracle.Adapter();
-                        value = adapter.ExecuteScalar(sqlStatement, connection.OracleConnection);
+                        value = adapter.ExecuteScalar(sqlStatement, connection.OracleConnection, parameters);
                     }
                     break;
                 case DB.PostgreSQL:
                     using (var connection = GetPostgreSqlConnection())
                     {
                         var adapter = new PostgreSQL.Adapter();
-                        value = adapter.ExecuteScalar(sqlStatement, connection.PostgreSQLConnection);
+                        value = adapter.ExecuteScalar(sqlStatement, connection.PostgreSQLConnection, parameters);
                     }
                     break;
             }
@@ -308,11 +313,12 @@ namespace QueryDB
         /// </summary>
         /// <typeparam name="T">The type to which the result should be converted.</typeparam>
         /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// The value of the first column of the first row in the result set, converted to type <typeparamref name="T"/>,
         /// or the default value of <typeparamref name="T"/> if the result is DBNull.
         /// </returns>
-        public T ExecuteScalar<T>(string sqlStatement)
+        public T ExecuteScalar<T>(string sqlStatement, object parameters = null)
         {
             if (!Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
                 throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedExecuteScalarCommand, 
@@ -324,28 +330,28 @@ namespace QueryDB
                     using (var connection = GetSqlServerConnection())
                     {
                         var adapter = new MSSQL.Adapter();
-                        value = adapter.ExecuteScalar<T>(sqlStatement, connection.SqlConnection);
+                        value = adapter.ExecuteScalar<T>(sqlStatement, connection.SqlConnection, parameters);
                     }
                     break;
                 case DB.MySQL:
                     using (var connection = GetMySqlConnection())
                     {
                         var adapter = new MySQL.Adapter();
-                        value = adapter.ExecuteScalar<T>(sqlStatement, connection.MySqlConnection);
+                        value = adapter.ExecuteScalar<T>(sqlStatement, connection.MySqlConnection, parameters);
                     }
                     break;
                 case DB.Oracle:
                     using (var connection = GetOracleConnection())
                     {
                         var adapter = new Oracle.Adapter();
-                        value = adapter.ExecuteScalar<T>(sqlStatement, connection.OracleConnection);
+                        value = adapter.ExecuteScalar<T>(sqlStatement, connection.OracleConnection, parameters);
                     }
                     break;
                 case DB.PostgreSQL:
                     using (var connection = GetPostgreSqlConnection())
                     {
                         var adapter = new PostgreSQL.Adapter();
-                        value = adapter.ExecuteScalar<T>(sqlStatement, connection.PostgreSQLConnection);
+                        value = adapter.ExecuteScalar<T>(sqlStatement, connection.PostgreSQLConnection, parameters);
                     }
                     break;
             }
@@ -357,11 +363,12 @@ namespace QueryDB
         /// If the result is DBNull, an empty string is returned.
         /// </summary>
         /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// A <see cref="string"/> representing the value of the first column of the first row in the result set,
         /// or an empty string if the result is DBNull.
         /// </returns>
-        public async Task<string> ExecuteScalarAsync(string sqlStatement)
+        public async Task<string> ExecuteScalarAsync(string sqlStatement, object parameters = null)
         {
             if (!Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
                 throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedExecuteScalarCommand, 
@@ -373,28 +380,28 @@ namespace QueryDB
                     using (var connection = GetSqlServerConnection())
                     {
                         var adapter = new MSSQL.Adapter();
-                        value = await adapter.ExecuteScalarAsync(sqlStatement, connection.SqlConnection);
+                        value = await adapter.ExecuteScalarAsync(sqlStatement, connection.SqlConnection, parameters);
                     }
                     break;
                 case DB.MySQL:
                     using (var connection = GetMySqlConnection())
                     {
                         var adapter = new MySQL.Adapter();
-                        value = await adapter.ExecuteScalarAsync(sqlStatement, connection.MySqlConnection);
+                        value = await adapter.ExecuteScalarAsync(sqlStatement, connection.MySqlConnection, parameters);
                     }
                     break;
                 case DB.Oracle:
                     using (var connection = GetOracleConnection())
                     {
                         var adapter = new Oracle.Adapter();
-                        value = await adapter.ExecuteScalarAsync(sqlStatement, connection.OracleConnection);
+                        value = await adapter.ExecuteScalarAsync(sqlStatement, connection.OracleConnection, parameters);
                     }
                     break;
                 case DB.PostgreSQL:
                     using (var connection = GetPostgreSqlConnection())
                     {
                         var adapter = new PostgreSQL.Adapter();
-                        value = await adapter.ExecuteScalarAsync(sqlStatement, connection.PostgreSQLConnection);
+                        value = await adapter.ExecuteScalarAsync(sqlStatement, connection.PostgreSQLConnection, parameters);
                     }
                     break;
             }
@@ -407,11 +414,12 @@ namespace QueryDB
         /// </summary>
         /// <typeparam name="T">The type to which the result should be converted.</typeparam>
         /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// The value of the first column of the first row in the result set, converted to type <typeparamref name="T"/>,
         /// or the default value of <typeparamref name="T"/> if the result is DBNull.
         /// </returns>
-        public async Task<T> ExecuteScalarAsync<T>(string sqlStatement)
+        public async Task<T> ExecuteScalarAsync<T>(string sqlStatement, object parameters = null)
         {
             if (!Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
                 throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedExecuteScalarCommand, 
@@ -423,28 +431,28 @@ namespace QueryDB
                     using (var connection = GetSqlServerConnection())
                     {
                         var adapter = new MSSQL.Adapter();
-                        value = await adapter.ExecuteScalarAsync<T>(sqlStatement, connection.SqlConnection);
+                        value = await adapter.ExecuteScalarAsync<T>(sqlStatement, connection.SqlConnection, parameters);
                     }
                     break;
                 case DB.MySQL:
                     using (var connection = GetMySqlConnection())
                     {
                         var adapter = new MySQL.Adapter();
-                        value = await adapter.ExecuteScalarAsync<T>(sqlStatement, connection.MySqlConnection);
+                        value = await adapter.ExecuteScalarAsync<T>(sqlStatement, connection.MySqlConnection, parameters);
                     }
                     break;
                 case DB.Oracle:
                     using (var connection = GetOracleConnection())
                     {
                         var adapter = new Oracle.Adapter();
-                        value = await adapter.ExecuteScalarAsync<T>(sqlStatement, connection.OracleConnection);
+                        value = await adapter.ExecuteScalarAsync<T>(sqlStatement, connection.OracleConnection, parameters);
                     }
                     break;
                 case DB.PostgreSQL:
                     using (var connection = GetPostgreSqlConnection())
                     {
                         var adapter = new PostgreSQL.Adapter();
-                        value = await adapter.ExecuteScalarAsync<T>(sqlStatement, connection.PostgreSQLConnection);
+                        value = await adapter.ExecuteScalarAsync<T>(sqlStatement, connection.PostgreSQLConnection, parameters);
                     }
                     break;
             }
@@ -455,8 +463,9 @@ namespace QueryDB
         /// Executes a SQL statement that does not return a result set.
         /// </summary>
         /// <param name="sqlStatement">SQL statement to execute.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>The number of rows affected by the execution of the SQL statement.</returns>
-        public int ExecuteCommand(string sqlStatement)
+        public int ExecuteCommand(string sqlStatement, object parameters = null)
         {
             if (Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
                 throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteCommand, 
@@ -467,25 +476,25 @@ namespace QueryDB
                     using (var connection = GetSqlServerConnection())
                     {
                         var adapter = new MSSQL.Adapter();
-                        return adapter.ExecuteCommand(sqlStatement, connection.SqlConnection);
+                        return adapter.ExecuteCommand(sqlStatement, connection.SqlConnection, parameters);
                     }
                 case DB.MySQL:
                     using (var connection = GetMySqlConnection())
                     {
                         var adapter = new MySQL.Adapter();
-                        return adapter.ExecuteCommand(sqlStatement, connection.MySqlConnection);
+                        return adapter.ExecuteCommand(sqlStatement, connection.MySqlConnection, parameters);
                     }
                 case DB.Oracle:
                     using (var connection = GetOracleConnection())
                     {
                         var adapter = new Oracle.Adapter();
-                        return adapter.ExecuteCommand(sqlStatement, connection.OracleConnection);
+                        return adapter.ExecuteCommand(sqlStatement, connection.OracleConnection, parameters);
                     }
                 case DB.PostgreSQL:
                     using (var connection = GetPostgreSqlConnection())
                     {
                         var adapter = new PostgreSQL.Adapter();
-                        return adapter.ExecuteCommand(sqlStatement, connection.PostgreSQLConnection);
+                        return adapter.ExecuteCommand(sqlStatement, connection.PostgreSQLConnection, parameters);
                     }
                 default:
                     return -1;
@@ -496,8 +505,9 @@ namespace QueryDB
         /// Asynchronously executes a SQL statement that does not return a result set.
         /// </summary>
         /// <param name="sqlStatement">SQL statement to execute.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>The number of rows affected by the execution of the SQL statement.</returns>
-        public async Task<int> ExecuteCommandAsync(string sqlStatement)
+        public async Task<int> ExecuteCommandAsync(string sqlStatement, object parameters = null)
         {
             if (Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)))
                 throw new QueryDBException(QueryDBExceptions.ErrorMessage.UnsupportedSelectExecuteCommand, 
@@ -508,25 +518,25 @@ namespace QueryDB
                     using (var connection = GetSqlServerConnection())
                     {
                         var adapter = new MSSQL.Adapter();
-                        return await adapter.ExecuteCommandAsync(sqlStatement, connection.SqlConnection);
+                        return await adapter.ExecuteCommandAsync(sqlStatement, connection.SqlConnection, parameters);
                     }
                 case DB.MySQL:
                     using (var connection = GetMySqlConnection())
                     {
                         var adapter = new MySQL.Adapter();
-                        return await adapter.ExecuteCommandAsync(sqlStatement, connection.MySqlConnection);
+                        return await adapter.ExecuteCommandAsync(sqlStatement, connection.MySqlConnection, parameters);
                     }
                 case DB.Oracle:
                     using (var connection = GetOracleConnection())
                     {
                         var adapter = new Oracle.Adapter();
-                        return await adapter.ExecuteCommandAsync(sqlStatement, connection.OracleConnection);
+                        return await adapter.ExecuteCommandAsync(sqlStatement, connection.OracleConnection, parameters);
                     }
                 case DB.PostgreSQL:
                     using (var connection = GetPostgreSqlConnection())
                     {
                         var adapter = new PostgreSQL.Adapter();
-                        return await adapter.ExecuteCommandAsync(sqlStatement, connection.PostgreSQLConnection);
+                        return await adapter.ExecuteCommandAsync(sqlStatement, connection.PostgreSQLConnection, parameters);
                     }
                 default:
                     return -1;
@@ -537,13 +547,14 @@ namespace QueryDB
         /// Executes multiple SQL statements within a transaction, ensuring that all statements are executed together.
         /// </summary>
         /// <param name="sqlStatements">A list of SQL statements to execute.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// A <see cref="Result"/> object indicating the outcome of the transaction.
         /// The <see cref="Result.Success"/> property is <c>true</c> if the transaction is committed successfully; 
         /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
         /// If an error occurs, the <see cref="Result.Exception"/> property contains the exception details.
         /// </returns>
-        public Result ExecuteTransaction(List<string> sqlStatements)
+        public Result ExecuteTransaction(List<string> sqlStatements, object parameters = null)
         {
             var result = new Result();
             var selectExists = sqlStatements.Any(sqlStatement => Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)));
@@ -555,25 +566,25 @@ namespace QueryDB
                 case DB.MSSQL:
                     using (var connection = GetSqlServerConnection())
                     {
-                        result = MSSQL.Adapter.ExecuteTransaction(sqlStatements, connection.SqlConnection);
+                        result = MSSQL.Adapter.ExecuteTransaction(sqlStatements, connection.SqlConnection, parameters);
                     }
                     break;
                 case DB.MySQL:
                     using (var connection = GetMySqlConnection())
                     {
-                        result = MySQL.Adapter.ExecuteTransaction(sqlStatements, connection.MySqlConnection);
+                        result = MySQL.Adapter.ExecuteTransaction(sqlStatements, connection.MySqlConnection, parameters);
                     }
                     break;
                 case DB.Oracle:
                     using (var connection = GetOracleConnection())
                     {
-                        result = Oracle.Adapter.ExecuteTransaction(sqlStatements, connection.OracleConnection);
+                        result = Oracle.Adapter.ExecuteTransaction(sqlStatements, connection.OracleConnection, parameters);
                     }
                     break;
                 case DB.PostgreSQL:
                     using (var connection = GetPostgreSqlConnection())
                     {
-                        result = PostgreSQL.Adapter.ExecuteTransaction(sqlStatements, connection.PostgreSQLConnection);
+                        result = PostgreSQL.Adapter.ExecuteTransaction(sqlStatements, connection.PostgreSQLConnection, parameters);
                     }
                     break;
             }
@@ -584,13 +595,14 @@ namespace QueryDB
         /// Asynchronously executes multiple SQL statements within a transaction, ensuring that all statements are executed together.
         /// </summary>
         /// <param name="sqlStatements">A list of SQL statements to execute.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// A <see cref="Result"/> object indicating the outcome of the transaction.
         /// The <see cref="Result.Success"/> property is <c>true</c> if the transaction is committed successfully; 
         /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
         /// If an error occurs, the <see cref="Result.Exception"/> property contains the exception details.
         /// </returns>
-        public async Task<Result> ExecuteTransactionAsync(List<string> sqlStatements)
+        public async Task<Result> ExecuteTransactionAsync(List<string> sqlStatements, object parameters = null)
         {
             var result = new Result();
             var selectExists = sqlStatements.Any(sqlStatement => Regex.IsMatch(sqlStatement, Utils.SelectQueryPattern, RegexOptions.IgnoreCase | RegexOptions.Singleline, TimeSpan.FromSeconds(5)));
@@ -602,25 +614,25 @@ namespace QueryDB
                 case DB.MSSQL:
                     using (var connection = GetSqlServerConnection())
                     {
-                        result = await MSSQL.Adapter.ExecuteTransactionAsync(sqlStatements, connection.SqlConnection);
+                        result = await MSSQL.Adapter.ExecuteTransactionAsync(sqlStatements, connection.SqlConnection, parameters);
                     }
                     break;
                 case DB.MySQL:
                     using (var connection = GetMySqlConnection())
                     {
-                        result = await MySQL.Adapter.ExecuteTransactionAsync(sqlStatements, connection.MySqlConnection);
+                        result = await MySQL.Adapter.ExecuteTransactionAsync(sqlStatements, connection.MySqlConnection, parameters);
                     }
                     break;
                 case DB.Oracle:
                     using (var connection = GetOracleConnection())
                     {
-                        result = await Oracle.Adapter.ExecuteTransactionAsync(sqlStatements, connection.OracleConnection);
+                        result = await Oracle.Adapter.ExecuteTransactionAsync(sqlStatements, connection.OracleConnection, parameters);
                     }
                     break;
                 case DB.PostgreSQL:
                     using (var connection = GetPostgreSqlConnection())
                     {
-                        result = await PostgreSQL.Adapter.ExecuteTransactionAsync(sqlStatements, connection.PostgreSQLConnection);
+                        result = await PostgreSQL.Adapter.ExecuteTransactionAsync(sqlStatements, connection.PostgreSQLConnection, parameters);
                     }
                     break;
             }

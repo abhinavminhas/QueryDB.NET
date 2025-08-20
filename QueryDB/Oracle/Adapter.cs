@@ -21,12 +21,18 @@ namespace QueryDB.Oracle
         /// <param name="cmdText">The text of the query.</param>
         /// <param name="connection">The <see cref="OracleConnection"/> object used to connect to the database.</param>
         /// <param name="commandType">Sql command type.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>A <see cref="OracleConnection"/> object that can be used to read the query results.</returns>
-        internal OracleDataReader GetOracleReader(string cmdText, OracleConnection connection, CommandType commandType)
+        internal OracleDataReader GetOracleReader(string cmdText, OracleConnection connection, CommandType commandType, object parameters = null)
         {
             connection.Open();
             using (var sqlCommand = new OracleCommand(cmdText, connection) { CommandType = commandType })
             {
+                if (parameters != null)
+                {
+                    foreach (var param in Utils.ToOracleParameters(cmdText, parameters))
+                        sqlCommand.Parameters.Add(param);
+                }
                 return sqlCommand.ExecuteReader();
             }
         }
@@ -38,11 +44,17 @@ namespace QueryDB.Oracle
         /// <param name="cmdText">The SQL command text to execute.</param>
         /// <param name="connection">The <see cref="OracleConnection"/> object used to connect to the database.</param>
         /// <param name="commandType">The type of the command (e.g., Text, StoredProcedure).</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>A configured <see cref="OracleCommand"/> instance.</returns>
-        internal OracleCommand GetOracleCommand(string cmdText, OracleConnection connection, CommandType commandType)
+        internal OracleCommand GetOracleCommand(string cmdText, OracleConnection connection, CommandType commandType, object parameters = null)
         {
             connection.Open();
             var sqlCommand = new OracleCommand(cmdText, connection) { CommandType = commandType };
+            if (parameters != null)
+            {
+                foreach (var param in Utils.ToOracleParameters(cmdText, parameters))
+                    sqlCommand.Parameters.Add(param);
+            }
             return sqlCommand;
         }
 
@@ -51,10 +63,16 @@ namespace QueryDB.Oracle
         /// </summary>
         /// <param name="cmdText">The SQL command text to execute.</param>
         /// <param name="connection">The Oracle database connection.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>A new <see cref="OracleCommand"/> instance configured with the provided connection.</returns>
-        internal static OracleCommand GetOracleCommand(string cmdText, OracleConnection connection)
+        internal static OracleCommand GetOracleCommand(string cmdText, OracleConnection connection, object parameters = null)
         {
             var sqlCommand = new OracleCommand(cmdText, connection);
+            if (parameters != null)
+            {
+                foreach (var param in Utils.ToOracleParameters(cmdText, parameters))
+                    sqlCommand.Parameters.Add(param);
+            }
             return sqlCommand;
         }
 
@@ -78,12 +96,13 @@ namespace QueryDB.Oracle
         /// <param name="selectSql">'Select' query.</param>
         /// <param name="connection">The <see cref="OracleConnection"/> object used to connect to the database.</param>
         /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>List of <see cref="DataDictionary"/> with column names as keys holding values into a list for multiple rows of data.
         /// Note: Byte[]/BFile is returned as Base64 string.</returns>
-        internal List<DataDictionary> FetchData(string selectSql, OracleConnection connection, bool upperCaseKeys)
+        internal List<DataDictionary> FetchData(string selectSql, OracleConnection connection, bool upperCaseKeys, object parameters = null)
         {
             var dataList = new List<DataDictionary>();
-            using (var reader = GetOracleReader(selectSql, connection, CommandType.Text))
+            using (var reader = GetOracleReader(selectSql, connection, CommandType.Text, parameters))
             {
                 while (reader.Read())
                 {
@@ -111,11 +130,12 @@ namespace QueryDB.Oracle
         /// <param name="selectSql">'Select' query.</param>
         /// <param name="connection">The <see cref="OracleConnection"/> object used to connect to the database.</param>
         /// <param name="strict">Enables fetch data only for object type <typeparamref name="T"/> properties existing in database query result.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
-        internal List<T> FetchData<T>(string selectSql, OracleConnection connection, bool strict) where T : new()
+        internal List<T> FetchData<T>(string selectSql, OracleConnection connection, bool strict, object parameters = null) where T : new()
         {
             var dataList = new List<T>();
-            using (var reader = GetOracleReader(selectSql, connection, CommandType.Text))
+            using (var reader = GetOracleReader(selectSql, connection, CommandType.Text, parameters))
             {
                 while (reader.Read())
                 {
@@ -142,13 +162,14 @@ namespace QueryDB.Oracle
         /// </summary>
         /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
         /// <param name="connection">The <see cref="OracleConnection"/> to use for executing the SQL statement.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// A <see cref="string"/> representing the value of the first column of the first row in the result set,
         /// or an empty string if the result is DBNull.
         /// </returns>
-        internal string ExecuteScalar(string sqlStatement, OracleConnection connection)
+        internal string ExecuteScalar(string sqlStatement, OracleConnection connection, object parameters = null)
         {
-            using (var sqlCommand = GetOracleCommand(sqlStatement, connection, CommandType.Text))
+            using (var sqlCommand = GetOracleCommand(sqlStatement, connection, CommandType.Text, parameters))
             {
                 var result = sqlCommand.ExecuteScalar();
                 return result == DBNull.Value ? string.Empty : result.ToString();
@@ -162,13 +183,14 @@ namespace QueryDB.Oracle
         /// <typeparam name="T">The type to which the result should be converted.</typeparam>
         /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
         /// <param name="connection">The <see cref="OracleConnection"/> to use for executing the SQL statement.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// The value of the first column of the first row in the result set, converted to type <typeparamref name="T"/>,
         /// or the default value of <typeparamref name="T"/> if the result is DBNull.
         /// </returns>
-        internal T ExecuteScalar<T>(string sqlStatement, OracleConnection connection)
+        internal T ExecuteScalar<T>(string sqlStatement, OracleConnection connection, object parameters = null)
         {
-            using (var sqlCommand = GetOracleCommand(sqlStatement, connection, CommandType.Text))
+            using (var sqlCommand = GetOracleCommand(sqlStatement, connection, CommandType.Text, parameters))
             {
                 var result = sqlCommand.ExecuteScalar();
                 return result == null || result == DBNull.Value ? default : (T)Convert.ChangeType(result, typeof(T));
@@ -180,10 +202,11 @@ namespace QueryDB.Oracle
         /// </summary>
         /// <param name="sqlStatement">SQL statement to execute.</param>
         /// <param name="connection">The <see cref="OracleConnection"/> object used to connect to the database.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>The number of rows affected by the execution of the SQL statement.</returns>
-        internal int ExecuteCommand(string sqlStatement, OracleConnection connection)
+        internal int ExecuteCommand(string sqlStatement, OracleConnection connection, object parameters = null)
         {
-            using (var sqlCommand = GetOracleCommand(sqlStatement, connection, CommandType.Text))
+            using (var sqlCommand = GetOracleCommand(sqlStatement, connection, CommandType.Text, parameters))
             {
                 return sqlCommand.ExecuteNonQuery();
             }
@@ -194,13 +217,14 @@ namespace QueryDB.Oracle
         /// </summary>
         /// <param name="sqlStatements">A list of SQL statements to execute.</param>
         /// <param name="connection">The <see cref="OracleConnection"/> object used to connect to the database.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// A <see cref="Result"/> object indicating the outcome of the transaction.
         /// The <see cref="Result.Success"/> property is <c>true</c> if the transaction is committed successfully; 
         /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
         /// If an error occurs, the <see cref="Result.Exception"/> property contains the exception details.
         /// </returns>
-        internal static Result ExecuteTransaction(List<string> sqlStatements, OracleConnection connection)
+        internal static Result ExecuteTransaction(List<string> sqlStatements, OracleConnection connection, object parameters = null)
         {
             using (OracleTransaction transaction = GetOracleTransaction(connection))
             {
@@ -208,7 +232,7 @@ namespace QueryDB.Oracle
                 {
                     foreach (var sqlStatement in sqlStatements)
                     {
-                        using (var sqlCommand = GetOracleCommand(sqlStatement, connection))
+                        using (var sqlCommand = GetOracleCommand(sqlStatement, connection, parameters))
                         {
                             sqlCommand.Transaction = transaction;
                             sqlCommand.ExecuteNonQuery();
@@ -235,12 +259,18 @@ namespace QueryDB.Oracle
         /// <param name="cmdText">The text of the query.</param>
         /// <param name="connection">The <see cref="OracleConnection"/> object used to connect to the database.</param>
         /// <param name="commandType">Sql command type.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>A <see cref="OracleConnection"/> object that can be used to read the query results.</returns>
-        internal async Task<OracleDataReader> GetOracleReaderAsync(string cmdText, OracleConnection connection, CommandType commandType)
+        internal async Task<OracleDataReader> GetOracleReaderAsync(string cmdText, OracleConnection connection, CommandType commandType, object parameters = null)
         {
             await connection.OpenAsync();
             using (var sqlCommand = new OracleCommand(cmdText, connection) { CommandType = commandType })
             {
+                if (parameters != null)
+                {
+                    foreach (var param in Utils.ToOracleParameters(cmdText, parameters))
+                        sqlCommand.Parameters.Add(param);
+                }
                 return (OracleDataReader) await sqlCommand.ExecuteReaderAsync();
             }
         }
@@ -252,11 +282,17 @@ namespace QueryDB.Oracle
         /// <param name="cmdText">The SQL command text to execute.</param>
         /// <param name="connection">The <see cref="OracleConnection"/> object used to connect to the database.</param>
         /// <param name="commandType">The type of the command (e.g., Text, StoredProcedure).</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>A configured <see cref="OracleCommand"/> instance.</returns>
-        internal async Task<OracleCommand> GetOracleCommandAsync(string cmdText, OracleConnection connection, CommandType commandType)
+        internal async Task<OracleCommand> GetOracleCommandAsync(string cmdText, OracleConnection connection, CommandType commandType, object parameters = null)
         {
             await connection.OpenAsync();
             var sqlCommand = new OracleCommand(cmdText, connection) { CommandType = commandType };
+            if (parameters != null)
+            {
+                foreach (var param in Utils.ToOracleParameters(cmdText, parameters))
+                    sqlCommand.Parameters.Add(param);
+            }
             return sqlCommand;
         }
 
@@ -280,12 +316,13 @@ namespace QueryDB.Oracle
         /// <param name="selectSql">'Select' query.</param>
         /// <param name="connection">The <see cref="OracleConnection"/> object used to connect to the database.</param>
         /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>List of <see cref="DataDictionary"/> with column names as keys holding values into a list for multiple rows of data.
         /// Note: Byte[]/BFile is returned as Base64 string.</returns>
-        internal async Task<List<DataDictionary>> FetchDataAsync(string selectSql, OracleConnection connection, bool upperCaseKeys)
+        internal async Task<List<DataDictionary>> FetchDataAsync(string selectSql, OracleConnection connection, bool upperCaseKeys, object parameters = null)
         {
             var dataList = new List<DataDictionary>();
-            using (var reader = await GetOracleReaderAsync(selectSql, connection, CommandType.Text))
+            using (var reader = await GetOracleReaderAsync(selectSql, connection, CommandType.Text, parameters))
             {
                 while (await reader.ReadAsync())
                 {
@@ -313,11 +350,12 @@ namespace QueryDB.Oracle
         /// <param name="selectSql">'Select' query.</param>
         /// <param name="connection">The <see cref="OracleConnection"/> object used to connect to the database.</param>
         /// <param name="strict">Enables fetch data only for object type <typeparamref name="T"/> properties existing in database query result.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
-        internal async Task<List<T>> FetchDataAsync<T>(string selectSql, OracleConnection connection, bool strict) where T : new()
+        internal async Task<List<T>> FetchDataAsync<T>(string selectSql, OracleConnection connection, bool strict, object parameters = null) where T : new()
         {
             var dataList = new List<T>();
-            using (var reader = await GetOracleReaderAsync(selectSql, connection, CommandType.Text))
+            using (var reader = await GetOracleReaderAsync(selectSql, connection, CommandType.Text, parameters))
             {
                 while (await reader.ReadAsync())
                 {
@@ -344,13 +382,14 @@ namespace QueryDB.Oracle
         /// </summary>
         /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
         /// <param name="connection">The <see cref="OracleConnection"/> to use for executing the SQL statement.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// A <see cref="string"/> representing the value of the first column of the first row in the result set,
         /// or an empty string if the result is DBNull.
         /// </returns>
-        internal async Task<string> ExecuteScalarAsync(string sqlStatement, OracleConnection connection)
+        internal async Task<string> ExecuteScalarAsync(string sqlStatement, OracleConnection connection, object parameters = null)
         {
-            using (var sqlCommand = await GetOracleCommandAsync(sqlStatement, connection, CommandType.Text))
+            using (var sqlCommand = await GetOracleCommandAsync(sqlStatement, connection, CommandType.Text, parameters))
             {
                 var result = await sqlCommand.ExecuteScalarAsync();
                 return result == DBNull.Value ? string.Empty : result.ToString();
@@ -364,13 +403,14 @@ namespace QueryDB.Oracle
         /// <typeparam name="T">The type to which the result should be converted.</typeparam>
         /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
         /// <param name="connection">The <see cref="OracleConnection"/> to use for executing the SQL statement.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// The value of the first column of the first row in the result set, converted to type <typeparamref name="T"/>,
         /// or the default value of <typeparamref name="T"/> if the result is DBNull.
         /// </returns>
-        internal async Task<T> ExecuteScalarAsync<T>(string sqlStatement, OracleConnection connection)
+        internal async Task<T> ExecuteScalarAsync<T>(string sqlStatement, OracleConnection connection, object parameters = null)
         {
-            using (var sqlCommand = await GetOracleCommandAsync(sqlStatement, connection, CommandType.Text))
+            using (var sqlCommand = await GetOracleCommandAsync(sqlStatement, connection, CommandType.Text, parameters))
             {
                 var result = await sqlCommand.ExecuteScalarAsync();
                 return result == null || result == DBNull.Value ? default : (T)Convert.ChangeType(result, typeof(T));
@@ -382,10 +422,11 @@ namespace QueryDB.Oracle
         /// </summary>
         /// <param name="sqlStatement">SQL statement to execute.</param>
         /// <param name="connection">The <see cref="OracleConnection"/> object used to connect to the database.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>The number of rows affected by the execution of the SQL statement.</returns>
-        internal async Task<int> ExecuteCommandAsync(string sqlStatement, OracleConnection connection)
+        internal async Task<int> ExecuteCommandAsync(string sqlStatement, OracleConnection connection, object parameters = null)
         {
-            using (var sqlCommand = await GetOracleCommandAsync(sqlStatement, connection, CommandType.Text))
+            using (var sqlCommand = await GetOracleCommandAsync(sqlStatement, connection, CommandType.Text, parameters))
             {
                 return await sqlCommand.ExecuteNonQueryAsync();
             }
@@ -396,13 +437,14 @@ namespace QueryDB.Oracle
         /// </summary>
         /// <param name="sqlStatements">A list of SQL statements to execute.</param>
         /// <param name="connection">The <see cref="OracleConnection"/> object used to connect to the database.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// A <see cref="Result"/> object indicating the outcome of the transaction.
         /// The <see cref="Result.Success"/> property is <c>true</c> if the transaction is committed successfully; 
         /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
         /// If an error occurs, the <see cref="Result.Exception"/> property contains the exception details.
         /// </returns>
-        internal static async Task<Result> ExecuteTransactionAsync(List<string> sqlStatements, OracleConnection connection)
+        internal static async Task<Result> ExecuteTransactionAsync(List<string> sqlStatements, OracleConnection connection, object parameters = null)
         {
             using (OracleTransaction transaction = await GetOracleTransactionAsync(connection))
             {
@@ -410,7 +452,7 @@ namespace QueryDB.Oracle
                 {
                     foreach (var sqlStatement in sqlStatements)
                     {
-                        using (var sqlCommand = GetOracleCommand(sqlStatement, connection))
+                        using (var sqlCommand = GetOracleCommand(sqlStatement, connection, parameters))
                         {
                             sqlCommand.Transaction = transaction;
                             await sqlCommand.ExecuteNonQueryAsync();

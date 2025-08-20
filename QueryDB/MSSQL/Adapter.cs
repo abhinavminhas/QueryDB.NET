@@ -21,12 +21,18 @@ namespace QueryDB.MSSQL
         /// <param name="cmdText">The text of the query.</param>
         /// <param name="connection">The <see cref="SqlConnection"/> object used to connect to the database.</param>
         /// <param name="commandType">Sql command type.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>A <see cref="SqlDataReader"/> object that can be used to read the query results.</returns>
-        internal SqlDataReader GetSqlReader(string cmdText, SqlConnection connection, CommandType commandType)
+        internal SqlDataReader GetSqlReader(string cmdText, SqlConnection connection, CommandType commandType, object parameters = null)
         {
             connection.Open();
             using (var sqlCommand = new SqlCommand(cmdText, connection) { CommandType = commandType })
             {
+                if (parameters != null)
+                {
+                    foreach (var param in Utils.ToSqlParameters(parameters))
+                        sqlCommand.Parameters.Add(param);
+                }
                 return sqlCommand.ExecuteReader();
             }
         }
@@ -38,11 +44,17 @@ namespace QueryDB.MSSQL
         /// <param name="cmdText">The SQL command text to execute.</param>
         /// <param name="connection">The <see cref="SqlConnection"/> object used to connect to the database.</param>
         /// <param name="commandType">The type of the command (e.g., Text, StoredProcedure).</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>A configured <see cref="SqlCommand"/> instance.</returns>
-        internal SqlCommand GetSqlCommand(string cmdText, SqlConnection connection, CommandType commandType)
+        internal SqlCommand GetSqlCommand(string cmdText, SqlConnection connection, CommandType commandType, object parameters = null)
         {
             connection.Open();
             var sqlCommand = new SqlCommand(cmdText, connection) { CommandType = commandType };
+            if (parameters != null)
+            {
+                foreach (var param in Utils.ToSqlParameters(parameters))
+                    sqlCommand.Parameters.Add(param);
+            }
             return sqlCommand;
         }
 
@@ -52,10 +64,16 @@ namespace QueryDB.MSSQL
         /// <param name="cmdText">The SQL command text to execute.</param>
         /// <param name="connection">The SQL database connection.</param>
         /// <param name="transaction">The SQL transaction within which the command should be executed.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>A new <see cref="SqlCommand"/> instance configured with the provided connection and transaction.</returns>
-        internal static SqlCommand GetSqlCommand(string cmdText, SqlConnection connection, SqlTransaction transaction)
+        internal static SqlCommand GetSqlCommand(string cmdText, SqlConnection connection, SqlTransaction transaction, object parameters = null)
         {
             var sqlCommand = new SqlCommand(cmdText, connection, transaction);
+            if (parameters != null)
+            {
+                foreach (var param in Utils.ToSqlParameters(parameters))
+                    sqlCommand.Parameters.Add(param);
+            }
             return sqlCommand;
         }
 
@@ -79,12 +97,13 @@ namespace QueryDB.MSSQL
         /// <param name="selectSql">'Select' query.</param>
         /// <param name="connection">The <see cref="SqlConnection"/> object used to connect to the database.</param>
         /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>List of <see cref="DataDictionary"/> with column names as keys holding values into a list for multiple rows of data.
         /// Note: Byte[] is returned as Base64 string.</returns>
-        internal List<DataDictionary> FetchData(string selectSql, SqlConnection connection, bool upperCaseKeys)
+        internal List<DataDictionary> FetchData(string selectSql, SqlConnection connection, bool upperCaseKeys, object parameters = null)
         {
             var dataList = new List<DataDictionary>();
-            using (var reader = GetSqlReader(selectSql, connection, CommandType.Text))
+            using (var reader = GetSqlReader(selectSql, connection, CommandType.Text, parameters))
             {
                 while (reader.Read())
                 {
@@ -110,11 +129,12 @@ namespace QueryDB.MSSQL
         /// <param name="selectSql">'Select' query.</param>
         /// <param name="connection">The <see cref="SqlConnection"/> object used to connect to the database.</param>
         /// <param name="strict">Enables fetch data only for object type <typeparamref name="T"/> properties existing in database query result.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
-        internal List<T> FetchData<T>(string selectSql, SqlConnection connection, bool strict) where T : new()
+        internal List<T> FetchData<T>(string selectSql, SqlConnection connection, bool strict, object parameters = null) where T : new()
         {
             var dataList = new List<T>();
-            using (var reader = GetSqlReader(selectSql, connection, CommandType.Text))
+            using (var reader = GetSqlReader(selectSql, connection, CommandType.Text, parameters))
             {
                 while (reader.Read())
                 {
@@ -136,13 +156,14 @@ namespace QueryDB.MSSQL
         /// </summary>
         /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
         /// <param name="connection">The <see cref="SqlConnection"/> to use for executing the SQL statement.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// A <see cref="string"/> representing the value of the first column of the first row in the result set,
         /// or an empty string if the result is DBNull.
         /// </returns>
-        internal string ExecuteScalar(string sqlStatement, SqlConnection connection)
+        internal string ExecuteScalar(string sqlStatement, SqlConnection connection, object parameters = null)
         {
-            using (var sqlCommand = GetSqlCommand(sqlStatement, connection, CommandType.Text))
+            using (var sqlCommand = GetSqlCommand(sqlStatement, connection, CommandType.Text, parameters))
             {
                 var result = sqlCommand.ExecuteScalar();
                 return result == DBNull.Value ? string.Empty : result.ToString();
@@ -156,13 +177,14 @@ namespace QueryDB.MSSQL
         /// <typeparam name="T">The type to which the result should be converted.</typeparam>
         /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
         /// <param name="connection">The <see cref="SqlConnection"/> to use for executing the SQL statement.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// The value of the first column of the first row in the result set, converted to type <typeparamref name="T"/>,
         /// or the default value of <typeparamref name="T"/> if the result is DBNull.
         /// </returns>
-        internal T ExecuteScalar<T>(string sqlStatement, SqlConnection connection)
+        internal T ExecuteScalar<T>(string sqlStatement, SqlConnection connection, object parameters = null)
         {
-            using (var sqlCommand = GetSqlCommand(sqlStatement, connection, CommandType.Text))
+            using (var sqlCommand = GetSqlCommand(sqlStatement, connection, CommandType.Text, parameters))
             {
                 var result = sqlCommand.ExecuteScalar();
                 return result == DBNull.Value ? default : (T)Convert.ChangeType(result, typeof(T));
@@ -174,10 +196,11 @@ namespace QueryDB.MSSQL
         /// </summary>
         /// <param name="sqlStatement">SQL statement to execute.</param>
         /// <param name="connection">The <see cref="SqlConnection"/> object used to connect to the database.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>The number of rows affected by the execution of the SQL statement.</returns>
-        internal int ExecuteCommand(string sqlStatement, SqlConnection connection)
+        internal int ExecuteCommand(string sqlStatement, SqlConnection connection, object parameters = null)
         {
-            using(var sqlCommand = GetSqlCommand(sqlStatement, connection, CommandType.Text))
+            using(var sqlCommand = GetSqlCommand(sqlStatement, connection, CommandType.Text, parameters))
             {
                 return sqlCommand.ExecuteNonQuery();
             }
@@ -188,13 +211,14 @@ namespace QueryDB.MSSQL
         /// </summary>
         /// <param name="sqlStatements">A list of SQL statements to execute.</param>
         /// <param name="connection">The <see cref="SqlConnection"/> object used to connect to the database.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// A <see cref="Result"/> object indicating the outcome of the transaction.
         /// The <see cref="Result.Success"/> property is <c>true</c> if the transaction is committed successfully; 
         /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
         /// If an error occurs, the <see cref="Result.Exception"/> property contains the exception details.
         /// </returns>
-        internal static Result ExecuteTransaction(List<string> sqlStatements, SqlConnection connection)
+        internal static Result ExecuteTransaction(List<string> sqlStatements, SqlConnection connection, object parameters = null)
         {
             using (SqlTransaction transaction = GetSqlTransaction(connection))
             {
@@ -202,7 +226,7 @@ namespace QueryDB.MSSQL
                 {
                     foreach (var sqlStatement in sqlStatements)
                     {
-                        using (var sqlCommand = GetSqlCommand(sqlStatement, connection, transaction))
+                        using (var sqlCommand = GetSqlCommand(sqlStatement, connection, transaction, parameters))
                         {
                             sqlCommand.ExecuteNonQuery();
                         }
@@ -228,12 +252,18 @@ namespace QueryDB.MSSQL
         /// <param name="cmdText">The text of the query.</param>
         /// <param name="connection">The <see cref="SqlConnection"/> object used to connect to the database.</param>
         /// <param name="commandType">Sql command type.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>A <see cref="SqlDataReader"/> object that can be used to read the query results.</returns>
-        internal async Task<SqlDataReader> GetSqlReaderAsync(string cmdText, SqlConnection connection, CommandType commandType)
+        internal async Task<SqlDataReader> GetSqlReaderAsync(string cmdText, SqlConnection connection, CommandType commandType, object parameters = null)
         {
             await connection.OpenAsync();
             using (var sqlCommand = new SqlCommand(cmdText, connection) { CommandType = commandType })
             {
+                if (parameters != null)
+                {
+                    foreach (var param in Utils.ToSqlParameters(parameters))
+                        sqlCommand.Parameters.Add(param);
+                }
                 return await sqlCommand.ExecuteReaderAsync();
             }
         }
@@ -245,11 +275,17 @@ namespace QueryDB.MSSQL
         /// <param name="cmdText">The SQL command text to execute.</param>
         /// <param name="connection">The <see cref="SqlConnection"/> object used to connect to the database.</param>
         /// <param name="commandType">The type of the command (e.g., Text, StoredProcedure).</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>A configured <see cref="SqlCommand"/> instance.</returns>
-        internal async Task<SqlCommand> GetSqlCommandAsync(string cmdText, SqlConnection connection, CommandType commandType)
+        internal async Task<SqlCommand> GetSqlCommandAsync(string cmdText, SqlConnection connection, CommandType commandType, object parameters = null)
         {
             await connection.OpenAsync();
             var sqlCommand = new SqlCommand(cmdText, connection) { CommandType = commandType };
+            if (parameters != null)
+            {
+                foreach (var param in Utils.ToSqlParameters(parameters))
+                    sqlCommand.Parameters.Add(param);
+            }
             return sqlCommand;
         }
 
@@ -273,12 +309,13 @@ namespace QueryDB.MSSQL
         /// <param name="selectSql">'Select' query.</param>
         /// <param name="connection">The <see cref="SqlConnection"/> object used to connect to the database.</param>
         /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>List of <see cref="DataDictionary"/> with column names as keys holding values into a list for multiple rows of data.
         /// Note: Byte[] is returned as Base64 string.</returns>
-        internal async Task<List<DataDictionary>> FetchDataAsync(string selectSql, SqlConnection connection, bool upperCaseKeys)
+        internal async Task<List<DataDictionary>> FetchDataAsync(string selectSql, SqlConnection connection, bool upperCaseKeys, object parameters = null)
         {
             var dataList = new List<DataDictionary>();
-            using (var reader = await GetSqlReaderAsync(selectSql, connection, CommandType.Text))
+            using (var reader = await GetSqlReaderAsync(selectSql, connection, CommandType.Text, parameters))
             {
                 while (await reader.ReadAsync())
                 {
@@ -304,11 +341,12 @@ namespace QueryDB.MSSQL
         /// <param name="selectSql">'Select' query.</param>
         /// <param name="connection">The <see cref="SqlConnection"/> object used to connect to the database.</param>
         /// <param name="strict">Enables fetch data only for object type <typeparamref name="T"/> properties existing in database query result.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
-        internal async Task<List<T>> FetchDataAsync<T>(string selectSql, SqlConnection connection, bool strict) where T : new()
+        internal async Task<List<T>> FetchDataAsync<T>(string selectSql, SqlConnection connection, bool strict, object parameters = null) where T : new()
         {
             var dataList = new List<T>();
-            using (var reader = await GetSqlReaderAsync(selectSql, connection, CommandType.Text))
+            using (var reader = await GetSqlReaderAsync(selectSql, connection, CommandType.Text, parameters))
             {
                 while (await reader.ReadAsync())
                 {
@@ -330,13 +368,14 @@ namespace QueryDB.MSSQL
         /// </summary>
         /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
         /// <param name="connection">The <see cref="SqlConnection"/> to use for executing the SQL statement.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// A <see cref="string"/> representing the value of the first column of the first row in the result set,
         /// or an empty string if the result is DBNull.
         /// </returns>
-        internal async Task<string> ExecuteScalarAsync(string sqlStatement, SqlConnection connection)
+        internal async Task<string> ExecuteScalarAsync(string sqlStatement, SqlConnection connection, object parameters = null)
         {
-            using (var sqlCommand = await GetSqlCommandAsync(sqlStatement, connection, CommandType.Text))
+            using (var sqlCommand = await GetSqlCommandAsync(sqlStatement, connection, CommandType.Text, parameters))
             {
                 var result = await sqlCommand.ExecuteScalarAsync();
                 return result == DBNull.Value ? string.Empty : result.ToString();
@@ -350,13 +389,14 @@ namespace QueryDB.MSSQL
         /// <typeparam name="T">The type to which the result should be converted.</typeparam>
         /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
         /// <param name="connection">The <see cref="SqlConnection"/> to use for executing the SQL statement.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// The value of the first column of the first row in the result set, converted to type <typeparamref name="T"/>,
         /// or the default value of <typeparamref name="T"/> if the result is DBNull.
         /// </returns>
-        internal async Task<T> ExecuteScalarAsync<T>(string sqlStatement, SqlConnection connection)
+        internal async Task<T> ExecuteScalarAsync<T>(string sqlStatement, SqlConnection connection, object parameters = null)
         {
-            using (var sqlCommand = await GetSqlCommandAsync(sqlStatement, connection, CommandType.Text))
+            using (var sqlCommand = await GetSqlCommandAsync(sqlStatement, connection, CommandType.Text, parameters))
             {
                 var result = await sqlCommand.ExecuteScalarAsync();
                 return result == DBNull.Value ? default : (T)Convert.ChangeType(result, typeof(T));
@@ -368,10 +408,11 @@ namespace QueryDB.MSSQL
         /// </summary>
         /// <param name="sqlStatement">SQL statement to execute.</param>
         /// <param name="connection">The <see cref="SqlConnection"/> object used to connect to the database.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>The number of rows affected by the execution of the SQL statement.</returns>
-        internal async Task<int> ExecuteCommandAsync(string sqlStatement, SqlConnection connection)
+        internal async Task<int> ExecuteCommandAsync(string sqlStatement, SqlConnection connection, object parameters = null)
         {
-            using (var sqlCommand = await GetSqlCommandAsync(sqlStatement, connection, CommandType.Text))
+            using (var sqlCommand = await GetSqlCommandAsync(sqlStatement, connection, CommandType.Text, parameters))
             {
                 return await sqlCommand.ExecuteNonQueryAsync();
             }
@@ -382,13 +423,14 @@ namespace QueryDB.MSSQL
         /// </summary>
         /// <param name="sqlStatements">A list of SQL statements to execute.</param>
         /// <param name="connection">The <see cref="SqlConnection"/> object used to connect to the database.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// A <see cref="Result"/> object indicating the outcome of the transaction.
         /// The <see cref="Result.Success"/> property is <c>true</c> if the transaction is committed successfully; 
         /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
         /// If an error occurs, the <see cref="Result.Exception"/> property contains the exception details.
         /// </returns>
-        internal static async Task<Result> ExecuteTransactionAsync(List<string> sqlStatements, SqlConnection connection)
+        internal static async Task<Result> ExecuteTransactionAsync(List<string> sqlStatements, SqlConnection connection, object parameters = null)
         {
             using (SqlTransaction transaction = await GetSqlTransactionAsync(connection))
             {
@@ -396,7 +438,7 @@ namespace QueryDB.MSSQL
                 {
                     foreach (var sqlStatement in sqlStatements)
                     {
-                        using (var sqlCommand = GetSqlCommand(sqlStatement, connection, transaction))
+                        using (var sqlCommand = GetSqlCommand(sqlStatement, connection, transaction, parameters))
                         {
                             await sqlCommand.ExecuteNonQueryAsync();
                         }

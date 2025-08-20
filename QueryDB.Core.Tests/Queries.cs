@@ -66,6 +66,20 @@
                     internal static string RemoveUserSql_User = @"DROP USER {0}";
                     internal static string RemoveLoginSql_Login = @"DROP LOGIN {0}";
                 }
+                internal static class SQLParameters
+                {
+                    internal static string SelectSql = @"SELECT * FROM Customer WHERE Cust_Code = @CustCode AND Cust_Name = @CustName 
+                                                       AND Grade = @Grade AND Outstanding_Amt = @OutstandingAmt";
+                    internal static string SelectSql_Join = @"SELECT A.Agent_Code, A.Agent_Name, C.Cust_Code, C.Cust_Name, O.Ord_Num, O.Ord_Amount, O.Advance_Amount, O.Ord_Date, O.Ord_Description FROM Agents A INNER JOIN 
+                                                        Customer C ON C.Agent_Code = A.Agent_Code INNER JOIN 
+                                                        Orders O ON O.Cust_Code = C.Cust_Code AND O.Agent_Code = A.Agent_Code WHERE 
+                                                        A.Agent_Code = @AgentCode AND C.Cust_Code = @CustCode AND O.Ord_Num = @OrdNum AND O.Advance_Amount = @AdvanceAmt";
+                    internal static string Single_Value_Select = @"SELECT Grade FROM Customer WHERE Cust_Code = @CustCode";
+                    internal static string InsertSql = @"INSERT INTO Agents VALUES (@AgentCode, @AgentName, @WorkingArea, @Commission, @PhoneNo, @Country)";
+                    internal static string UpdateSql = @"UPDATE Agents SET Commission = @NewCommission WHERE Agent_Code = @AgentCode";
+                    internal static string DeleteSql = @"DELETE FROM Agents WHERE Agent_Code = @AgentCode";
+                    internal static string VerifyDMLExecution = @"SELECT * FROM Agents WHERE Agent_Code = @AgentCode";
+                }
             }
         }
          
@@ -127,6 +141,20 @@
                     internal static string RevokeSql_Command_Table_User = @"REVOKE {0} ON {1} FROM '{2}'";
                     internal static string VerifyPermission_User = "SELECT PRIVILEGE_TYPE FROM INFORMATION_SCHEMA.TABLE_PRIVILEGES WHERE GRANTEE = \"'test_user'@'%'\"";
                     internal static string RemoveUserSql_User = "DROP USER '{0}'";
+                }
+                internal static class SQLParameters
+                {
+                    internal static string SelectSql = @"SELECT * FROM Customer WHERE Cust_Code = @CustCode AND Cust_Name = @CustName 
+                                                       AND Grade = @Grade AND Outstanding_Amt = @OutstandingAmt";
+                    internal static string SelectSql_Join = @"SELECT A.Agent_Code, A.Agent_Name, C.Cust_Code, C.Cust_Name, O.Ord_Num, O.Ord_Amount, O.Advance_Amount, O.Ord_Date, O.Ord_Description FROM Agents A INNER JOIN 
+                                                        Customer C ON C.Agent_Code = A.Agent_Code INNER JOIN 
+                                                        Orders O ON O.Cust_Code = C.Cust_Code AND O.Agent_Code = A.Agent_Code WHERE 
+                                                        A.Agent_Code = @AgentCode AND C.Cust_Code = @CustCode AND O.Ord_Num = @OrdNum AND O.Advance_Amount = @AdvanceAmt";
+                    internal static string Single_Value_Select = @"SELECT Grade FROM Customer WHERE Cust_Code = @CustCode";
+                    internal static string InsertSql = @"INSERT INTO Agents VALUES (@AgentCode, @AgentName, @WorkingArea, @Commission, @PhoneNo, @Country)";
+                    internal static string UpdateSql = @"UPDATE Agents SET Commission = @NewCommission WHERE Agent_Code = @AgentCode";
+                    internal static string DeleteSql = @"DELETE FROM Agents WHERE Agent_Code = @AgentCode";
+                    internal static string VerifyDMLExecution = @"SELECT * FROM Agents WHERE Agent_Code = @AgentCode";
                 }
             }
         }
@@ -191,6 +219,20 @@
                     internal static string VerifyPermission_User = @"SELECT * FROM DBA_TAB_PRIVS WHERE GRANTEE = UPPER('{0}')";
                     internal static string RemoveUserSql_User = @"DROP USER {0} CASCADE";
                 }
+                internal static class SQLParameters
+                {
+                    internal static string SelectSql = @"SELECT * FROM Customer WHERE Cust_Code = :CustCode AND Cust_Name = :CustName 
+                                                       AND Grade = :Grade AND Outstanding_Amt = :OutstandingAmt";
+                    internal static string SelectSql_Join = @"SELECT A.Agent_Code, A.Agent_Name, C.Cust_Code, C.Cust_Name, O.Ord_Num, O.Ord_Amount, O.Advance_Amount, O.Ord_Date, O.Ord_Description FROM Agents A INNER JOIN 
+                                                        Customer C ON C.Agent_Code = A.Agent_Code INNER JOIN 
+                                                        Orders O ON O.Cust_Code = C.Cust_Code AND O.Agent_Code = A.Agent_Code WHERE 
+                                                        A.Agent_Code = :AgentCode AND C.Cust_Code = :CustCode AND O.Ord_Num = :OrdNum AND O.Advance_Amount = :AdvanceAmt";
+                    internal static string Single_Value_Select = @"SELECT Grade FROM Customer WHERE Cust_Code = :CustCode";
+                    internal static string InsertSql = @"INSERT INTO Agents VALUES (:AgentCode, :AgentName, :WorkingArea, :Commission, :PhoneNo, :Country)";
+                    internal static string UpdateSql = @"UPDATE Agents SET Commission = :NewCommission WHERE Agent_Code = :AgentCode";
+                    internal static string DeleteSql = @"DELETE FROM Agents WHERE Agent_Code = :AgentCode";
+                    internal static string VerifyDMLExecution = @"SELECT * FROM Agents WHERE Agent_Code = :AgentCode";
+                }
             }
         }
 
@@ -254,6 +296,20 @@
                                                                    FROM information_schema.role_table_grants 
                                                                    WHERE grantee = '{0}'";
                     internal static string RemoveUserSql_User = @"DROP USER {0}";
+                }
+                internal static class SQLParameters
+                {
+                    internal static string SelectSql = @"SELECT * FROM Customer WHERE Cust_Code = @CustCode AND Cust_Name = @CustName 
+                                                       AND Grade = @Grade AND Outstanding_Amt = @OutstandingAmt";
+                    internal static string SelectSql_Join = @"SELECT A.Agent_Code, A.Agent_Name, C.Cust_Code, C.Cust_Name, O.Ord_Num, O.Ord_Amount, O.Advance_Amount, O.Ord_Date, O.Ord_Description FROM Agents A INNER JOIN 
+                                                        Customer C ON C.Agent_Code = A.Agent_Code INNER JOIN 
+                                                        Orders O ON O.Cust_Code = C.Cust_Code AND O.Agent_Code = A.Agent_Code WHERE 
+                                                        A.Agent_Code = @AgentCode AND C.Cust_Code = @CustCode AND O.Ord_Num = @OrdNum AND O.Advance_Amount = @AdvanceAmt";
+                    internal static string Single_Value_Select = @"SELECT Grade FROM Customer WHERE Cust_Code = @CustCode";
+                    internal static string InsertSql = @"INSERT INTO Agents VALUES (@AgentCode, @AgentName, @WorkingArea, @Commission, @PhoneNo, @Country)";
+                    internal static string UpdateSql = @"UPDATE Agents SET Commission = @NewCommission WHERE Agent_Code = @AgentCode";
+                    internal static string DeleteSql = @"DELETE FROM Agents WHERE Agent_Code = @AgentCode";
+                    internal static string VerifyDMLExecution = @"SELECT * FROM Agents WHERE Agent_Code = @AgentCode";
                 }
             }
         }

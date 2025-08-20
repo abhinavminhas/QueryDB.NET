@@ -1,6 +1,13 @@
-﻿using Oracle.ManagedDataAccess.Client;
+﻿using Microsoft.Data.SqlClient;
+using MySql.Data.MySqlClient;
+using Npgsql;
+using Oracle.ManagedDataAccess.Client;
 using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace QueryDB.Resources
@@ -172,5 +179,138 @@ namespace QueryDB.Resources
             }
             return buffer;
         }
+
+        #region Sql Parameters
+
+        /// <summary>
+        /// Converts an object or dictionary into a sequence of SQL parameters.
+        /// </summary>
+        /// <param name="parameters">
+        /// An object with properties or a dictionary of key-value pairs to convert into <see cref="SqlParameter"/>s.
+        /// The input to convert:
+        /// - Anonymous or POCO object.
+        /// - Dictionary of key-value pairs of string keys and object values.
+        /// </param>
+        /// <returns>
+        /// A sequence of <see cref="SqlParameter"/>s with names prefixed by '@' and null values replaced with <see cref="DBNull.Value"/>.
+        /// </returns>
+        internal static IEnumerable<SqlParameter> ToSqlParameters(object parameters)
+        {
+            if (parameters == null)
+                yield break;
+            if (parameters is IDictionary<string, object> dict)
+            {
+                foreach (var kv in dict)
+                    yield return new SqlParameter("@" + kv.Key, kv.Value ?? DBNull.Value);
+            }
+            else
+            {
+                foreach (PropertyInfo prop in parameters.GetType().GetProperties())
+                {
+                    var value = prop.GetValue(parameters, null) ?? DBNull.Value;
+                    yield return new SqlParameter("@" + prop.Name, value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Converts an object or dictionary into a sequence of MySQL parameters.
+        /// </summary>
+        /// <param name="parameters">
+        /// An object with properties or a dictionary of key-value pairs to convert into <see cref="MySqlParameter"/>s.
+        /// The input to convert:
+        /// - Anonymous or POCO object.
+        /// - Dictionary of key-value pairs of string keys and object values.
+        /// </param>
+        /// <returns>
+        /// A sequence of <see cref="MySqlParameter"/>s with names prefixed by '@' and null values replaced with <see cref="DBNull.Value"/>.
+        /// </returns>
+        internal static IEnumerable<MySqlParameter> ToMySqlParameters(object parameters)
+        {
+            if (parameters == null)
+                yield break;
+            if (parameters is IDictionary<string, object> dict)
+            {
+                foreach (var kv in dict)
+                    yield return new MySqlParameter("@" + kv.Key, kv.Value ?? DBNull.Value);
+            }
+            else
+            {
+                foreach (PropertyInfo prop in parameters.GetType().GetProperties())
+                {
+                    var value = prop.GetValue(parameters, null) ?? DBNull.Value;
+                    yield return new MySqlParameter("@" + prop.Name, value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Converts an object or dictionary into a sequence of Oracle parameters.
+        /// </summary>
+        /// <param name="sql">The SQL command text.</param>
+        /// <param name="parameters">
+        /// An object with properties or a dictionary of key-value pairs to convert into <see cref="OracleParameter"/>s.
+        /// The input to convert:
+        /// - Anonymous or POCO object.
+        /// - Dictionary of key-value pairs of string keys and object values.
+        /// </param>
+        /// <returns>
+        /// A sequence of <see cref="OracleParameter"/>s with names prefixed by ':' and null values replaced with <see cref="DBNull.Value"/>.
+        /// </returns>
+        internal static IEnumerable<OracleParameter> ToOracleParameters(string sql, object parameters)
+        {
+            if (parameters == null || string.IsNullOrWhiteSpace(sql))
+                yield break;
+            var matches = Regex.Matches(sql, @"(?<!:):(\w+)");
+            var bindNames = matches.Cast<Match>().Select(m => m.Groups[1].Value).ToList();
+            IDictionary<string, object> paramDict;
+            if (parameters is IDictionary<string, object> dict)
+                paramDict = dict;
+            else
+            {
+                paramDict = parameters.GetType()
+                    .GetProperties()
+                    .ToDictionary(p => p.Name, p => p.GetValue(parameters, null) ?? DBNull.Value, StringComparer.OrdinalIgnoreCase);
+            }
+            foreach (var name in bindNames)
+            {
+                if (paramDict.TryGetValue(name, out var value))
+                    yield return new OracleParameter(":" + name, value);
+            }
+        }
+
+        /// <summary>
+        /// Converts an object or dictionary into a sequence of PostgreSQL parameters.
+        /// </summary>
+        /// <param name="parameters">
+        /// An object with properties or a dictionary of key-value pairs to convert into <see cref="NpgsqlParameter"/>s.
+        /// The input to convert:
+        /// - Anonymous or POCO object.
+        /// - Dictionary of key-value pairs of string keys and object values.
+        /// </param>
+        /// <returns>
+        /// A sequence of <see cref="NpgsqlParameter"/>s with names prefixed by '@' and null values replaced with <see cref="DBNull.Value"/>.
+        /// </returns>
+        internal static IEnumerable<NpgsqlParameter> ToNpgsqlParameters(object parameters)
+        {
+            if (parameters == null)
+                yield break;
+            if (parameters is IDictionary<string, object> dict)
+            {
+                foreach (var kv in dict)
+                    yield return new NpgsqlParameter("@" + kv.Key, kv.Value ?? DBNull.Value);
+            }
+            else
+            {
+                foreach (PropertyInfo prop in parameters.GetType().GetProperties())
+                {
+                    var value = prop.GetValue(parameters, null) ?? DBNull.Value;
+                    yield return new NpgsqlParameter("@" + prop.Name, value);
+                }
+            }
+        }
+
+        #endregion
+
     }
 }

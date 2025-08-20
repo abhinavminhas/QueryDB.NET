@@ -21,12 +21,18 @@ namespace QueryDB.PostgreSQL
         /// <param name="cmdText">The text of the query.</param>
         /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
         /// <param name="commandType">Sql command type.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>A <see cref="NpgsqlDataReader"/> object that can be used to read the query results.</returns>
-        internal NpgsqlDataReader GetPostgreSqlReader(string cmdText, NpgsqlConnection connection, CommandType commandType)
+        internal NpgsqlDataReader GetPostgreSqlReader(string cmdText, NpgsqlConnection connection, CommandType commandType, object parameters = null)
         {
             connection.Open();
             using (var sqlCommand = new NpgsqlCommand(cmdText, connection) { CommandType = commandType })
             {
+                if (parameters != null)
+                {
+                    foreach (var param in Utils.ToNpgsqlParameters(parameters))
+                        sqlCommand.Parameters.Add(param);
+                }
                 return sqlCommand.ExecuteReader();
             }
         }
@@ -38,11 +44,17 @@ namespace QueryDB.PostgreSQL
         /// <param name="cmdText">The SQL command text to execute.</param>
         /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
         /// <param name="commandType">The type of the command (e.g., Text, StoredProcedure).</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>A configured <see cref="NpgsqlCommand"/> instance.</returns>
-        internal NpgsqlCommand GetPostgreSqlCommand(string cmdText, NpgsqlConnection connection, CommandType commandType)
+        internal NpgsqlCommand GetPostgreSqlCommand(string cmdText, NpgsqlConnection connection, CommandType commandType, object parameters = null)
         {
             connection.Open();
             var sqlCommand = new NpgsqlCommand(cmdText, connection) { CommandType = commandType };
+            if (parameters != null)
+            {
+                foreach (var param in Utils.ToNpgsqlParameters(parameters))
+                    sqlCommand.Parameters.Add(param);
+            }
             return sqlCommand;
         }
 
@@ -52,10 +64,16 @@ namespace QueryDB.PostgreSQL
         /// <param name="cmdText">The SQL command text to execute.</param>
         /// <param name="connection">The PostgreSQL database connection.</param>
         /// <param name="transaction">The PostgreSQL transaction within which the command should be executed.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>A new <see cref="NpgsqlCommand"/> instance configured with the provided connection and transaction.</returns>
-        internal static NpgsqlCommand GetPostgreSqlCommand(string cmdText, NpgsqlConnection connection, NpgsqlTransaction transaction)
+        internal static NpgsqlCommand GetPostgreSqlCommand(string cmdText, NpgsqlConnection connection, NpgsqlTransaction transaction, object parameters = null)
         {
             var sqlCommand = new NpgsqlCommand(cmdText, connection, transaction);
+            if (parameters != null)
+            {
+                foreach (var param in Utils.ToNpgsqlParameters(parameters))
+                    sqlCommand.Parameters.Add(param);
+            }
             return sqlCommand;
         }
 
@@ -79,12 +97,13 @@ namespace QueryDB.PostgreSQL
         /// <param name="selectSql">'Select' query.</param>
         /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
         /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>List of <see cref="DataDictionary"/> with column names as keys holding values into a list for multiple rows of data.
         /// Note: Byte[] is returned as Base64 string.</returns>
-        internal List<DataDictionary> FetchData(string selectSql, NpgsqlConnection connection, bool upperCaseKeys)
+        internal List<DataDictionary> FetchData(string selectSql, NpgsqlConnection connection, bool upperCaseKeys, object parameters = null)
         {
             var dataList = new List<DataDictionary>();
-            using (var reader = GetPostgreSqlReader(selectSql, connection, CommandType.Text))
+            using (var reader = GetPostgreSqlReader(selectSql, connection, CommandType.Text, parameters))
             {
                 while (reader.Read())
                 {
@@ -110,11 +129,12 @@ namespace QueryDB.PostgreSQL
         /// <param name="selectSql">'Select' query.</param>
         /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
         /// <param name="strict">Enables fetch data only for object type <typeparamref name="T"/> properties existing in database query result.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
-        internal List<T> FetchData<T>(string selectSql, NpgsqlConnection connection, bool strict) where T : new()
+        internal List<T> FetchData<T>(string selectSql, NpgsqlConnection connection, bool strict, object parameters = null) where T : new()
         {
             var dataList = new List<T>();
-            using (var reader = GetPostgreSqlReader(selectSql, connection, CommandType.Text))
+            using (var reader = GetPostgreSqlReader(selectSql, connection, CommandType.Text, parameters))
             {
                 while (reader.Read())
                 {
@@ -136,13 +156,14 @@ namespace QueryDB.PostgreSQL
         /// </summary>
         /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
         /// <param name="connection">The <see cref="NpgsqlConnection"/> to use for executing the SQL statement.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// A <see cref="string"/> representing the value of the first column of the first row in the result set,
         /// or an empty string if the result is DBNull.
         /// </returns>
-        internal string ExecuteScalar(string sqlStatement, NpgsqlConnection connection)
+        internal string ExecuteScalar(string sqlStatement, NpgsqlConnection connection, object parameters = null)
         {
-            using (var sqlCommand = GetPostgreSqlCommand(sqlStatement, connection, CommandType.Text))
+            using (var sqlCommand = GetPostgreSqlCommand(sqlStatement, connection, CommandType.Text, parameters))
             {
                 var result = sqlCommand.ExecuteScalar();
                 return result == null || result == DBNull.Value ? string.Empty : result.ToString();
@@ -156,13 +177,14 @@ namespace QueryDB.PostgreSQL
         /// <typeparam name="T">The type to which the result should be converted.</typeparam>
         /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
         /// <param name="connection">The <see cref="NpgsqlConnection"/> to use for executing the SQL statement.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// The value of the first column of the first row in the result set, converted to type <typeparamref name="T"/>,
         /// or the default value of <typeparamref name="T"/> if the result is DBNull.
         /// </returns>
-        internal T ExecuteScalar<T>(string sqlStatement, NpgsqlConnection connection)
+        internal T ExecuteScalar<T>(string sqlStatement, NpgsqlConnection connection, object parameters = null)
         {
-            using (var sqlCommand = GetPostgreSqlCommand(sqlStatement, connection, CommandType.Text))
+            using (var sqlCommand = GetPostgreSqlCommand(sqlStatement, connection, CommandType.Text, parameters))
             {
                 var result = sqlCommand.ExecuteScalar();
                 return result == null || result == DBNull.Value ? default : (T)Convert.ChangeType(result, typeof(T));
@@ -174,10 +196,11 @@ namespace QueryDB.PostgreSQL
         /// </summary>
         /// <param name="sqlStatement">SQL statement to execute.</param>
         /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>The number of rows affected by the execution of the SQL statement.</returns>
-        internal int ExecuteCommand(string sqlStatement, NpgsqlConnection connection)
+        internal int ExecuteCommand(string sqlStatement, NpgsqlConnection connection, object parameters = null)
         {
-            using (var sqlCommand = GetPostgreSqlCommand(sqlStatement, connection, CommandType.Text))
+            using (var sqlCommand = GetPostgreSqlCommand(sqlStatement, connection, CommandType.Text, parameters))
             {
                 return sqlCommand.ExecuteNonQuery();
             }
@@ -188,13 +211,14 @@ namespace QueryDB.PostgreSQL
         /// </summary>
         /// <param name="sqlStatements">A list of SQL statements to execute.</param>
         /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// A <see cref="Result"/> object indicating the outcome of the transaction.
         /// The <see cref="Result.Success"/> property is <c>true</c> if the transaction is committed successfully; 
         /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
         /// If an error occurs, the <see cref="Result.Exception"/> property contains the exception details.
         /// </returns>
-        internal static Result ExecuteTransaction(List<string> sqlStatements, NpgsqlConnection connection)
+        internal static Result ExecuteTransaction(List<string> sqlStatements, NpgsqlConnection connection, object parameters = null)
         {
             using (NpgsqlTransaction transaction = GetPostgreSqlTransaction(connection))
             {
@@ -202,7 +226,7 @@ namespace QueryDB.PostgreSQL
                 {
                     foreach (var sqlStatement in sqlStatements)
                     {
-                        using (var sqlCommand = GetPostgreSqlCommand(sqlStatement, connection, transaction))
+                        using (var sqlCommand = GetPostgreSqlCommand(sqlStatement, connection, transaction, parameters))
                         {
                             sqlCommand.ExecuteNonQuery();
                         }
@@ -228,12 +252,18 @@ namespace QueryDB.PostgreSQL
         /// <param name="cmdText">The text of the query.</param>
         /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
         /// <param name="commandType">Sql command type.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>A <see cref="NpgsqlDataReader"/> object that can be used to read the query results.</returns>
-        internal async Task<NpgsqlDataReader> GetPostgreSqlReaderAsync(string cmdText, NpgsqlConnection connection, CommandType commandType)
+        internal async Task<NpgsqlDataReader> GetPostgreSqlReaderAsync(string cmdText, NpgsqlConnection connection, CommandType commandType, object parameters = null)
         {
             await connection.OpenAsync();
             using (var sqlCommand = new NpgsqlCommand(cmdText, connection) { CommandType = commandType })
             {
+                if (parameters != null)
+                {
+                    foreach (var param in Utils.ToNpgsqlParameters(parameters))
+                        sqlCommand.Parameters.Add(param);
+                }
                 return await sqlCommand.ExecuteReaderAsync();
             }
         }
@@ -245,11 +275,17 @@ namespace QueryDB.PostgreSQL
         /// <param name="cmdText">The SQL command text to execute.</param>
         /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
         /// <param name="commandType">The type of the command (e.g., Text, StoredProcedure).</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>A configured <see cref="NpgsqlCommand"/> instance.</returns>
-        internal async Task<NpgsqlCommand> GetPostgreSqlCommandAsync(string cmdText, NpgsqlConnection connection, CommandType commandType)
+        internal async Task<NpgsqlCommand> GetPostgreSqlCommandAsync(string cmdText, NpgsqlConnection connection, CommandType commandType, object parameters = null)
         {
             await connection.OpenAsync();
             var sqlCommand = new NpgsqlCommand(cmdText, connection) { CommandType = commandType };
+            if (parameters != null)
+            {
+                foreach (var param in Utils.ToNpgsqlParameters(parameters))
+                    sqlCommand.Parameters.Add(param);
+            }
             return sqlCommand;
         }
 
@@ -273,12 +309,13 @@ namespace QueryDB.PostgreSQL
         /// <param name="selectSql">'Select' query.</param>
         /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
         /// <param name="upperCaseKeys">Boolean parameter to return dictionary keys in uppercase.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>List of <see cref="DataDictionary"/> with column names as keys holding values into a list for multiple rows of data.
         /// Note: Byte[] is returned as Base64 string.</returns>
-        internal async Task<List<DataDictionary>> FetchDataAsync(string selectSql, NpgsqlConnection connection, bool upperCaseKeys)
+        internal async Task<List<DataDictionary>> FetchDataAsync(string selectSql, NpgsqlConnection connection, bool upperCaseKeys, object parameters = null)
         {
             var dataList = new List<DataDictionary>();
-            using (var reader = await GetPostgreSqlReaderAsync(selectSql, connection, CommandType.Text))
+            using (var reader = await GetPostgreSqlReaderAsync(selectSql, connection, CommandType.Text, parameters))
             {
                 while (await reader.ReadAsync())
                 {
@@ -304,11 +341,12 @@ namespace QueryDB.PostgreSQL
         /// <param name="selectSql">'Select' query.</param>
         /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
         /// <param name="strict">Enables fetch data only for object type <typeparamref name="T"/> properties existing in database query result.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>List of data rows mapped into object of type <typeparamref name="T"/>.</returns>
-        internal async Task<List<T>> FetchDataAsync<T>(string selectSql, NpgsqlConnection connection, bool strict) where T : new()
+        internal async Task<List<T>> FetchDataAsync<T>(string selectSql, NpgsqlConnection connection, bool strict, object parameters = null) where T : new()
         {
             var dataList = new List<T>();
-            using (var reader = await GetPostgreSqlReaderAsync(selectSql, connection, CommandType.Text))
+            using (var reader = await GetPostgreSqlReaderAsync(selectSql, connection, CommandType.Text, parameters))
             {
                 while (await reader.ReadAsync())
                 {
@@ -330,13 +368,14 @@ namespace QueryDB.PostgreSQL
         /// </summary>
         /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
         /// <param name="connection">The <see cref="NpgsqlConnection"/> to use for executing the SQL statement.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// A <see cref="string"/> representing the value of the first column of the first row in the result set,
         /// or an empty string if the result is DBNull.
         /// </returns>
-        internal async Task<string> ExecuteScalarAsync(string sqlStatement, NpgsqlConnection connection)
+        internal async Task<string> ExecuteScalarAsync(string sqlStatement, NpgsqlConnection connection, object parameters = null)
         {
-            using (var sqlCommand = await GetPostgreSqlCommandAsync(sqlStatement, connection, CommandType.Text))
+            using (var sqlCommand = await GetPostgreSqlCommandAsync(sqlStatement, connection, CommandType.Text, parameters))
             {
                 var result = await sqlCommand.ExecuteScalarAsync();
                 return result == null || result == DBNull.Value ? string.Empty : result.ToString();
@@ -350,13 +389,14 @@ namespace QueryDB.PostgreSQL
         /// <typeparam name="T">The type to which the result should be converted.</typeparam>
         /// <param name="sqlStatement">The SQL statement to execute. It should be a query that returns a single value.</param>
         /// <param name="connection">The <see cref="NpgsqlConnection"/> to use for executing the SQL statement.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// The value of the first column of the first row in the result set, converted to type <typeparamref name="T"/>,
         /// or the default value of <typeparamref name="T"/> if the result is DBNull.
         /// </returns>
-        internal async Task<T> ExecuteScalarAsync<T>(string sqlStatement, NpgsqlConnection connection)
+        internal async Task<T> ExecuteScalarAsync<T>(string sqlStatement, NpgsqlConnection connection, object parameters = null)
         {
-            using (var sqlCommand = await GetPostgreSqlCommandAsync(sqlStatement, connection, CommandType.Text))
+            using (var sqlCommand = await GetPostgreSqlCommandAsync(sqlStatement, connection, CommandType.Text, parameters))
             {
                 var result = await sqlCommand.ExecuteScalarAsync();
                 return result == null || result == DBNull.Value ? default : (T)Convert.ChangeType(result, typeof(T));
@@ -368,10 +408,11 @@ namespace QueryDB.PostgreSQL
         /// </summary>
         /// <param name="sqlStatement">SQL statement to execute.</param>
         /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>The number of rows affected by the execution of the SQL statement.</returns>
-        internal async Task<int> ExecuteCommandAsync(string sqlStatement, NpgsqlConnection connection)
+        internal async Task<int> ExecuteCommandAsync(string sqlStatement, NpgsqlConnection connection, object parameters = null)
         {
-            using (var sqlCommand = await GetPostgreSqlCommandAsync(sqlStatement, connection, CommandType.Text))
+            using (var sqlCommand = await GetPostgreSqlCommandAsync(sqlStatement, connection, CommandType.Text, parameters))
             {
                 return await sqlCommand.ExecuteNonQueryAsync();
             }
@@ -382,13 +423,14 @@ namespace QueryDB.PostgreSQL
         /// </summary>
         /// <param name="sqlStatements">A list of SQL statements to execute.</param>
         /// <param name="connection">The <see cref="NpgsqlConnection"/> object used to connect to the database.</param>
+        /// <param name="parameters">Query parameters for parameterized SQL execution. Default - <c>null</c>.</param>
         /// <returns>
         /// A <see cref="Result"/> object indicating the outcome of the transaction.
         /// The <see cref="Result.Success"/> property is <c>true</c> if the transaction is committed successfully; 
         /// otherwise, <c>false</c> if an error occurs and the transaction is rolled back.
         /// If an error occurs, the <see cref="Result.Exception"/> property contains the exception details.
         /// </returns>
-        internal static async Task<Result> ExecuteTransactionAsync(List<string> sqlStatements, NpgsqlConnection connection)
+        internal static async Task<Result> ExecuteTransactionAsync(List<string> sqlStatements, NpgsqlConnection connection, object parameters = null)
         {
             using (NpgsqlTransaction transaction = await GetPostgreSqlTransactionAsync(connection))
             {
@@ -396,7 +438,7 @@ namespace QueryDB.PostgreSQL
                 {
                     foreach (var sqlStatement in sqlStatements)
                     {
-                        using (var sqlCommand = GetPostgreSqlCommand(sqlStatement, connection, transaction))
+                        using (var sqlCommand = GetPostgreSqlCommand(sqlStatement, connection, transaction, parameters))
                         {
                             await sqlCommand.ExecuteNonQueryAsync();
                         }
