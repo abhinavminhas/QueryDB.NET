@@ -214,7 +214,7 @@ namespace QueryDB.Core.Tests
                 Assert.AreEqual("200104", order.ReferenceData["ord_num"]);
                 Assert.AreEqual("1500.00", order.ReferenceData["ord_amount"]);
                 Assert.AreEqual("500.00", order.ReferenceData["advance_amount"]);
-                Assert.AreEqual("13/03/2008 12:00:00 AM", order.ReferenceData["ord_date"]);
+                Assert.AreEqual("03/13/2008 00:00:00", ConvertToUSFormat(order.ReferenceData["ord_date"]));
                 Assert.AreEqual("SOD", order.ReferenceData["ord_description"]);
             }
         }
@@ -439,7 +439,7 @@ namespace QueryDB.Core.Tests
                 Assert.AreEqual("200104", order.ReferenceData["ord_num"]);
                 Assert.AreEqual("1500.00", order.ReferenceData["ord_amount"]);
                 Assert.AreEqual("500.00", order.ReferenceData["advance_amount"]);
-                Assert.AreEqual("13/03/2008 12:00:00 AM", order.ReferenceData["ord_date"]);
+                Assert.AreEqual("03/13/2008 00:00:00", ConvertToUSFormat(order.ReferenceData["ord_date"]));
                 Assert.AreEqual("SOD", order.ReferenceData["ord_description"]);
             }
         }
