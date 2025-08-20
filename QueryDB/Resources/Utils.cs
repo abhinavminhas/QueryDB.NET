@@ -196,8 +196,6 @@ namespace QueryDB.Resources
         /// </returns>
         internal static IEnumerable<SqlParameter> ToSqlParameters(object parameters)
         {
-            if (parameters == null)
-                yield break;
             if (parameters is IDictionary<string, object> dict)
             {
                 foreach (var kv in dict)
@@ -227,8 +225,6 @@ namespace QueryDB.Resources
         /// </returns>
         internal static IEnumerable<MySqlParameter> ToMySqlParameters(object parameters)
         {
-            if (parameters == null)
-                yield break;
             if (parameters is IDictionary<string, object> dict)
             {
                 foreach (var kv in dict)
@@ -259,8 +255,6 @@ namespace QueryDB.Resources
         /// </returns>
         internal static IEnumerable<OracleParameter> ToOracleParameters(string sql, object parameters)
         {
-            if (parameters == null || string.IsNullOrWhiteSpace(sql))
-                yield break;
             var matches = Regex.Matches(sql, @"(?<!:):(\w+)");
             var bindNames = matches.Cast<Match>().Select(m => m.Groups[1].Value).ToList();
             IDictionary<string, object> paramDict;
@@ -293,8 +287,6 @@ namespace QueryDB.Resources
         /// </returns>
         internal static IEnumerable<NpgsqlParameter> ToNpgsqlParameters(object parameters)
         {
-            if (parameters == null)
-                yield break;
             if (parameters is IDictionary<string, object> dict)
             {
                 foreach (var kv in dict)
