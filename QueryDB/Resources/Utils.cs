@@ -255,7 +255,7 @@ namespace QueryDB.Resources
         /// </returns>
         internal static IEnumerable<OracleParameter> ToOracleParameters(string sql, object parameters)
         {
-            var matches = Regex.Matches(sql, @"(?<!:):(\w+)");
+            var matches = Regex.Matches(sql, @"(?<!:):(\w+)", RegexOptions.None, TimeSpan.FromSeconds(5));
             var bindNames = matches.Cast<Match>().Select(m => m.Groups[1].Value).ToList();
             IDictionary<string, object> paramDict;
             if (parameters is IDictionary<string, object> dict)
