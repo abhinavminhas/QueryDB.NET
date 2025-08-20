@@ -28,5 +28,7 @@ jobs:
       run: dotnet pack --configuration=Release QueryDB/QueryDB.csproj
       
     - name: Publish Nuget Package
-      run: dotnet nuget push QueryDB/bin/Release/${{ env.NUGET_PACKAGE_NAME_VERSION }} -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      run: dotnet nuget push QueryDB/bin/Release/${{ env.NUGET_PACKAGE_NAME_VERSION }} -s https://api.nuget.org/v3/index.json -k $NUGET_API_KEY
       
