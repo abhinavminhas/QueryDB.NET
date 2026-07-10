@@ -12,18 +12,18 @@ jobs:
         with:
           java-version: 17
           distribution: 'zulu'
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Cache SonarCloud Packages
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~\sonar\cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
       - name: Cache SonarCloud Scanner
         id: cache-sonar-scanner
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .\.sonar\scanner
           key: ${{ runner.os }}-sonar-scanner
